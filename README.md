@@ -37,7 +37,7 @@ We use identical prompts and decoding settings to enable fair comparison with in
 
 ---
 
-## Generation Collapse Analysis (`./gen-collapse`)
+## Generation Collapse Analysis
 
 This folder provides a **fine-grained analysis of why pruning breaks generation**, including:
 - Step-wise comparison of hidden states, logits, and probabilities
