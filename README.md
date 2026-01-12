@@ -63,5 +63,5 @@ This analysis explains why pruning appears harmless on single-step evaluation bu
 
 - Models: Mistral, LLaMA, Qwen, Mixtral
 - Benchmarks:
-  - lm-eval-harness (BBH, GSM, etc.)
+  - lm-eval-harness (HumanEval, GSM, etc.)
   - Open-ended generation and long-context prompts
