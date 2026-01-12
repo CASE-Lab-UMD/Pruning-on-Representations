@@ -6,7 +6,7 @@ We provide a systematic study of **inter-layer pruning**, **intra-layer pruning*
 
 ---
 
-## Inter-layer Pruning (`./inter-layer`)
+## Inter-layer Pruning 
 
 This folder contains experiments that **remove or disable entire layers or blocks** in pretrained LLMs.
 
@@ -23,7 +23,7 @@ This part highlights the **mismatch between structural redundancy and generative
 
 ---
 
-## Intra-layer Pruning (`./intra-layer`)
+## Intra-layer Pruning 
 
 This folder focuses on **within-layer sparsification**, including:
 - Unstructured weight pruning (e.g., WANDA, SparseGPT)
