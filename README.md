@@ -1,4 +1,4 @@
-# Demystifying When Pruning Works via Representation Hierarchies
+## Demystifying When Pruning Works via Representation Hierarchies
 
 This repository investigates **when and why network pruning fails for generative tasks in large language models**, despite strong performance on non-generative benchmarks.  
 We provide a systematic study of **inter-layer pruning**, **intra-layer pruning**, and a dedicated **analysis of generation collapse**.
