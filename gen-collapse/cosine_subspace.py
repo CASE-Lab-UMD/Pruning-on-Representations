@@ -103,12 +103,13 @@ if __name__ == "__main__":
     parser.add_argument("--top_k", type=int, default=0, help="Top-k sampling.")
     parser.add_argument("--top_p", type=float, default=1.0, help="Top-p (nucleus) sampling.")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument("--mode", type=str, default="default", help="# FIX: mode tag used in log filename")
 
     args = parser.parse_args()
 
     log_dir = f"./cosine_logs/{args.target_layer}_temp{args.temperature}"
     os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, f"log_drop{args.drop_n}-{args.mode}-subspace.txt")
+    log_path = os.path.join(log_dir, f"log_drop{args.drop_n}-{args.mode}-subspace.txt")  # FIX: args.mode is now explicitly defined
 
     def write_log(s):
         with open(log_path, "a", encoding="utf-8") as f:

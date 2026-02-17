@@ -50,12 +50,18 @@ def run_prune(
     model, tokenizer = load_model_and_tokenizer(model_args, finetuning_args, training_args.do_train)
     
     if pruning_args.prune_method == "layer_drop" and pruning_args.layer_drop_method == "post_dropping":
-        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
+        # FIX: explicit boolean parsing for env flags
+        use_deepspeed = os.environ.get("ACCELERATE_USE_DEEPSPEED", "false").lower() == "true"
+        use_fsdp = os.environ.get("ACCELERATE_USE_FSDP", "false").lower() == "true"
+        assert (use_deepspeed or use_fsdp), "post_dropping requires DeepSpeed or FSDP context"
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
         post_layers_drop(pruning_args.prune_model_save_path, pruning_args.target_layer, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
     if pruning_args.prune_method == "block_drop" and pruning_args.block_drop_method == "post_dropping":
-        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
+        # FIX: explicit boolean parsing for env flags
+        use_deepspeed = os.environ.get("ACCELERATE_USE_DEEPSPEED", "false").lower() == "true"
+        use_fsdp = os.environ.get("ACCELERATE_USE_FSDP", "false").lower() == "true"
+        assert (use_deepspeed or use_fsdp), "post_dropping requires DeepSpeed or FSDP context"
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
         post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
@@ -107,8 +113,8 @@ def run_prune(
         elif pruning_args.prune_method == "block_drop":
             save_block_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         else:
-            # 🔍 Save sparse model to disk
-            save_sparse_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict, check_sparsity=True)
+            # FIX: this workflow currently only supports layer_drop/block_drop
+            raise NotImplementedError("run_prune currently supports only prune_method=layer_drop or block_drop.")
 
     accelerator.print("All done!")
 

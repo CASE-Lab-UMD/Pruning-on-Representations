@@ -5,7 +5,7 @@ import os
 def print_gpu_memory(accelerator):
     if accelerator.is_local_main_process:  # 🔍
         for i in range(cuda.device_count()):
-            used_memory = cuda.memory_allocated(0) // 1024 ** 2
+            used_memory = cuda.memory_allocated(i) // 1024 ** 2  # FIX: report each GPU instead of always GPU 0
             print(f"GPU {i} Used Memory: {used_memory}MB")
 
 

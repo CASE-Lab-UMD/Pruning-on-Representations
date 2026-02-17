@@ -6,7 +6,11 @@ from .sparsegpt import SparseGPT
 from .layerwrapper import WrappedGPT
 from .data import get_loaders 
 
-from .ablate import AblateGPT 
+try:
+    from .ablate import AblateGPT
+except ImportError:
+    # FIX: optional dependency, only required by prune_ablate
+    AblateGPT = None 
 
 def find_layers(module, layers=[nn.Linear], name=''):
     """
@@ -408,6 +412,9 @@ def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0, seqlen=51
 
 @torch.no_grad()
 def prune_ablate(args, model, tokenizer, dev, prune_n=0, prune_m=0, seqlen=512):
+    if AblateGPT is None:
+        # FIX: provide clear failure mode when optional module is missing
+        raise ImportError("AblateGPT is unavailable. Please add intra-layer/lib/ablate.py before using ablate methods.")
     ## SparseGPT code available at: https://github.com/IST-DASLab/sparsegpt/tree/f5c25005a61f96a0933ca2f95705a963585aafaa
     print('Starting ...')
     dataloader, _ = get_loaders("c4",nsamples=args.nsamples,seed=args.seed,seqlen=seqlen,tokenizer=tokenizer)

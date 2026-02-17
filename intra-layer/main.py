@@ -7,7 +7,12 @@ from importlib.metadata import version
 
 from lib.prune import prune_wanda, prune_magnitude, prune_sparsegpt, prune_ablate, check_sparsity, find_layers, neuron_partition
 
-from lib.eval import eval_ppl, eval_zero_shot
+try:
+    from lib.eval import eval_ppl, eval_zero_shot
+except ImportError:
+    # FIX: make eval dependency optional so pruning can still run in minimal environments
+    eval_ppl = None
+    eval_zero_shot = None
 
 print('torch', version('torch'))
 print('transformers', version('transformers'))
@@ -94,8 +99,13 @@ def main():
     print(f"sparsity sanity check {sparsity_ratio:.4f}")
     print("*"*30)
     ################################################################
-    ppl_test = eval_ppl(args, model, tokenizer, device, seqlen)
-    print(f"wikitext perplexity {ppl_test}")
+    if eval_ppl is not None:
+        ppl_test = eval_ppl(args, model, tokenizer, device, seqlen)
+        print(f"wikitext perplexity {ppl_test}")
+    else:
+        # FIX: keep pruning workflow runnable when optional eval module is absent
+        ppl_test = float("nan")
+        print("[WARN] lib.eval is missing, skip perplexity evaluation.")
 
     if not os.path.exists(args.save):
         os.makedirs(args.save)
@@ -105,6 +115,9 @@ def main():
         print(f"{args.prune_method}\t{sparsity_ratio:.4f}\t{ppl_test:.4f}", file=f, flush=True)
 
     if args.eval_zero_shot:
+        if eval_zero_shot is None:
+            # FIX: explicit error message for missing optional dependency
+            raise ImportError("lib.eval is required for --eval_zero_shot, but it is not available.")
         accelerate=False
         if "30b" in args.model or "65b" in args.model or "70b" in args.model:
             accelerate=True
