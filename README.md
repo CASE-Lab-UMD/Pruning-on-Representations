@@ -19,6 +19,10 @@
   <a href="#notes-on-metric-definitions">🧪 Metrics</a>
 </p>
 
+<p align="center">
+  <img src="Overview.svg" alt="Overview" width="88%">
+</p>
+
 Pruning often preserves non-generative metrics but hurts autoregressive generation.
 This project studies that gap through a representation hierarchy:
 - **Embedding space** (`h`): hidden states
