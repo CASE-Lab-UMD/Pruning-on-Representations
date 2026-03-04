@@ -1,14 +1,22 @@
-# Demystifying When Pruning Works via Representation Hierarchies
+<h1 align="center">Demystifying When Pruning Works via Representation Hierarchies</h1>
 
-<p align="left">
-  <em>Codebase for representation-hierarchy analysis of pruning in LLMs.</em>
-</p>
-
-<p align="left">
+<p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-blue" />
   <img alt="Framework" src="https://img.shields.io/badge/Framework-PyTorch-red" />
-  <img alt="LLM" src="https://img.shields.io/badge/Models-Transformers-orange" />
+  <img alt="Models" src="https://img.shields.io/badge/Models-Transformers-orange" />
   <img alt="Modes" src="https://img.shields.io/badge/Analysis-dropped%20%7C%20pruned-success" />
+</p>
+
+<p align="center">
+  Codebase for representation-hierarchy analysis of pruning in LLMs.
+</p>
+
+<p align="center">
+  <a href="#repository-structure">📦 Structure</a> •
+  <a href="#environment">⚙️ Environment</a> •
+  <a href="#analysis-scripts-paper-aligned">🔍 Scripts</a> •
+  <a href="#quick-start">🚀 Quick Start</a> •
+  <a href="#notes-on-metric-definitions">🧪 Metrics</a>
 </p>
 
 Pruning often preserves non-generative metrics but hurts autoregressive generation.
@@ -16,13 +24,6 @@ This project studies that gap through a representation hierarchy:
 - **Embedding space** (`h`): hidden states
 - **Logit space** (`z`): pre-softmax outputs
 - **Probability space** (`p`): post-softmax distributions
-
-**Quick Navigation**
-- [Repository Structure](#repository-structure)
-- [Environment](#environment)
-- [Analysis Scripts (Paper-Aligned)](#analysis-scripts-paper-aligned)
-- [Quick Start](#quick-start)
-- [Notes on Metric Definitions](#notes-on-metric-definitions)
 
 **What You Can Run Here**
 - Inter-layer pruning (layer / block drop)
