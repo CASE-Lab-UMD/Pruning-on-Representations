@@ -21,6 +21,7 @@
 
 
 from .configuration_dropped_baichuan import BaichuanConfig
+from .drop_utils import compute_kv_cache_idx, pack_decoder_layer_outputs
 
 
 import math
@@ -351,10 +352,7 @@ class DecoderLayer(nn.Module):
 
         self.layer_idx = layer_idx
         
-        self.kv_cache_idx = 0
-        for i in range(self.layer_idx):
-            if not config.drop_attn_list[i]:
-                self.kv_cache_idx += 1
+        self.kv_cache_idx = compute_kv_cache_idx(config.drop_attn_list, self.layer_idx)
 
         self.drop_attn = config.drop_attn_list[layer_idx]
         if self.drop_attn:
@@ -411,15 +409,14 @@ class DecoderLayer(nn.Module):
             hidden_states = self.mlp(hidden_states)
             hidden_states = residual + hidden_states
 
-        outputs = (hidden_states,)
-
-        if output_attentions:
-            outputs += (self_attn_weights,)
-
-        if use_cache:
-            outputs += (present_key_value,)
-
-        return outputs
+        return pack_decoder_layer_outputs(
+            hidden_states=hidden_states,
+            output_attentions=output_attentions,
+            use_cache=use_cache,
+            drop_attn=self.drop_attn,
+            self_attn_weights=self_attn_weights if not self.drop_attn else None,
+            present_key_value=present_key_value if not self.drop_attn else None,
+        )
 
 
 class BaichuanPreTrainedModel(PreTrainedModel):

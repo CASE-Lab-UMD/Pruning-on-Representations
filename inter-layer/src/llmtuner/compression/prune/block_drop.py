@@ -258,8 +258,11 @@ def post_block_drop(prune_model_save_path, model, tokenizer, reserved_layer_list
         accelerator.print(f"Dropped MLP list: {dropped_mlp_list}")
 
         accelerator.print("Saving...")
-        shutil.copy(CUSTOM_FILE[out_cfg.model_type]["config"], prune_model_save_path)
-        shutil.copy(CUSTOM_FILE[out_cfg.model_type]["model"], prune_model_save_path)
+        custom_files = CUSTOM_FILE[out_cfg.model_type]
+        shutil.copy(custom_files["config"], prune_model_save_path)
+        shutil.copy(custom_files["model"], prune_model_save_path)
+        for extra_file in custom_files.get("extra", []):
+            shutil.copy(extra_file, prune_model_save_path)
         if not only_update_config:
             model.save_pretrained(prune_model_save_path)
             tokenizer.save_pretrained(prune_model_save_path)

@@ -1,142 +1,134 @@
-# Generation Collapse under Network Pruning
+# Demystifying When Pruning Works via Representation Hierarchies
 
-This repository studies when and why pruning hurts autoregressive generation in LLMs, even when non-generative metrics look stable.
+This repository is the codebase for the paper **“Demystifying When Pruning Works via Representation Hierarchies” (ICML 2026 submission)**.
 
-It includes three parts:
-- `inter-layer`: drop full attention/MLP layers or full transformer blocks.
-- `intra-layer`: sparse pruning inside layers (WANDA, SparseGPT, magnitude, etc.).
-- `gen-collapse`: analyze hidden/logit/probability divergence between dense and pruned models.
+The core question is why pruning can preserve non-generative performance while degrading autoregressive generation.
+We analyze pruning through three sequential representation spaces:
+- **Embedding space**: hidden states
+- **Logit space**: pre-softmax outputs
+- **Probability space**: post-softmax distributions
 
-## Project Layout
+## Repository Structure
 
-- `inter-layer/`: layer/block dropping pipeline based on `llmtuner`.
-- `intra-layer/`: classic sparsification pipeline with perplexity and zero-shot eval hooks.
-- `gen-collapse/`: scripts for cosine/KL-based generation-collapse analysis.
-- `REDAME.md`: this file. (Name kept for compatibility with existing repo structure.)
+- `inter-layer/`: layer/block dropping pipeline.
+- `intra-layer/`: intra-layer sparsification (WANDA / SparseGPT / magnitude / neuron partition).
+- `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
 
 ## Environment
 
 Recommended:
 - Linux + NVIDIA GPU
-- CUDA 11.8+ (or compatible with your installed PyTorch)
-- Python 3.10 (3.9 also works in many setups)
+- CUDA-compatible PyTorch
+- Python 3.9+
 
 Core dependencies:
 - `torch`
 - `transformers`
 - `accelerate`
 - `datasets`
-- `peft`
-- `trl`
 - `tqdm`
 
-Install example:
+Example:
 
 ```bash
 cd inter-layer
 pip install -e .
-```
 
-For `intra-layer` and `gen-collapse`, install missing libs as needed in the same Python env:
-
-```bash
+# for analysis scripts
 pip install torch transformers accelerate datasets tqdm
 ```
 
+## Analysis Scripts (Paper-Aligned)
+
+All three scripts support:
+- `--analysis_mode dropped` (dense vs dropped behavior in one model via drop masks)
+- `--analysis_mode pruned` (dense model vs separately loaded pruned model)
+
+### 1) Layerwise transition analysis
+
+File: `representation-analysis/transition_layerwise_compare.py`
+
+Purpose:
+- Compare **attn/mlp sublayer transitions** at the same layer and same context.
+- Log transition metrics in embedding/logit/probability spaces.
+
+### 2) Generation-time divergence analysis
+
+File: `representation-analysis/compare_generation_metrics.py`
+
+Purpose:
+- Compare dense vs target trajectories across decoding steps.
+- Report cosine/KL and second-order estimates tied to the paper’s Section 6 formulas.
+
+### 3) Task subspace analysis (MCQ)
+
+File: `representation-analysis/compare_mcq_subspace_metrics.py`
+
+Purpose:
+- Compare global vocabulary-space behavior vs answer-option subspace behavior.
+- Mirrors the non-generative subspace robustness discussion in the paper.
+
 ## Quick Start
 
-### 1) Inter-layer pruning (layer/block dropping)
+Run from `representation-analysis/`.
 
-Run from `inter-layer/`.
-
-Example (layer drop):
+### Dropped mode
 
 ```bash
-bash scripts/dropping/layer_drop.sh
+python transition_layerwise_compare.py \
+  --analysis_mode dropped \
+  --model_root_path /path/to/model_root \
+  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
+
+python compare_generation_metrics.py \
+  --analysis_mode dropped \
+  --model_root_path /path/to/model_root \
+  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
+
+python compare_mcq_subspace_metrics.py \
+  --analysis_mode dropped \
+  --model_root_path /path/to/model_root \
+  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
 ```
 
-Example (block drop):
+### Pruned mode
 
 ```bash
-bash scripts/dropping/block_drop.sh
+python transition_layerwise_compare.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
+
+python compare_generation_metrics.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
+
+python compare_mcq_subspace_metrics.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
 ```
 
-The default scripts run two phases:
-- phase A: compute similarities and write reserved layers.
-- phase B (`post_dropping`): export final dropped model config/weights for loading.
+## Notes on Metric Definitions
 
-### 2) Intra-layer pruning (WANDA / SparseGPT / magnitude)
-
-Run from `intra-layer/`.
-
-```bash
-bash scripts/prune.sh
-```
-
-Or single run:
-
-```bash
-python main.py \
-  --model /path/to/model \
-  --prune_method wanda \
-  --sparsity_ratio 0.5 \
-  --sparsity_type unstructured \
-  --save /path/to/log_dir \
-  --save_model /path/to/pruned_model
-```
-
-### 3) Generation-collapse analysis
-
-Run from `gen-collapse/` after a dropped model is produced:
-
-```bash
-python cosine_layerwise.py --model_root_path ... --dropped_root_path ...
-python cosine_final.py --model_root_path ... --dropped_root_path ...
-python cosine_subspace.py --model_root_path ... --dropped_root_path ...
-```
-
-## Key Arguments
-
-Inter-layer pruning:
-- `--prune_method`: `layer_drop` or `block_drop`
-- `--layer_drop_method`: `discrete` or `post_dropping`
-- `--block_drop_method`: `discrete` / `consecutive` / `post_dropping`
-- `--target_layer`: `attn` / `mlp` / `all`
-- `--drop_n`: number of layers (or blocks) to drop
-- `--n_calibration_samples`: calibration samples used to compute similarity
-- `--similarity_cache_file`: cache path to avoid recomputing similarities
-
-Intra-layer pruning:
-- `--prune_method`: `wanda` / `sparsegpt` / `magnitude` / `neuron_partition`
-- `--sparsity_ratio`: target sparsity
-- `--sparsity_type`: `unstructured` / `2:4` / `4:8`
-- `--nsamples`: number of calibration samples
+- Probability-space metrics use `softmax(logits / T)` where `T` is analysis temperature.
+- If generation is greedy (`temperature=0`), analysis falls back to `T=1.0` for stable probability-space comparison.
+- In generation analysis, KL and cosine estimates are logged in the second-order form with `1 / (2T^2)` scaling.
 
 ## Outputs
 
-Inter-layer outputs usually include:
-- `reserved_layers.json`: kept layer indices after dropping decision.
-- `layer_mapping.json` (block drop): old-to-new index mapping.
-- `config.json`: contains `drop_attn_list` / `drop_mlp_list`.
-- model weights/tokenizer files (if `only_update_config=False`).
-
-Intra-layer outputs usually include:
-- `log_<method>.txt`: sparsity and perplexity summary.
-- saved pruned model directory when `--save_model` is set.
-
-## Reproducibility Notes
-
-- Set `--seed` / `--prune_seed` and keep decoding args fixed (`temperature`, `top_k`, `top_p`) for fair dense-vs-pruned comparison.
-- Use the same prompts and max length during generation-collapse analysis.
-- Keep `n_calibration_samples` and dataset split fixed across pruning variants.
-
-## Known Issues
-
-- The filename is `REDAME.md` (typo). Rename to `README.md` if preferred.
-- Some scripts assume local paths like `your_model_root_path`; update before running.
-- `intra-layer/main.py` imports modules (`lib.eval`, `lib.ablate`) that must exist in your local copy/environment.
-- `gen-collapse/cosine_subspace.py` references `args.mode` but does not define it; add this argument or adjust the log filename before running.
+Analysis logs are written under `representation-analysis/cosine_logs/` by default, with subfolders per script/mode/temperature.
 
 ## Citation
 
-If this repo helps your research, please cite your corresponding paper/project for this codebase.
+If this repository helps your research, please cite the corresponding paper.

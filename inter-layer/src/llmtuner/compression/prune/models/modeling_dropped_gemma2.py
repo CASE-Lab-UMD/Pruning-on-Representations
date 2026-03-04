@@ -47,6 +47,7 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 from .configuration_dropped_gemma2 import Gemma2Config
+from .drop_utils import compute_kv_cache_idx, pack_decoder_layer_outputs
 
 
 class Gemma2RMSNorm(nn.Module):
@@ -548,10 +549,7 @@ class Gemma2DecoderLayer(nn.Module):
         self.layer_idx = layer_idx
         config._attn_implementation = "eager"
 
-        self.kv_cache_idx = 0
-        for i in range(self.layer_idx):
-            if not config.drop_attn_list[i]:
-                self.kv_cache_idx += 1
+        self.kv_cache_idx = compute_kv_cache_idx(config.drop_attn_list, self.layer_idx)
 
         self.drop_attn = config.drop_attn_list[layer_idx]
         if self.drop_attn:
@@ -647,15 +645,14 @@ class Gemma2DecoderLayer(nn.Module):
             hidden_states = self.post_feedforward_layernorm(hidden_states)
             hidden_states = residual + hidden_states
 
-        outputs = (hidden_states,)
-
-        if output_attentions:
-            outputs += (self_attn_weights,)
-            
-        if use_cache and not self.drop_attn:
-            outputs += (present_key_value,)
-
-        return outputs
+        return pack_decoder_layer_outputs(
+            hidden_states=hidden_states,
+            output_attentions=output_attentions,
+            use_cache=use_cache,
+            drop_attn=self.drop_attn,
+            self_attn_weights=self_attn_weights if not self.drop_attn else None,
+            present_key_value=present_key_value if not self.drop_attn else None,
+        )
 
 
 GEMMA2_START_DOCSTRING = r"""

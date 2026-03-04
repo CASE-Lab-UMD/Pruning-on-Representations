@@ -165,25 +165,32 @@ auto_map = {
                 }
 }
 
+drop_utils_file = os.path.join(os.path.dirname(__file__), "models/drop_utils.py")
+
 CUSTOM_FILE ={
     "llama": {
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_llama.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py")
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py"),
+        "extra": [drop_utils_file],
     },
     "mistral": {
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_mistral.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py")
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py"),
+        "extra": [drop_utils_file],
     },
     "deepseek": {
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_deepseek.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_deepseek.py")
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_deepseek.py"),
+        "extra": [drop_utils_file],
     }, 
     "gemma2": {
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_gemma2.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_gemma2.py")
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_gemma2.py"),
+        "extra": [drop_utils_file],
     }, 
     "baichuan": {
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_baichuan.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_baichuan.py")
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_baichuan.py"),
+        "extra": [drop_utils_file],
     }
 }
