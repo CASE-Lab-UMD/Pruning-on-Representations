@@ -31,13 +31,13 @@ This project studies that gap through a representation hierarchy:
 
 **What You Can Run Here**
 - Inter-layer pruning (layer / block drop)
-- Intra-layer pruning (WANDA / SparseGPT / magnitude / neuron partition)
+- Intra-layer pruning (WANDA / SparseGPT)
 - Representation-level analysis in `dropped` and `pruned` modes
 
 ## Repository Structure
 
 - `inter-layer/`: layer/block dropping pipeline.
-- `intra-layer/`: intra-layer sparsification (WANDA / SparseGPT / magnitude / neuron partition).
+- `intra-layer/`: intra-layer sparsification (WANDA / SparseGPT).
 - `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
 
 ## Environment
@@ -64,7 +64,7 @@ pip install -e .
 pip install torch transformers accelerate datasets tqdm
 ```
 
-## Analysis Scripts (Paper-Aligned)
+## Analysis Scripts
 
 All three scripts support:
 - `--analysis_mode dropped` (dense vs dropped behavior in one model via drop masks)
