@@ -1,12 +1,33 @@
 # Demystifying When Pruning Works via Representation Hierarchies
 
-This repository is the codebase for the paper **“Demystifying When Pruning Works via Representation Hierarchies” (ICML 2026 submission)**.
+<p align="left">
+  <em>Codebase for representation-hierarchy analysis of pruning in LLMs.</em>
+</p>
 
-The core question is why pruning can preserve non-generative performance while degrading autoregressive generation.
-We analyze pruning through three sequential representation spaces:
-- **Embedding space**: hidden states
-- **Logit space**: pre-softmax outputs
-- **Probability space**: post-softmax distributions
+<p align="left">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-blue" />
+  <img alt="Framework" src="https://img.shields.io/badge/Framework-PyTorch-red" />
+  <img alt="LLM" src="https://img.shields.io/badge/Models-Transformers-orange" />
+  <img alt="Modes" src="https://img.shields.io/badge/Analysis-dropped%20%7C%20pruned-success" />
+</p>
+
+Pruning often preserves non-generative metrics but hurts autoregressive generation.
+This project studies that gap through a representation hierarchy:
+- **Embedding space** (`h`): hidden states
+- **Logit space** (`z`): pre-softmax outputs
+- **Probability space** (`p`): post-softmax distributions
+
+**Quick Navigation**
+- [Repository Structure](#repository-structure)
+- [Environment](#environment)
+- [Analysis Scripts (Paper-Aligned)](#analysis-scripts-paper-aligned)
+- [Quick Start](#quick-start)
+- [Notes on Metric Definitions](#notes-on-metric-definitions)
+
+**What You Can Run Here**
+- Inter-layer pruning (layer / block drop)
+- Intra-layer pruning (WANDA / SparseGPT / magnitude / neuron partition)
+- Representation-level analysis in `dropped` and `pruned` modes
 
 ## Repository Structure
 
