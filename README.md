@@ -208,22 +208,38 @@ python compare_mcq_subspace_metrics.py \
 
 ### Key formulas (as implemented)
 
-Let `z` be logits and `T>0` be the analysis temperature:
-- `p = softmax(z/T)`, `log p = log_softmax(z/T)`
+Let $z$ be logits and $T>0$ be the analysis temperature:
+$$
+p = \operatorname{softmax}(z/T), \quad \log p = \log \operatorname{softmax}(z/T)
+$$
 
 Cosine similarity:
-- `cos(a, b) = (a · b) / (||a|| ||b||)`
+$$
+\cos(a, b) = \frac{a^\top b}{\lVert a\rVert \, \lVert b\rVert}
+$$
 
-KL divergence (the code logs `REAL_KL` using `KL(p_output || p_residual)`):
-- `KL(p || q) = Σ_i p_i (log p_i - log q_i)`
+KL divergence (the code logs `REAL_KL` using $KL(p_{\text{output}} \,\|\, p_{\text{residual}})$):
+$$
+\mathrm{KL}(p \,\|\, q) = \sum_i p_i \left(\log p_i - \log q_i\right)
+$$
 
 Second-order KL estimate (logged as `KL_estimate`):
-- `Δ = z_residual - z_output`
-- `Var_p(Δ) = Σ_i p_i (Δ_i - Σ_j p_j Δ_j)^2`
-- `KL(p_output || p_residual) ≈ Var_p(Δ) / (2T^2)`
+$$
+\Delta = z_{\text{residual}} - z_{\text{output}}
+$$
+$$
+\operatorname{Var}_p(\Delta) = \sum_i p_i \left(\Delta_i - \sum_j p_j \Delta_j\right)^2
+$$
+$$
+\mathrm{KL}(p_{\text{output}} \,\|\, p_{\text{residual}}) \approx \frac{\operatorname{Var}_p(\Delta)}{2T^2}
+$$
 
-Parallel/orthogonal decomposition used for `Δh` and `Δz` (w.r.t. a base vector `x`):
-- `α = <Δ, x> / (||x||^2)`, `Δ_∥ = α x`, `Δ_⊥ = Δ - Δ_∥`
+Parallel/orthogonal decomposition used for $\Delta h$ and $\Delta z$ (w.r.t. a base vector $x$):
+$$
+\alpha = \frac{\langle \Delta, x \rangle}{\lVert x\rVert^2}, \quad
+\Delta_{\parallel} = \alpha x, \quad
+\Delta_{\perp} = \Delta - \Delta_{\parallel}
+$$
 
 ## Outputs
 
@@ -231,8 +247,8 @@ Analysis logs are written under `representation-analysis/cosine_logs/` by defaul
 
 ## Acknowledgements
 
-- Inter-layer layer/block dropping is adapted from `LLM-Drop`: https://github.com/CASE-Lab-UMD/LLM-Drop
-- Intra-layer pruning builds on `Wanda`: https://github.com/locuslab/wanda and `SparseGPT`: https://github.com/IST-DASLab/sparsegpt
+- Inter-layer layer/block dropping is adapted from [LLM-Drop](https://github.com/CASE-Lab-UMD/LLM-Drop)
+- Intra-layer pruning builds on [Wanda](https://github.com/locuslab/wanda) and [SparseGPT](https://github.com/IST-DASLab/sparsegpt)
 
 ## Citation
 
