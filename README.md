@@ -47,11 +47,11 @@ A recurring **discrepancy** in pruning is that models can look “mostly fine”
 This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
 <p align="center">
-  <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="88%">
+  <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
 </p>
 
 <p align="center">
-  <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="88%">
+  <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
 </p>
 
 ## Repository Structure
