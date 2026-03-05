@@ -28,6 +28,9 @@
 <p align="center">
   <img src="figs/overview.svg" alt="Overview" width="88%">
 </p>
+<p align="center">
+  <em>Overview: This repo studies pruning through a representation hierarchy (`h → z → p`) and compares dense vs dropped/pruned behaviors.</em>
+</p>
 
 Pruning often preserves non-generative metrics but hurts autoregressive generation.
 This project studies that gap through a representation hierarchy:
@@ -47,6 +50,9 @@ Empirically, pruning can perturb these spaces **very differently**: hidden-state
     </td>
   </tr>
 </table>
+<p align="center">
+  <em>Representation hierarchy under pruning: layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
+</p>
 
 **What You Can Run Here**
 - Inter-layer pruning (layer / block drop)
