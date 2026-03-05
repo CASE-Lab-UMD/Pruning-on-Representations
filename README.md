@@ -208,38 +208,43 @@ python compare_mcq_subspace_metrics.py \
 
 ### Key formulas (as implemented)
 
-Let $z$ be logits and $T>0$ be the analysis temperature:
-$$
-p = \operatorname{softmax}(z/T), \quad \log p = \log \operatorname{softmax}(z/T)
-$$
+GitHub does not always render LaTeX in `README.md`. To keep this section readable everywhere, we provide the formulas in a clean LaTeX block format below.
 
-Cosine similarity:
-$$
-\cos(a, b) = \frac{a^\top b}{\lVert a\rVert \, \lVert b\rVert}
-$$
+1) **Temperature-scaled probabilities**
 
-KL divergence (the code logs `REAL_KL` using $KL(p_{\text{output}} \,\|\, p_{\text{residual}})$):
-$$
-\mathrm{KL}(p \,\|\, q) = \sum_i p_i \left(\log p_i - \log q_i\right)
-$$
+```tex
+z: logits, T > 0: temperature
+p = softmax(z / T)
+log p = log_softmax(z / T)
+```
 
-Second-order KL estimate (logged as `KL_estimate`):
-$$
-\Delta = z_{\text{residual}} - z_{\text{output}}
-$$
-$$
-\operatorname{Var}_p(\Delta) = \sum_i p_i \left(\Delta_i - \sum_j p_j \Delta_j\right)^2
-$$
-$$
-\mathrm{KL}(p_{\text{output}} \,\|\, p_{\text{residual}}) \approx \frac{\operatorname{Var}_p(\Delta)}{2T^2}
-$$
+2) **Cosine similarity**
 
-Parallel/orthogonal decomposition used for $\Delta h$ and $\Delta z$ (w.r.t. a base vector $x$):
-$$
-\alpha = \frac{\langle \Delta, x \rangle}{\lVert x\rVert^2}, \quad
-\Delta_{\parallel} = \alpha x, \quad
-\Delta_{\perp} = \Delta - \Delta_{\parallel}
-$$
+```tex
+cos(a, b) = (a^T b) / (||a|| ||b||)
+```
+
+3) **KL divergence** (the code logs `REAL_KL` using `KL(p_output || p_residual)`)
+
+```tex
+KL(p || q) = \sum_i p_i (log p_i - log q_i)
+```
+
+4) **Second-order KL estimate** (logged as `KL_estimate`)
+
+```tex
+\Delta = z_residual - z_output
+Var_p(\Delta) = \sum_i p_i (\Delta_i - \sum_j p_j \Delta_j)^2
+KL(p_output || p_residual) \approx Var_p(\Delta) / (2 T^2)
+```
+
+5) **Parallel/orthogonal decomposition** (used for `Δh` and `Δz` w.r.t. base `x`)
+
+```tex
+\alpha = <\Delta, x> / ||x||^2
+\Delta_parallel = \alpha x
+\Delta_perp = \Delta - \Delta_parallel
+```
 
 ## Outputs
 
