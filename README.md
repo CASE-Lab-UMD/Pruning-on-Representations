@@ -9,7 +9,7 @@
 
 <p align="center">
   Shuai He<sup>1</sup>, Guoheng Sun<sup>1</sup>, Haichao Zhang<sup>2</sup>, Yun Fu<sup>2</sup>, Ang Li<sup>1</sup><br/>
-  <sup>1</sup>University of Maryland, College Park, &nbsp;&nbsp;·&nbsp;&nbsp;<sup>2</sup>Northeastern University
+  <sup>1</sup>University of Maryland, College Park, <sup>2</sup>Northeastern University
 </p>
 
 <p align="center">
