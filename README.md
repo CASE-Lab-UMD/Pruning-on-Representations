@@ -8,7 +8,8 @@
 </p>
 
 <p align="center">
-  Codebase for representation-hierarchy analysis of pruning in LLMs.
+  Shuai He<sup>1</sup>, Guoheng Sun<sup>1</sup>, Haichao Zhang<sup>2</sup>, Yun Fu<sup>2</sup>, Ang Li<sup>1</sup><br/>
+  <sup>1</sup>University of Maryland, College Park, USA&nbsp;&nbsp;·&nbsp;&nbsp;<sup>2</sup>Northeastern University, USA
 </p>
 
 <p align="center">
@@ -17,6 +18,10 @@
   <a href="#analysis-scripts-paper-aligned">🔍 Scripts</a> •
   <a href="#quick-start">🚀 Quick Start</a> •
   <a href="#notes-on-metric-definitions">🧪 Metrics</a>
+</p>
+
+<p align="center">
+  Codebase for representation-hierarchy analysis of pruning in LLMs.
 </p>
 
 <p align="center">
