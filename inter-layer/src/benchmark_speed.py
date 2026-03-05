@@ -115,7 +115,7 @@ def load_model(model_path, model_type, quant_file, n_generate, batch_size, no_sa
             model = AutoAWQForCausalLM.from_quantized(
                 model_path, quant_file, fuse_layers=True,
                 max_seq_len=n_generate, batch_size=batch_size,
-                safetensors=not no_safetensors
+                safetensors=not no_safetensors,
                 trust_remote_code=True,
             )
         # GPTQ

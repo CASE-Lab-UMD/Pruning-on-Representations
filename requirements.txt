@@ -1,0 +1,22 @@
+# Reproducible, public requirements for this repo (updated pins).
+#
+# CUDA 12.8 (matches torch==2.7.1+cu128 / torchvision==0.22.1+cu128 / torchaudio==2.7.1+cu128):
+--index-url https://download.pytorch.org/whl/cu128
+torch==2.7.1
+torchvision==0.22.1
+torchaudio==2.7.1
+triton==3.3.1
+--extra-index-url https://pypi.org/simple
+
+# HF stack
+transformers==4.52.4
+tokenizers==0.21.4
+accelerate==0.34.2
+datasets==2.16.0
+safetensors==0.5.3
+sentencepiece==0.1.99
+
+# Utils
+numpy==1.26.4
+pandas==2.3.1
+tqdm==4.64.1

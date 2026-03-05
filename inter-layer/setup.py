@@ -12,13 +12,21 @@ def get_version():
 
 
 def get_requires():
-    with open("requirements.txt", "r", encoding="utf-8") as f:
+    req_path = "requirements.txt"
+    if not os.path.exists(req_path):
+        return []
+    with open(req_path, "r", encoding="utf-8") as f:
         file_content = f.read()
-        lines = [line.strip() for line in file_content.strip().split("\n") if not line.startswith("#")]
+        lines = [line.strip() for line in file_content.strip().split("\n") if line.strip() and not line.startswith("#")]
         return lines
 
 
 def main():
+
+    readme_path = "README.md"
+    long_description = ""
+    if os.path.exists(readme_path):
+        long_description = open(readme_path, "r", encoding="utf-8").read()
 
     setup(
         name="llmtuner",
@@ -26,7 +34,7 @@ def main():
         author="hiyouga",
         author_email="hiyouga" "@" "buaa.edu.cn",
         description="Easy-to-use LLM fine-tuning framework",
-        long_description=open("README.md", "r", encoding="utf-8").read(),
+        long_description=long_description,
         long_description_content_type="text/markdown",
         keywords=["LLaMA", "BLOOM", "Falcon", "LLM", "ChatGPT", "transformer", "pytorch", "deep learning"],
         license="Apache 2.0 License",
