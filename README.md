@@ -62,9 +62,15 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
 <p align="center">
   <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
 </p>
+<p align="center">
+  <em>Figure 1: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
+</p>
 
 <p align="center">
   <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
+</p>
+<p align="center">
+  <em>Figure 2: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
 </p>
 
 ## Repository Structure
