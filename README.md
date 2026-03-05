@@ -35,6 +35,16 @@ This project studies that gap through a representation hierarchy:
 - **Logit space** (`z`): pre-softmax outputs
 - **Probability space** (`p`): post-softmax distributions
 
+Empirically, pruning can perturb these spaces **very differently**: hidden-state similarity may remain high while probability-space similarity (and thus decoding behavior) diverges more substantially—especially as effects accumulate across layers.
+
+<p align="center">
+  <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (Attention)" width="72%">
+</p>
+
+<p align="center">
+  <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="72%">
+</p>
+
 **What You Can Run Here**
 - Inter-layer pruning (layer / block drop)
 - Intra-layer pruning (WANDA / SparseGPT)
