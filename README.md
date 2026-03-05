@@ -29,7 +29,7 @@
   <img src="figs/overview.svg" alt="Overview" width="88%">
 </p>
 <p align="center">
-  <em>Overview: This repo studies pruning through a representation hierarchy (`h → z → p`) and compares dense vs dropped/pruned behaviors.</em>
+  <em>Figure 1: Overview. This repo studies pruning through a representation hierarchy (`h → z → p`) and compares dense vs dropped/pruned behaviors.</em>
 </p>
 
 Pruning often preserves non-generative metrics but hurts autoregressive generation.
@@ -51,7 +51,7 @@ Empirically, pruning can perturb these spaces **very differently**: hidden-state
   </tr>
 </table>
 <p align="center">
-  <em>Representation hierarchy under pruning: layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
+  <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
 
 **What You Can Run Here**
@@ -69,14 +69,14 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
 </p>
 <p align="center">
-  <em>Figure 1: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
+  <em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
 </p>
 
 <p align="center">
   <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
 </p>
 <p align="center">
-  <em>Figure 2: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
+  <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
 </p>
 
 ## Repository Structure
