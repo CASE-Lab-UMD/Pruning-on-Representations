@@ -42,7 +42,7 @@ Empirically, pruning can perturb these spaces **very differently**: hidden-state
 
 **What You Can Run Here**
 - [Inter-layer pruning](inter-layer/) (layer / block drop)
-- [Intra-layer pruning](intra-layer/) (WANDA / SparseGPT)
+- [Intra-layer pruning](intra-layer/) (Wanda / SparseGPT)
 - [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
 
 ## Background
@@ -51,7 +51,35 @@ A recurring **discrepancy** in pruning is that models can look “mostly fine”
 
 This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
-### Results (empirical)
+## Theorems
+
+**Theorem 1 (Local Deviation Induced by Pruning)**
+
+For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
+
+<p align="center">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="50%">
+</p>
+
+**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
+
+To compare probability-space and logit-space deviations on the same footing, we rewrite probability-space deviation in terms of the logit variable $z$ (rather than applying Theorem 1 directly). Using a second-order Taylor expansion (see Appendix C.2), the probability-space cosine similarity admits a tractable approximation.
+
+<p align="center">
+  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="50%">
+</p>
+
+**Theorem 3 (Distributional Shift under Pruning)**
+
+In probability space, KL divergence is a standard measure of distributional shift under pruning. Based on the derivation in Appendix B, the pruning-induced KL can be approximated in a closed form.
+
+<p align="center">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="50%">
+</p>
+
+## Empirical Results
+
+### Distinct Observations Across Representation Spaces
 
 <table align="center">
   <tr>
@@ -66,6 +94,8 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
 <p align="center">
   <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
+
+### Generative vs Non-generative Discrepancy
 
 <p align="center">
   <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
@@ -88,34 +118,7 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
 </p>
 
-
-### Theorems
-
-**Theorem 1 (Local Deviation Induced by Pruning)**
-
-For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
-
-<p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
-</p>
-
-**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
-
-To compare probability-space and logit-space deviations on the same footing, we rewrite probability-space deviation in terms of the logit variable $z$ (rather than applying Theorem 1 directly). Using a second-order Taylor expansion (see Appendix C.2), the probability-space cosine similarity admits a tractable approximation.
-
-<p align="center">
-  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
-</p>
-
-**Theorem 3 (Distributional Shift under Pruning)**
-
-In probability space, KL divergence is a standard measure of distributional shift under pruning. Based on the derivation in Appendix B, the pruning-induced KL can be approximated in a closed form.
-
-<p align="center">
-  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
-</p>
-
-### Additional visualizations
+### Additional Visualizations
 
 <table align="center">
   <tr>
@@ -145,6 +148,8 @@ In probability space, KL divergence is a standard measure of distributional shif
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
 
+### Final-step Comparison
+
 <table align="center">
   <tr>
     <td align="center" width="50%">
@@ -162,7 +167,7 @@ In probability space, KL divergence is a standard measure of distributional shif
 ## Repository Structure
 
 - `inter-layer/`: layer/block dropping pipeline.
-- `intra-layer/`: intra-layer sparsification (WANDA / SparseGPT).
+- `intra-layer/`: intra-layer sparsification (Wanda / SparseGPT).
 - `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
 
 ## Environment
