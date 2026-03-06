@@ -112,10 +112,10 @@ To compare probability-space and logit-space deviations on the same footing, we 
 In probability space, KL divergence is a standard measure of distributional shift under pruning. Based on the derivation in Appendix B, the pruning-induced KL can be approximated in a closed form.
 
 <p align="center">
-  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="20%">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="25%">
 </p>
 
-### Additional Visualizations
+### Experimental Supports and Findings
 
 <table align="center">
   <tr>
@@ -149,7 +149,7 @@ In probability space, KL divergence is a standard measure of distributional shif
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
 
-### Final-step Comparison
+### Pruning-induced Errors Across Auto-regresive Decoding
 
 <table align="center">
   <tr>
