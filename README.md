@@ -43,23 +43,36 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
 - [Intra-layer pruning](intra-layer/) (Wanda / SparseGPT)
 - [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
 
+
+## Environment and Repository Structure
+
+Install from `requirements.txt` (recommended, pinned versions):
+
+```bash
+pip install -r requirements.txt
+```
+
+- `inter-layer/`: layer/block dropping pipeline.
+- `intra-layer/`: intra-layer sparsification (Wanda / SparseGPT).
+- `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
+
+
 ## Empirical Results
 
 ### Generative vs Non-generative Discrepancy
 
-<p align="center">
-  <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
-</p>
-<p align="center">
-  <em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
-</p>
-
-<p align="center">
-  <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
-</p>
-<p align="center">
-  <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
-</p>
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="100%">
+      <div align="center"><em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em></div>
+    </td>
+    <td align="center" width="50%">
+      <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="100%">
+      <div align="center"><em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em></div>
+    </td>
+  </tr>
+</table>
 
 <p align="center">
   <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
@@ -256,54 +269,6 @@ Purpose:
 - Compare dense vs target trajectories across decoding steps.
 - Report cosine/KL and second-order estimates tied to the paper’s Section 6 formulas.
 
-## Repository Structure
-
-- `inter-layer/`: layer/block dropping pipeline.
-- `intra-layer/`: intra-layer sparsification (Wanda / SparseGPT).
-- `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
-
-## Environment
-
-Recommended:
-- Linux + NVIDIA GPU
-- CUDA-compatible PyTorch
-- Python 3.9+
-
-Core dependencies:
-- `torch`
-- `transformers`
-- `accelerate`
-- `datasets`
-- `tqdm`
-
-Install from `requirements.txt` (recommended, pinned versions):
-
-```bash
-pip install -r requirements.txt
-```
-
-Notes:
-- `requirements.txt` is configured for **CUDA 12.8** wheels via PyTorch’s index URL. If you are on CPU-only or a different CUDA version, adjust the PyTorch install accordingly.
-
-Example (editable install for `inter-layer` tools):
-
-```bash
-cd inter-layer
-pip install -e .
-```
-
-## Outputs
-
-Analysis logs are written under `representation-analysis/cosine_logs/` by default, with subfolders per script/mode/temperature.
-
-## Additional Discussion
-
-<p align="center">
-  <img src="figs/pruning_quant.svg" alt="Pruning/quantization effects comparison" width="72%">
-</p>
-<p align="center">
-  <em>Figure 9: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
-</p>
 
 ## Acknowledgements
 
