@@ -66,7 +66,7 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
 </p>
 <p align="center">
-  <em>Figure 5: Example failure case. After pruning, generation degrade qualitatively as decoding-time divergence propagets.</em>
+  <em>Figure 5: After pruning, generation degrade qualitatively as decoding-time divergence propagets.</em>
 </p>
 
 ## Distinct Observations Across Representation Spaces
