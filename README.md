@@ -78,7 +78,7 @@ pip install -r requirements.txt
   <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
 </p>
 <p align="center">
-  <em>Figure 5: After pruning, generation degrade qualitatively as decoding-time divergence propagets.</em>
+  <em>Figure 5: After pruning, generation can degrade qualitatively as decoding-time divergence propagates across steps.</em>
 </p>
 
 ## Distinct Observations Across Representation Spaces
@@ -98,7 +98,7 @@ pip install -r requirements.txt
   </tr>
 </table>
 <p align="center">
-  <em>Figure 2: Representation hierarchies under pruning. Layerwise latent similarity trends differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
+  <em>Figure 2: Representation hierarchy under pruning. Layerwise representation similarity trends differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
 
 ### Layerwise transition analysis
@@ -124,9 +124,9 @@ python transition_layerwise_compare.py \
 Purpose:
 - Compare **attn/mlp sublayer transitions** at the same layer and same context.
 - Log transition metrics in embedding/logit/probability spaces. For example:
-  - **Embedding/hidden space (`h`)**: cosine similarity `cos(h_residual, h_output)`, and the parallel/orthogonal decomposition of `Δh = h_output - h_residual` w.r.t. `h_residual` (relative parallel/orthogonal magnitudes).
-  - **Logit space (`z`)**: cosine similarity `cos(z_residual, z_output)`, plus the parallel/orthogonal decomposition of `Δz = z_output - z_residual` w.r.t. `z_residual`.
-  - **Probability space (`p`)**: cosine similarity `cos(p_residual, p_output)` where `p = softmax(z/T)`, and `KL(p_output || p_residual)` (reported as `REAL_KL` in logs).
+  - **Embedding/hidden space (`h`)**: cosine similarity `cos(h_dense, h_pruned)`, and the parallel/orthogonal decomposition of `Δh = h_pruned - h_dense` w.r.t. `h_dense`.
+  - **Logit space (`z`)**: cosine similarity `cos(z_dense, z_pruned)`, plus the parallel/orthogonal decomposition of `Δz = z_pruned - z_dense` w.r.t. `z_dense`.
+  - **Probability space (`p`)**: cosine similarity `cos(p_dense, p_pruned)` where `p = softmax(z/T)`, and `KL(p_pruned || p_dense)` (reported as `REAL_KL` in logs).
   - **Second-order estimates (paper-aligned)**: `KL_estimate` and `1-cos_estimate` computed from weighted variance terms with the `1/(2T^2)` scaling.
 
 
@@ -234,7 +234,7 @@ Purpose:
   </tr>
 </table>
 <p align="center">
-  <em>Figure 8: Step-wise representation comparison during auto-regressive decoding. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
+  <em>Figure 8: Step-wise representation comparison during autoregressive decoding. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
 </p>
 
 ### Generation-time divergence analysis
