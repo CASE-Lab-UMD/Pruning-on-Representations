@@ -15,7 +15,7 @@
 <p align="center">
   <a href="#repository-structure">📦 Structure</a> •
   <a href="#environment">⚙️ Environment</a> •
-  <a href="#reproducing-results">🔍 Scripts</a> •
+  <a href="#layerwise-transition-analysis">🔍 Scripts</a> •
   <a href="#notes-on-metric-definitions">🧪 Metrics</a>
 </p>
 
@@ -88,9 +88,25 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   <em>Figure 2: Representation hierarchies under pruning. Layerwise latent similarity trends differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
 
-### 1) Layerwise transition analysis
+### Layerwise transition analysis
 
 `representation-analysis/transition_layerwise_compare.py`
+for dropped models
+```bash
+python transition_layerwise_compare.py \
+  --analysis_mode dropped \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
+```
+for pruned models
+```bash
+python transition_layerwise_compare.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
+```
 
 Purpose:
 - Compare **attn/mlp sublayer transitions** at the same layer and same context.
@@ -165,9 +181,29 @@ In probability space, KL divergence is a standard measure of distributional shif
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
 
-### 3) Task subspace analysis (MCQ)
+### Task subspace analysis (MCQ)
 
 `representation-analysis/compare_mcq_subspace_metrics.py`
+
+Run (dropped):
+
+```bash
+python compare_mcq_subspace_metrics.py \
+  --analysis_mode dropped \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
+```
+
+Run (pruned):
+
+```bash
+python compare_mcq_subspace_metrics.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
+```
 
 Purpose:
 - Compare global vocabulary-space behavior vs answer-option subspace behavior.
@@ -192,62 +228,33 @@ Purpose:
   <em>Figure 8: Step-wise representation comparison during auto-regressive decoding. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
 </p>
 
-### 2) Generation-time divergence analysis
+### Generation-time divergence analysis
 
 `representation-analysis/compare_generation_metrics.py`
+
+Run (dropped):
+
+```bash
+python compare_generation_metrics.py \
+  --analysis_mode dropped \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
+  --dropped_root_path /path/to/dropped_results \
+  --target_layer attn \
+  --drop_n 8
+```
+
+Run (pruned):
+
+```bash
+python compare_generation_metrics.py \
+  --analysis_mode pruned \
+  --model_name /path/to/dense_model \
+  --pruned_model_name /path/to/pruned_model
+```
 
 Purpose:
 - Compare dense vs target trajectories across decoding steps.
 - Report cosine/KL and second-order estimates tied to the paper’s Section 6 formulas.
-
-
-## Reproducing Results
-
-Run from `representation-analysis/`.
-
-### Dropped mode
-
-```bash
-python transition_layerwise_compare.py \
-  --analysis_mode dropped \
-  --model_name Qwen/Qwen2.5-7B-Instruct \
-  --dropped_root_path /path/to/dropped_results \
-  --target_layer attn \
-  --drop_n 8
-
-python compare_generation_metrics.py \
-  --analysis_mode dropped \
-  --model_name Qwen/Qwen2.5-7B-Instruct \
-  --dropped_root_path /path/to/dropped_results \
-  --target_layer attn \
-  --drop_n 8
-
-python compare_mcq_subspace_metrics.py \
-  --analysis_mode dropped \
-  --model_name Qwen/Qwen2.5-7B-Instruct \
-  --dropped_root_path /path/to/dropped_results \
-  --target_layer attn \
-  --drop_n 8
-```
-
-### Pruned mode
-
-```bash
-python transition_layerwise_compare.py \
-  --analysis_mode pruned \
-  --model_name /path/to/dense_model \
-  --pruned_model_name /path/to/pruned_model
-
-python compare_generation_metrics.py \
-  --analysis_mode pruned \
-  --model_name /path/to/dense_model \
-  --pruned_model_name /path/to/pruned_model
-
-python compare_mcq_subspace_metrics.py \
-  --analysis_mode pruned \
-  --model_name /path/to/dense_model \
-  --pruned_model_name /path/to/pruned_model
-```
 
 ## Repository Structure
 
@@ -284,46 +291,6 @@ Example (editable install for `inter-layer` tools):
 cd inter-layer
 pip install -e .
 ```
-
-## Notes on Metric Definitions
-
-- Probability-space metrics use `softmax(logits / T)` where `T` is analysis temperature.
-- If generation is greedy (`temperature=0`), analysis falls back to `T=1.0` for stable probability-space comparison.
-- In generation analysis, KL and cosine estimates are logged in the second-order form with `1 / (2T^2)` scaling.
-
-### Key formulas (as implemented)
-
-GitHub does not always render LaTeX in `README.md`. Below we use rendered formula screenshots (via a lightweight LaTeX-to-image service) for consistent display.
-
-1) **Temperature-scaled probabilities**
-
-<p>
-  <img alt="Temperature-scaled probabilities" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20z%3A%20%5Ctext%7Blogits%7D%2C%5C%3B%20T%3E0%3A%20%5Ctext%7Btemperature%7D%2C%5C%3B%20p%3D%5Coperatorname%7Bsoftmax%7D%28z%2FT%29%2C%5C%3B%20%5Clog%20p%3D%5Clog%5Coperatorname%7Bsoftmax%7D%28z%2FT%29" />
-</p>
-
-2) **Cosine similarity**
-
-<p>
-  <img alt="Cosine similarity" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Ccos%28a%2Cb%29%3D%5Cfrac%7Ba%5E%7B%5Ctop%7Db%7D%7B%5ClVert%20a%5CrVert%5C%2C%5ClVert%20b%5CrVert%7D" />
-</p>
-
-3) **KL divergence** (the code logs `REAL_KL` using `KL(p_output || p_residual)`)
-
-<p>
-  <img alt="KL divergence" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Cmathrm%7BKL%7D%28p%5C%2C%5C%7C%5C%2Cq%29%3D%5Csum_i%20p_i%5Cleft%28%5Clog%20p_i-%5Clog%20q_i%5Cright%29" />
-</p>
-
-4) **Second-order KL estimate** (logged as `KL_estimate`)
-
-<p>
-  <img alt="Second-order KL estimate" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5CDelta%3Dz_%7Bresidual%7D-z_%7Boutput%7D%2C%5C%3B%20%5Coperatorname%7BVar%7D_p%28%5CDelta%29%3D%5Csum_i%20p_i%5Cleft%28%5CDelta_i-%5Csum_j%20p_j%5CDelta_j%5Cright%29%5E2%2C%5C%3B%20%5Cmathrm%7BKL%7D%28p_%7Boutput%7D%5C%2C%5C%7C%5C%2C%20p_%7Bresidual%7D%29%5Capprox%5Cfrac%7B%5Coperatorname%7BVar%7D_p%28%5CDelta%29%7D%7B2T%5E2%7D" />
-</p>
-
-5) **Parallel/orthogonal decomposition** (used for `Δh` and `Δz` w.r.t. base `x`)
-
-<p>
-  <img alt="Parallel/orthogonal decomposition" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Calpha%3D%5Cfrac%7B%5Clangle%5CDelta%2Cx%5Crangle%7D%7B%5ClVert%20x%5CrVert%5E2%7D%2C%5C%3B%20%5CDelta_%7B%5Cparallel%7D%3D%5Calpha%20x%2C%5C%3B%20%5CDelta_%7B%5Cperp%7D%3D%5CDelta-%5CDelta_%7B%5Cparallel%7D" />
-</p>
 
 ## Outputs
 
