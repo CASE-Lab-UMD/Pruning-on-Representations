@@ -13,7 +13,6 @@
 </p>
 
 <p align="center">
-  <a href="#background">🧩 Background</a> •
   <a href="#repository-structure">📦 Structure</a> •
   <a href="#environment">⚙️ Environment</a> •
   <a href="#analysis-scripts-paper-aligned">🔍 Scripts</a> •
@@ -33,23 +32,17 @@
 </p>
 
 Pruning often preserves non-generative metrics but hurts autoregressive generation.
-This project studies that gap through a representation hierarchy:
+This repo studies that discrepancy through a representation hierarchy:
 - **Embedding space** (`h`): hidden states
 - **Logit space** (`z`): pre-softmax outputs
 - **Probability space** (`p`): post-softmax distributions
 
-Empirically, pruning can perturb these spaces **very differently**: hidden-state similarity may remain high while probability-space similarity (and thus decoding behavior) diverges more substantially—especially as effects accumulate across layers.
+We provide analysis code for both **inter-layer** dropping (layer/block drop) and **intra-layer** sparsification (Wanda/SparseGPT), and paper-aligned scripts that quantify how pruning perturbs `h → z → p` across layers and decoding steps.
 
 **What You Can Run Here**
 - [Inter-layer pruning](inter-layer/) (layer / block drop)
 - [Intra-layer pruning](intra-layer/) (Wanda / SparseGPT)
 - [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
-
-## Background
-
-A recurring **discrepancy** in pruning is that models can look “mostly fine” on **non-generative** evaluations (e.g., classification-style accuracy, multiple-choice selection, or short-form scoring based on fixed inputs/outputs), yet degrade noticeably on **generative** evaluations (autoregressive decoding where errors compound over steps).
-
-This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
 ## Empirical Results
 
