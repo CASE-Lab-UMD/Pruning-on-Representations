@@ -104,17 +104,17 @@ pip install -r requirements.txt
 ### Layerwise transition analysis
 
 `representation-analysis/transition_layerwise_compare.py`
-for dropped models
+
 ```bash
+# Dropped mode
 python transition_layerwise_compare.py \
   --analysis_mode dropped \
   --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
-```
-for pruned models
-```bash
+
+# Pruned mode
 python transition_layerwise_compare.py \
   --analysis_mode pruned \
   --model_name /path/to/dense_model \
@@ -198,20 +198,16 @@ In probability space, KL divergence is a standard measure of distributional shif
 
 `representation-analysis/compare_mcq_subspace_metrics.py`
 
-Run (dropped):
-
 ```bash
+# Dropped mode
 python compare_mcq_subspace_metrics.py \
   --analysis_mode dropped \
   --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
-```
 
-Run (pruned):
-
-```bash
+# Pruned mode
 python compare_mcq_subspace_metrics.py \
   --analysis_mode pruned \
   --model_name /path/to/dense_model \
@@ -245,20 +241,16 @@ Purpose:
 
 `representation-analysis/compare_generation_metrics.py`
 
-Run (dropped):
-
 ```bash
+# Dropped mode
 python compare_generation_metrics.py \
   --analysis_mode dropped \
   --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
-```
 
-Run (pruned):
-
-```bash
+# Pruned mode
 python compare_generation_metrics.py \
   --analysis_mode pruned \
   --model_name /path/to/dense_model \
