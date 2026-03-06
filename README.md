@@ -79,6 +79,50 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
 </p>
 
+### Additional visualizations
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="figs/cos_attn_l12-temp1.0.svg" alt="Cosine similarity at a representative Attention layer (embedding/logit/probability)" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence at a representative Attention layer (probability space)" width="100%">
+    </td>
+  </tr>
+</table>
+<p align="center">
+  <em>Figure 5: Example layerwise signals. Cosine similarity and KL divergence can show different sensitivity across spaces at the same layer (illustrative Attention layer).</em>
+</p>
+
+<p align="center">
+  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
+</p>
+<p align="center">
+  <em>Figure 6: Generation-time divergence can accumulate across decoding steps, producing qualitatively different outputs.</em>
+</p>
+
+<p align="center">
+  <img src="figs/pruning_quant.svg" alt="Pruning/quantization effects comparison" width="72%">
+</p>
+<p align="center">
+  <em>Figure 7: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="figs/subspace_3.svg" alt="Answer-option subspace robustness under pruning" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="figs/top_tokens_3.svg" alt="Top-token distribution changes under pruning" width="100%">
+    </td>
+  </tr>
+</table>
+<p align="center">
+  <em>Figure 8: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
+</p>
+
 ## Repository Structure
 
 - `inter-layer/`: layer/block dropping pipeline.
@@ -158,24 +202,21 @@ Run from `representation-analysis/`.
 ```bash
 python transition_layerwise_compare.py \
   --analysis_mode dropped \
-  --model_root_path /path/to/model_root \
-  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
 
 python compare_generation_metrics.py \
   --analysis_mode dropped \
-  --model_root_path /path/to/model_root \
-  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
 
 python compare_mcq_subspace_metrics.py \
   --analysis_mode dropped \
-  --model_root_path /path/to/model_root \
-  --model_postfix Qwen/Qwen2.5-7B-Instruct \
+  --model_name Qwen/Qwen2.5-7B-Instruct \
   --dropped_root_path /path/to/dropped_results \
   --target_layer attn \
   --drop_n 8
