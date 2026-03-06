@@ -40,6 +40,39 @@ This project studies that gap through a representation hierarchy:
 
 Empirically, pruning can perturb these spaces **very differently**: hidden-state similarity may remain high while probability-space similarity (and thus decoding behavior) diverges more substantially—especially as effects accumulate across layers.
 
+**What You Can Run Here**
+- [Inter-layer pruning](inter-layer/) (layer / block drop)
+- [Intra-layer pruning](intra-layer/) (WANDA / SparseGPT)
+- [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
+
+## Background
+
+A recurring **discrepancy** in pruning is that models can look “mostly fine” on **non-generative** evaluations (e.g., classification-style accuracy, multiple-choice selection, or short-form scoring based on fixed inputs/outputs), yet degrade noticeably on **generative** evaluations (autoregressive decoding where errors compound over steps).
+
+This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
+
+### Theorems (paper-aligned)
+
+**Theorem 1 (Local Deviation Induced by Pruning)**
+
+<p align="center">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
+</p>
+
+**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
+
+<p align="center">
+  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
+</p>
+
+**Theorem 3 (Distributional Shift under Pruning)**
+
+<p align="center">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
+</p>
+
+### Results (empirical)
+
 <table align="center">
   <tr>
     <td align="center" width="50%">
@@ -53,17 +86,6 @@ Empirically, pruning can perturb these spaces **very differently**: hidden-state
 <p align="center">
   <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
-
-**What You Can Run Here**
-- [Inter-layer pruning](inter-layer/) (layer / block drop)
-- [Intra-layer pruning](intra-layer/) (WANDA / SparseGPT)
-- [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
-
-## Background
-
-A recurring **discrepancy** in pruning is that models can look “mostly fine” on **non-generative** evaluations (e.g., classification-style accuracy, multiple-choice selection, or short-form scoring based on fixed inputs/outputs), yet degrade noticeably on **generative** evaluations (autoregressive decoding where errors compound over steps).
-
-This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
 <p align="center">
   <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
@@ -272,26 +294,6 @@ GitHub does not always render LaTeX in `README.md`. Below we use rendered formul
 
 <p>
   <img alt="Parallel/orthogonal decomposition" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Calpha%3D%5Cfrac%7B%5Clangle%5CDelta%2Cx%5Crangle%7D%7B%5ClVert%20x%5CrVert%5E2%7D%2C%5C%3B%20%5CDelta_%7B%5Cparallel%7D%3D%5Calpha%20x%2C%5C%3B%20%5CDelta_%7B%5Cperp%7D%3D%5CDelta-%5CDelta_%7B%5Cparallel%7D" />
-</p>
-
-### Theorems (paper-aligned)
-
-**Theorem 1 (Local Deviation Induced by Pruning)**
-
-<p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
-</p>
-
-**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
-
-<p align="center">
-  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
-</p>
-
-**Theorem 3 (Distributional Shift under Pruning)**
-
-<p align="center">
-  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
 </p>
 
 ## Outputs
