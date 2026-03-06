@@ -182,11 +182,11 @@ In probability space, KL divergence is a standard measure of distributional shif
   <tr>
     <td align="center" width="50%">
       <img src="figs/top_tokens_3.svg" alt="Top-token distribution changes under pruning" width="100%">
-      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;Top Tokens</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Top Tokens</strong></sub></div>
     </td>
     <td align="center" width="50%">
       <img src="figs/subspace_3.svg" alt="Answer-option subspace robustness under pruning" width="100%">
-      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;Categorical Tokens</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Categorical Tokens</strong></sub></div>
     </td>
   </tr>
 </table>
