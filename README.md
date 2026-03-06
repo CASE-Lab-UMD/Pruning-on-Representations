@@ -15,8 +15,7 @@
 <p align="center">
   <a href="#repository-structure">📦 Structure</a> •
   <a href="#environment">⚙️ Environment</a> •
-  <a href="#analysis-scripts-paper-aligned">🔍 Scripts</a> •
-  <a href="#quick-start">🚀 Quick Start</a> •
+  <a href="#reproducing-results">🔍 Scripts</a> •
   <a href="#notes-on-metric-definitions">🧪 Metrics</a>
 </p>
 
@@ -86,8 +85,21 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   </tr>
 </table>
 <p align="center">
-  <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
+  <em>Figure 2: Representation hierarchies under pruning. Layerwise latent similarity trends differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
+
+### 1) Layerwise transition analysis
+
+`representation-analysis/transition_layerwise_compare.py`
+
+Purpose:
+- Compare **attn/mlp sublayer transitions** at the same layer and same context.
+- Log transition metrics in embedding/logit/probability spaces. For example:
+  - **Embedding/hidden space (`h`)**: cosine similarity `cos(h_residual, h_output)`, and the parallel/orthogonal decomposition of `Δh = h_output - h_residual` w.r.t. `h_residual` (relative parallel/orthogonal magnitudes).
+  - **Logit space (`z`)**: cosine similarity `cos(z_residual, z_output)`, plus the parallel/orthogonal decomposition of `Δz = z_output - z_residual` w.r.t. `z_residual`.
+  - **Probability space (`p`)**: cosine similarity `cos(p_residual, p_output)` where `p = softmax(z/T)`, and `KL(p_output || p_residual)` (reported as `REAL_KL` in logs).
+  - **Second-order estimates (paper-aligned)**: `KL_estimate` and `1-cos_estimate` computed from weighted variance terms with the `1/(2T^2)` scaling.
+
 
 ## Theoretical Theorems
 
@@ -96,7 +108,7 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
 For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
 
 <p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="40%">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="35%">
 </p>
 
 **Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
@@ -140,11 +152,11 @@ In probability space, KL divergence is a standard measure of distributional shif
 <table align="center">
   <tr>
     <td align="center" width="50%">
-      <img src="figs/subspace_3.svg" alt="Answer-option subspace robustness under pruning" width="100%">
+      <img src="figs/top_tokens_3.svg" alt="Top-token distribution changes under pruning" width="100%">
       <div align="center"><sub><strong>Top Tokens</strong></sub></div>
     </td>
     <td align="center" width="50%">
-      <img src="figs/top_tokens_3.svg" alt="Top-token distribution changes under pruning" width="100%">
+      <img src="figs/subspace_3.svg" alt="Answer-option subspace robustness under pruning" width="100%">
       <div align="center"><sub><strong>Categorical Tokens</strong></sub></div>
     </td>
   </tr>
@@ -152,6 +164,15 @@ In probability space, KL divergence is a standard measure of distributional shif
 <p align="center">
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
+
+### 3) Task subspace analysis (MCQ)
+
+`representation-analysis/compare_mcq_subspace_metrics.py`
+
+Purpose:
+- Compare global vocabulary-space behavior vs answer-option subspace behavior.
+- Mirrors the non-generative subspace robustness discussion in the paper.
+
 
 ### Pruning-Induced Errors During Autoregressive Decoding
 
@@ -168,62 +189,8 @@ In probability space, KL divergence is a standard measure of distributional shif
   </tr>
 </table>
 <p align="center">
-  <em>Figure 8: Final-step comparison across spaces. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
+  <em>Figure 8: Step-wise representation comparison during auto-regressive decoding. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
 </p>
-
-## Repository Structure
-
-- `inter-layer/`: layer/block dropping pipeline.
-- `intra-layer/`: intra-layer sparsification (Wanda / SparseGPT).
-- `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
-
-## Environment
-
-Recommended:
-- Linux + NVIDIA GPU
-- CUDA-compatible PyTorch
-- Python 3.9+
-
-Core dependencies:
-- `torch`
-- `transformers`
-- `accelerate`
-- `datasets`
-- `tqdm`
-
-Install from `requirements.txt` (recommended, pinned versions):
-
-```bash
-pip install -r requirements.txt
-```
-
-Notes:
-- `requirements.txt` is configured for **CUDA 12.8** wheels via PyTorch’s index URL. If you are on CPU-only or a different CUDA version, adjust the PyTorch install accordingly.
-
-Example (editable install for `inter-layer` tools):
-
-```bash
-cd inter-layer
-pip install -e .
-```
-
-## Analysis Scripts
-
-All three scripts support:
-- `--analysis_mode dropped` (dense vs dropped behavior in one model via drop masks)
-- `--analysis_mode pruned` (dense model vs separately loaded pruned model)
-
-### 1) Layerwise transition analysis
-
-`representation-analysis/transition_layerwise_compare.py`
-
-Purpose:
-- Compare **attn/mlp sublayer transitions** at the same layer and same context.
-- Log transition metrics in embedding/logit/probability spaces. For example:
-  - **Embedding/hidden space (`h`)**: cosine similarity `cos(h_residual, h_output)`, and the parallel/orthogonal decomposition of `Δh = h_output - h_residual` w.r.t. `h_residual` (relative parallel/orthogonal magnitudes).
-  - **Logit space (`z`)**: cosine similarity `cos(z_residual, z_output)`, plus the parallel/orthogonal decomposition of `Δz = z_output - z_residual` w.r.t. `z_residual`.
-  - **Probability space (`p`)**: cosine similarity `cos(p_residual, p_output)` where `p = softmax(z/T)`, and `KL(p_output || p_residual)` (reported as `REAL_KL` in logs).
-  - **Second-order estimates (paper-aligned)**: `KL_estimate` and `1-cos_estimate` computed from weighted variance terms with the `1/(2T^2)` scaling.
 
 ### 2) Generation-time divergence analysis
 
@@ -233,15 +200,8 @@ Purpose:
 - Compare dense vs target trajectories across decoding steps.
 - Report cosine/KL and second-order estimates tied to the paper’s Section 6 formulas.
 
-### 3) Task subspace analysis (MCQ)
 
-`representation-analysis/compare_mcq_subspace_metrics.py`
-
-Purpose:
-- Compare global vocabulary-space behavior vs answer-option subspace behavior.
-- Mirrors the non-generative subspace robustness discussion in the paper.
-
-## Quick Start
+## Reproducing Results
 
 Run from `representation-analysis/`.
 
@@ -287,6 +247,42 @@ python compare_mcq_subspace_metrics.py \
   --analysis_mode pruned \
   --model_name /path/to/dense_model \
   --pruned_model_name /path/to/pruned_model
+```
+
+## Repository Structure
+
+- `inter-layer/`: layer/block dropping pipeline.
+- `intra-layer/`: intra-layer sparsification (Wanda / SparseGPT).
+- `representation-analysis/`: paper-aligned analysis scripts for representation hierarchy.
+
+## Environment
+
+Recommended:
+- Linux + NVIDIA GPU
+- CUDA-compatible PyTorch
+- Python 3.9+
+
+Core dependencies:
+- `torch`
+- `transformers`
+- `accelerate`
+- `datasets`
+- `tqdm`
+
+Install from `requirements.txt` (recommended, pinned versions):
+
+```bash
+pip install -r requirements.txt
+```
+
+Notes:
+- `requirements.txt` is configured for **CUDA 12.8** wheels via PyTorch’s index URL. If you are on CPU-only or a different CUDA version, adjust the PyTorch install accordingly.
+
+Example (editable install for `inter-layer` tools):
+
+```bash
+cd inter-layer
+pip install -e .
 ```
 
 ## Notes on Metric Definitions
