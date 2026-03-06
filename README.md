@@ -55,9 +55,9 @@ Empirically, pruning can perturb these spaces **very differently**: hidden-state
 </p>
 
 **What You Can Run Here**
-- Inter-layer pruning (layer / block drop)
-- Intra-layer pruning (WANDA / SparseGPT)
-- Representation-level analysis in `dropped` and `pruned` modes
+- [Inter-layer pruning](inter-layer/) (layer / block drop)
+- [Intra-layer pruning](intra-layer/) (WANDA / SparseGPT)
+- [Representation-level analysis](representation-analysis/) in `dropped` and `pruned` modes
 
 ## Background
 
@@ -79,6 +79,13 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
 </p>
 
+<p align="center">
+  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
+</p>
+<p align="center">
+  <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
+</p>
+
 ### Additional visualizations
 
 <table align="center">
@@ -92,21 +99,7 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   </tr>
 </table>
 <p align="center">
-  <em>Figure 5: Example layerwise signals. Cosine similarity and KL divergence can show different sensitivity across spaces at the same layer (illustrative Attention layer).</em>
-</p>
-
-<p align="center">
-  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
-</p>
-<p align="center">
-  <em>Figure 6: Generation-time divergence can accumulate across decoding steps, producing qualitatively different outputs.</em>
-</p>
-
-<p align="center">
-  <img src="figs/pruning_quant.svg" alt="Pruning/quantization effects comparison" width="72%">
-</p>
-<p align="center">
-  <em>Figure 7: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
+  <em>Figure 6: Example layerwise signals. Cosine similarity and KL divergence can show different sensitivity across spaces at the same layer (illustrative Attention layer).</em>
 </p>
 
 <table align="center">
@@ -120,7 +113,7 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   </tr>
 </table>
 <p align="center">
-  <em>Figure 8: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
+  <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
 
 ## Repository Structure
@@ -249,47 +242,70 @@ python compare_mcq_subspace_metrics.py \
 
 ### Key formulas (as implemented)
 
-GitHub does not always render LaTeX in `README.md`. To keep this section readable everywhere, we provide the formulas in a clean LaTeX block format below.
+GitHub does not always render LaTeX in `README.md`. Below we use rendered formula screenshots (via a lightweight LaTeX-to-image service) for consistent display.
 
 1) **Temperature-scaled probabilities**
 
-```tex
-z: logits, T > 0: temperature
-p = softmax(z / T)
-log p = log_softmax(z / T)
-```
+<p>
+  <img alt="Temperature-scaled probabilities" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20z%3A%20%5Ctext%7Blogits%7D%2C%5C%3B%20T%3E0%3A%20%5Ctext%7Btemperature%7D%2C%5C%3B%20p%3D%5Coperatorname%7Bsoftmax%7D%28z%2FT%29%2C%5C%3B%20%5Clog%20p%3D%5Clog%5Coperatorname%7Bsoftmax%7D%28z%2FT%29" />
+</p>
 
 2) **Cosine similarity**
 
-```tex
-cos(a, b) = (a^T b) / (||a|| ||b||)
-```
+<p>
+  <img alt="Cosine similarity" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Ccos%28a%2Cb%29%3D%5Cfrac%7Ba%5E%7B%5Ctop%7Db%7D%7B%5ClVert%20a%5CrVert%5C%2C%5ClVert%20b%5CrVert%7D" />
+</p>
 
 3) **KL divergence** (the code logs `REAL_KL` using `KL(p_output || p_residual)`)
 
-```tex
-KL(p || q) = \sum_i p_i (log p_i - log q_i)
-```
+<p>
+  <img alt="KL divergence" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Cmathrm%7BKL%7D%28p%5C%2C%5C%7C%5C%2Cq%29%3D%5Csum_i%20p_i%5Cleft%28%5Clog%20p_i-%5Clog%20q_i%5Cright%29" />
+</p>
 
 4) **Second-order KL estimate** (logged as `KL_estimate`)
 
-```tex
-\Delta = z_residual - z_output
-Var_p(\Delta) = \sum_i p_i (\Delta_i - \sum_j p_j \Delta_j)^2
-KL(p_output || p_residual) \approx Var_p(\Delta) / (2 T^2)
-```
+<p>
+  <img alt="Second-order KL estimate" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5CDelta%3Dz_%7Bresidual%7D-z_%7Boutput%7D%2C%5C%3B%20%5Coperatorname%7BVar%7D_p%28%5CDelta%29%3D%5Csum_i%20p_i%5Cleft%28%5CDelta_i-%5Csum_j%20p_j%5CDelta_j%5Cright%29%5E2%2C%5C%3B%20%5Cmathrm%7BKL%7D%28p_%7Boutput%7D%5C%2C%5C%7C%5C%2C%20p_%7Bresidual%7D%29%5Capprox%5Cfrac%7B%5Coperatorname%7BVar%7D_p%28%5CDelta%29%7D%7B2T%5E2%7D" />
+</p>
 
 5) **Parallel/orthogonal decomposition** (used for `Δh` and `Δz` w.r.t. base `x`)
 
-```tex
-\alpha = <\Delta, x> / ||x||^2
-\Delta_parallel = \alpha x
-\Delta_perp = \Delta - \Delta_parallel
-```
+<p>
+  <img alt="Parallel/orthogonal decomposition" src="https://latex.codecogs.com/png.image?%5Cdpi%7B140%7D%20%5Calpha%3D%5Cfrac%7B%5Clangle%5CDelta%2Cx%5Crangle%7D%7B%5ClVert%20x%5CrVert%5E2%7D%2C%5C%3B%20%5CDelta_%7B%5Cparallel%7D%3D%5Calpha%20x%2C%5C%3B%20%5CDelta_%7B%5Cperp%7D%3D%5CDelta-%5CDelta_%7B%5Cparallel%7D" />
+</p>
+
+### Theorems (paper-aligned)
+
+**Theorem 1 (Local Deviation Induced by Pruning)**
+
+<p align="center">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
+</p>
+
+**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
+
+<p align="center">
+  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
+</p>
+
+**Theorem 3 (Distributional Shift under Pruning)**
+
+<p align="center">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
+</p>
 
 ## Outputs
 
 Analysis logs are written under `representation-analysis/cosine_logs/` by default, with subfolders per script/mode/temperature.
+
+## Additional Discussion
+
+<p align="center">
+  <img src="figs/pruning_quant.svg" alt="Pruning/quantization effects comparison" width="72%">
+</p>
+<p align="center">
+  <em>Figure 8: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
+</p>
 
 ## Acknowledgements
 
