@@ -93,7 +93,7 @@ pip install -r requirements.txt
     <td align="center" width="50%">
       <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="100%">
       <br/>
-      <sub><strong>MLP</strong></sub>
+      <sub><strong>&nbsp; MLP</strong></sub>
     </td>
   </tr>
 </table>
