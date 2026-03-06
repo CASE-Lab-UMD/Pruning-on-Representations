@@ -96,7 +96,7 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
 For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
 
 <p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="50%">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="30%">
 </p>
 
 **Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
@@ -112,7 +112,7 @@ To compare probability-space and logit-space deviations on the same footing, we 
 In probability space, KL divergence is a standard measure of distributional shift under pruning. Based on the derivation in Appendix B, the pruning-induced KL can be approximated in a closed form.
 
 <p align="center">
-  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="50%">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="30%">
 </p>
 
 ### Additional Visualizations
@@ -121,9 +121,13 @@ In probability space, KL divergence is a standard measure of distributional shif
   <tr>
     <td align="center" width="50%">
       <img src="figs/cos_attn_l12-temp1.0.svg" alt="Cosine similarity at a representative Attention layer (embedding/logit/probability)" width="100%">
+      <br/>
+      <sub><strong>Angular Deviation</strong></sub>
     </td>
     <td align="center" width="50%">
       <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence at a representative Attention layer (probability space)" width="100%">
+      <br/>
+      <sub><strong>KL Divergence</strong></sub>
     </td>
   </tr>
 </table>
@@ -135,9 +139,13 @@ In probability space, KL divergence is a standard measure of distributional shif
   <tr>
     <td align="center" width="50%">
       <img src="figs/subspace_3.svg" alt="Answer-option subspace robustness under pruning" width="100%">
+      <br/>
+      <sub><strong>Top Tokens</strong></sub>
     </td>
     <td align="center" width="50%">
       <img src="figs/top_tokens_3.svg" alt="Top-token distribution changes under pruning" width="100%">
+      <br/>
+      <sub><strong>Categorical Tokens</strong></sub>
     </td>
   </tr>
 </table>
@@ -151,9 +159,13 @@ In probability space, KL divergence is a standard measure of distributional shif
   <tr>
     <td align="center" width="50%">
       <img src="figs/final_emb_logit.svg" alt="Final-step similarity in embedding/logit spaces" width="100%">
+      <br/>
+      <sub><strong>Embedding and Logits</strong></sub>
     </td>
     <td align="center" width="50%">
       <img src="figs/final_vocab.svg" alt="Final-step similarity in probability/vocabulary space" width="100%">
+      <br/>
+      <sub><strong>Probabiltiy Space</strong></sub>
     </td>
   </tr>
 </table>
