@@ -51,26 +51,6 @@ A recurring **discrepancy** in pruning is that models can look “mostly fine”
 
 This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
-### Theorems (paper-aligned)
-
-**Theorem 1 (Local Deviation Induced by Pruning)**
-
-<p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
-</p>
-
-**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
-
-<p align="center">
-  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
-</p>
-
-**Theorem 3 (Distributional Shift under Pruning)**
-
-<p align="center">
-  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
-</p>
-
 ### Results (empirical)
 
 <table align="center">
@@ -108,6 +88,33 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
   <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
 </p>
 
+
+### Theorems
+
+**Theorem 1 (Local Deviation Induced by Pruning)**
+
+For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
+
+<p align="center">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="72%">
+</p>
+
+**Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
+
+To compare probability-space and logit-space deviations on the same footing, we rewrite probability-space deviation in terms of the logit variable $z$ (rather than applying Theorem 1 directly). Using a second-order Taylor expansion (see Appendix C.2), the probability-space cosine similarity admits a tractable approximation.
+
+<p align="center">
+  <img src="figs/1-cos-probs.png" alt="Theorem 2: Sensitivity of probability space to logit perturbations (1-cos fit)" width="72%">
+</p>
+
+**Theorem 3 (Distributional Shift under Pruning)**
+
+In probability space, KL divergence is a standard measure of distributional shift under pruning. Based on the derivation in Appendix B, the pruning-induced KL can be approximated in a closed form.
+
+<p align="center">
+  <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="72%">
+</p>
+
 ### Additional visualizations
 
 <table align="center">
@@ -136,6 +143,20 @@ This repo is built to diagnose that gap by measuring how pruning perturbs repres
 </table>
 <p align="center">
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="figs/final_emb_logit.svg" alt="Final-step similarity in embedding/logit spaces" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="figs/final_vocab.svg" alt="Final-step similarity in probability/vocabulary space" width="100%">
+    </td>
+  </tr>
+</table>
+<p align="center">
+  <em>Figure 8: Final-step comparison across spaces. Embedding/logit similarity can remain high while probability-space similarity (vocabulary distribution) shows larger deviation.</em>
 </p>
 
 ## Repository Structure
@@ -306,7 +327,7 @@ Analysis logs are written under `representation-analysis/cosine_logs/` by defaul
   <img src="figs/pruning_quant.svg" alt="Pruning/quantization effects comparison" width="72%">
 </p>
 <p align="center">
-  <em>Figure 8: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
+  <em>Figure 9: Pruning vs quantization (illustrative). Different compression operators can shift where the discrepancy appears across the hierarchy.</em>
 </p>
 
 ## Acknowledgements
