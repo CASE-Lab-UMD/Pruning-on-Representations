@@ -26,9 +26,7 @@ def log_subword_probs(prob_orig, prob_drop, sub_token_ids, tokenizer):
 
 
 def generate_text_with_probabilities(prompts=None, input_ids=None,
-                                     max_length=512, temperature=0.0,
-                                     top_k=50, top_p=0.9, use_cache=False):
-    del max_length, top_k, top_p
+                                     temperature=0.0, use_cache=False):
     return forward_last_token(
         model=model_obj,
         tokenizer=tokenizer_obj,
@@ -76,17 +74,13 @@ def get_top_tokens(prob_tensor, tokenizer, top_k=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run text generation with different hyperparameters.")
     parser.add_argument("--analysis_mode", type=str, default="dropped", choices=["dropped", "pruned"])
-    parser.add_argument("--model_root_path", type=str, default="your_model_root_path")
-    parser.add_argument("--model_postfix", type=str, default="Qwen/Qwen2.5-7B-Instruct")
-    parser.add_argument("--model_name", type=str, default=None, help="Dense model path. Overrides model_root_path/model_postfix if set.")
+    parser.add_argument("--model_name", type=str, required=True, help="Dense model name/path (HF id or local path).")
+    parser.add_argument("--model_tag", type=str, default=None, help="Tag used to locate dropped checkpoints under dropped_root_path (defaults to a sanitized model_name).")
     parser.add_argument("--pruned_model_name", type=str, default=None, help="Pruned model path when analysis_mode=pruned.")
     parser.add_argument("--dropped_root_path", type=str, default="you_dropped_root_path")
-    parser.add_argument("--max_length", type=int, default=512)
     parser.add_argument("--temperature", type=float, default=0.5)
     parser.add_argument("--drop_n", type=int, default=8)
     parser.add_argument("--target_layer", type=str, default="attn")
-    parser.add_argument("--top_k", type=int, default=0, help="Top-k sampling.")
-    parser.add_argument("--top_p", type=float, default=1.0, help="Top-p (nucleus) sampling.")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("--mode", type=str, default="default", help="# FIX: mode tag used in log filename")
 
@@ -103,7 +97,8 @@ if __name__ == "__main__":
     with open(log_path, "w", encoding="utf-8") as f:
         f.write("=== Drop Experiment Log ===\n")
 
-    model_name = args.model_name if args.model_name else f"{args.model_root_path}/{args.model_postfix}"
+    model_name = args.model_name
+    model_tag = args.model_tag or args.model_name
     dropped_root_path = args.dropped_root_path
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -147,10 +142,7 @@ if __name__ == "__main__":
         device_obj = device
         output, probabilities, _, hidden_states, logits = generate_text_with_probabilities(
             prompts=[prompt],
-            max_length=args.max_length,
             temperature=args.temperature,
-            top_k=args.top_k,
-            top_p=args.top_p,
             use_cache=True, 
         )
 
@@ -159,9 +151,9 @@ if __name__ == "__main__":
 
         if args.analysis_mode == "dropped" and args.drop_n > 0:
             if args.target_layer in ["attn", "mlp"]:
-                dropped_model_path = f"{dropped_root_path}/{args.model_postfix}-layer_drop_{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
+                dropped_model_path = f"{dropped_root_path}/{model_tag}-layer_drop_{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
             else:
-                dropped_model_path = f"{dropped_root_path}/block_drop/{args.model_postfix}-block_drop-{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
+                dropped_model_path = f"{dropped_root_path}/block_drop/{model_tag}-block_drop-{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
 
             with open(os.path.join(dropped_model_path, "config.json"), "r") as f:
                 config = json.load(f)
@@ -185,10 +177,7 @@ if __name__ == "__main__":
             device_obj = device
             output_dropped, probabilities_dropped, _, hidden_states_dropped, logits_dropped = generate_text_with_probabilities(
                 prompts=[prompt],
-                max_length=args.max_length,
                 temperature=args.temperature,
-                top_k=args.top_k,
-                top_p=args.top_p,
                 use_cache=True
             )
 
@@ -199,10 +188,7 @@ if __name__ == "__main__":
             device_obj = device
             output_dropped, probabilities_dropped, _, hidden_states_dropped, logits_dropped = generate_text_with_probabilities(
                 prompts=[prompt],
-                max_length=args.max_length,
                 temperature=args.temperature,
-                top_k=args.top_k,
-                top_p=args.top_p,
                 use_cache=True
             )
             write_log("compare_mode: pruned")

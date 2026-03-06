@@ -190,9 +190,8 @@ def log_sublayer_metrics(model_obj, sublayer_traces, prompt_idx, temperature, to
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run text generation with different hyperparameters.")
     parser.add_argument("--analysis_mode", type=str, default="dropped", choices=["dropped", "pruned"])
-    parser.add_argument("--model_root_path", type=str, default="your_model_root_path")
-    parser.add_argument("--model_postfix", type=str, default="Qwen/Qwen2.5-7B-Instruct")
-    parser.add_argument("--model_name", type=str, default=None, help="Dense model path. If set, overrides model_root_path/model_postfix.")
+    parser.add_argument("--model_name", type=str, required=True, help="Dense model name/path (HF id or local path).")
+    parser.add_argument("--model_tag", type=str, default=None, help="Tag used to locate dropped checkpoints under dropped_root_path (defaults to a sanitized model_name).")
     parser.add_argument("--pruned_model_name", type=str, default=None, help="Pruned model path when analysis_mode=pruned.")
     parser.add_argument("--dropped_root_path", type=str, default="you_dropped_root_path")
     parser.add_argument("--target_layer", type=str, default="attn", choices=["attn", "mlp", "all"])
@@ -218,7 +217,8 @@ if __name__ == "__main__":
     with open(log_path, "w", encoding="utf-8") as f:
         f.write(f"=== Layerwise Sublayer Metrics Log ({args.analysis_mode}) ===\n")
 
-    model_name = args.model_name if args.model_name else f"{args.model_root_path}/{args.model_postfix}"
+    model_tag = args.model_tag or args.model_name
+    model_name = args.model_name
 
     max_length = args.max_length
     temperature = args.temperature
@@ -292,11 +292,11 @@ if __name__ == "__main__":
         if args.drop_n > 0:
             if args.target_layer in ["attn", "mlp"]:
                 dropped_model_path = (
-                    f"{args.dropped_root_path}/{args.model_postfix}-layer_drop_{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
+                    f"{args.dropped_root_path}/{model_tag}-layer_drop_{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
                 )
             else:
                 dropped_model_path = (
-                    f"{args.dropped_root_path}/block_drop/{args.model_postfix}-block_drop-{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
+                    f"{args.dropped_root_path}/block_drop/{model_tag}-block_drop-{args.target_layer}-discrete-drop{args.drop_n}/checkpoint"
                 )
             with open(os.path.join(dropped_model_path, "config.json"), "r") as f:
                 config = json.load(f)
