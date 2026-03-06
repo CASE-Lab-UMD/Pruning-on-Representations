@@ -51,7 +51,48 @@ A recurring **discrepancy** in pruning is that models can look “mostly fine”
 
 This repo is built to diagnose that gap by measuring how pruning perturbs representations across a hierarchy (`h → z → p`) and how those perturbations translate into decoding-time divergence.
 
-## Theorems
+## Empirical Results
+
+### Generative vs Non-generative Discrepancy
+
+<p align="center">
+  <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
+</p>
+<p align="center">
+  <em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
+</p>
+
+<p align="center">
+  <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
+</p>
+<p align="center">
+  <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
+</p>
+
+<p align="center">
+  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
+</p>
+<p align="center">
+  <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
+</p>
+
+## Distinct Observations Across Representation Spaces
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (Attention)" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="100%">
+    </td>
+  </tr>
+</table>
+<p align="center">
+  <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
+</p>
+
+## Theoritical Theorems
 
 **Theorem 1 (Local Deviation Induced by Pruning)**
 
@@ -75,47 +116,6 @@ In probability space, KL divergence is a standard measure of distributional shif
 
 <p align="center">
   <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="50%">
-</p>
-
-## Empirical Results
-
-### Distinct Observations Across Representation Spaces
-
-<table align="center">
-  <tr>
-    <td align="center" width="50%">
-      <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (Attention)" width="100%">
-    </td>
-    <td align="center" width="50%">
-      <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="100%">
-    </td>
-  </tr>
-</table>
-<p align="center">
-  <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
-</p>
-
-### Generative vs Non-generative Discrepancy
-
-<p align="center">
-  <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics are often stable after pruning" width="72%">
-</p>
-<p align="center">
-  <em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em>
-</p>
-
-<p align="center">
-  <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="72%">
-</p>
-<p align="center">
-  <em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em>
-</p>
-
-<p align="center">
-  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
-</p>
-<p align="center">
-  <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
 </p>
 
 ### Additional Visualizations
