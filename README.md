@@ -75,9 +75,13 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   <tr>
     <td align="center" width="50%">
       <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (Attention)" width="100%">
+      <br/>
+      <sub><strong>Attention</strong></sub>
     </td>
     <td align="center" width="50%">
       <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="100%">
+      <br/>
+      <sub><strong>MLP</strong></sub>
     </td>
   </tr>
 </table>
