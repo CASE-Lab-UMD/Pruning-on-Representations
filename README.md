@@ -164,11 +164,11 @@ In probability space, KL divergence is a standard measure of distributional shif
   <tr>
     <td align="center" width="50%">
       <img src="figs/cos_attn_l12-temp1.0.svg" alt="Cosine similarity at a representative Attention layer (embedding/logit/probability)" width="100%">
-      <div align="center"><sub><strong>Angular Deviation</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;Angular Deviation</strong></sub></div>
     </td>
     <td align="center" width="50%">
       <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence at a representative Attention layer (probability space)" width="100%">
-      <div align="center"><sub><strong>KL Divergence</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;KL Divergence</strong></sub></div>
     </td>
   </tr>
 </table>
