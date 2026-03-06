@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  Shuai He<sup>1</sup>, Guoheng Sun<sup>1</sup>, Haichao Zhang<sup>2</sup>, Yun Fu<sup>2</sup>, Ang Li<sup>1</sup><br/>
+  <a href="https://shwai-he.github.io">Shuai He</a><sup>1</sup>, <a href="https://s1ghhh.github.io">Guoheng Sun</a><sup>1</sup>, <a href="https://www.zhanghaichao.xyz">Haichao Zhang</a><sup>2</sup>, <a href="https://www1.ece.neu.edu/~yunfu">Yun Fu</a><sup>2</sup>, <a href="https://www.ang-li.com">Ang Li</a><sup>1</sup><br/>
   <sup>1</sup>University of Maryland, College Park, <sup>2</sup>Northeastern University
 </p>
 
