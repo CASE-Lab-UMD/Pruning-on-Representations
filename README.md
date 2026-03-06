@@ -225,11 +225,11 @@ Purpose:
   <tr>
     <td align="center" width="50%">
       <img src="figs/final_emb_logit.svg" alt="Final-step similarity in embedding/logit spaces" width="100%">
-      <div align="center"><sub><strong>Embedding and Logits</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;Embedding and Logits</strong></sub></div>
     </td>
     <td align="center" width="50%">
       <img src="figs/final_vocab.svg" alt="Final-step similarity in probability/vocabulary space" width="100%">
-      <div align="center"><sub><strong>Probability Space</strong></sub></div>
+      <div align="center"><sub><strong>&nbsp;&nbsp;&nbsp;&nbsp;Probability Space</strong></sub></div>
     </td>
   </tr>
 </table>
