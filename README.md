@@ -88,12 +88,12 @@ pip install -r requirements.txt
     <td align="center" width="50%">
       <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (Attention)" width="100%">
       <br/>
-      <sub><strong>Attention</strong></sub>
+      <sub><strong>&nbsp; &nbsp; Attention</strong></sub>
     </td>
     <td align="center" width="50%">
       <img src="figs/pruning_hierarchies_mlp.svg" alt="Layerwise cosine similarity under pruning across embedding/logit/probability spaces (MLP)" width="100%">
       <br/>
-      <sub><strong>&nbsp; MLP</strong></sub>
+      <sub><strong>&nbsp; &nbsp; MLP</strong></sub>
     </td>
   </tr>
 </table>
