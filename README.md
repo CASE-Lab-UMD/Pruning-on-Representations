@@ -66,7 +66,7 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
 </p>
 <p align="center">
-  <em>Figure 5: Example failure case. After pruning, generation can degrade qualitatively as decoding-time divergence accumulates.</em>
+  <em>Figure 5: Example failure case. After pruning, generation degrade qualitatively as decoding-time divergence propagets.</em>
 </p>
 
 ## Distinct Observations Across Representation Spaces
@@ -89,7 +89,7 @@ We provide analysis code for both **inter-layer** dropping (layer/block drop) an
   <em>Figure 2: Representation hierarchy under pruning. Layerwise cosine similarity trends can differ across embedding/logit/probability spaces (left: Attention, right: MLP).</em>
 </p>
 
-## Theoritical Theorems
+## Theoretical Theorems
 
 **Theorem 1 (Local Deviation Induced by Pruning)**
 
@@ -115,7 +115,9 @@ In probability space, KL divergence is a standard measure of distributional shif
   <img src="figs/kl-probs.png" alt="Theorem 3: Distributional shift under pruning (KL fit)" width="25%">
 </p>
 
-### Experimental Supports and Findings
+## Empirical Support and Key Findings
+
+### Matching Theorems to Observations
 
 <table align="center">
   <tr>
@@ -133,6 +135,8 @@ In probability space, KL divergence is a standard measure of distributional shif
   <em>Figure 6: Example layerwise signals. Cosine similarity and KL divergence can show different sensitivity across spaces at the same layer (illustrative Attention layer).</em>
 </p>
 
+### Top Tokens vs. Option Subspaces
+
 <table align="center">
   <tr>
     <td align="center" width="50%">
@@ -149,7 +153,7 @@ In probability space, KL divergence is a standard measure of distributional shif
   <em>Figure 7: Subspace vs global behavior. Comparing answer-option subspaces with full-vocabulary behavior reveals why some non-generative scores remain stable.</em>
 </p>
 
-### Pruning-induced Errors Across Auto-regresive Decoding
+### Pruning-Induced Errors During Autoregressive Decoding
 
 <table align="center">
   <tr>
@@ -159,7 +163,7 @@ In probability space, KL divergence is a standard measure of distributional shif
     </td>
     <td align="center" width="50%">
       <img src="figs/final_vocab.svg" alt="Final-step similarity in probability/vocabulary space" width="100%">
-      <div align="center"><sub><strong>Probabiltiy Space</strong></sub></div>
+      <div align="center"><sub><strong>Probability Space</strong></sub></div>
     </td>
   </tr>
 </table>
