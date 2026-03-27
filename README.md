@@ -13,6 +13,7 @@
 </p>
 
 <p align="center">
+  <a href="https://arxiv.org/abs/2603.24652">📄 Paper</a> •
   <a href="#repository-structure">📦 Structure</a> •
   <a href="#environment">⚙️ Environment</a> •
   <a href="#layerwise-transition-analysis">🔍 Scripts</a> •
@@ -269,4 +270,22 @@ Purpose:
 
 ## Citation
 
-If this repository helps your research, please cite the corresponding paper.
+If this repository helps your research, please cite the corresponding paper:
+
+**BibTeX:**
+
+```bibtex
+@misc{he2026demystifyingpruningworksrepresentation,
+      title={Demystifying When Pruning Works via Representation Hierarchies}, 
+      author={Shwai He and Guoheng Sun and Haichao Zhang and Yun Fu and Ang Li},
+      year={2026},
+      eprint={2603.24652},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2603.24652}, 
+}
+```
+
+## 📬 Contact
+
+- Shwai He: `shwaihe@umd.edu`
