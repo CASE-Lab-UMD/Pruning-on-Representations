@@ -14,10 +14,10 @@
 
 <p align="center">
   <a href="https://arxiv.org/abs/2603.24652">📄 Paper</a> •
-  <a href="#repository-structure">📦 Structure</a> •
-  <a href="#environment">⚙️ Environment</a> •
+  <a href="#environment-and-repository-structure">📦 Structure</a> •
+  <a href="#environment-and-repository-structure">⚙️ Environment</a> •
   <a href="#layerwise-transition-analysis">🔍 Scripts</a> •
-  <a href="#notes-on-metric-definitions">🧪 Metrics</a>
+  <a href="#empirical-results">🧪 Metrics</a>
 </p>
 
 <p align="center">
