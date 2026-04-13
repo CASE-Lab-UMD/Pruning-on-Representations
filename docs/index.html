@@ -682,7 +682,7 @@
             <p class="eyebrow">Representation hierarchy</p>
             <h2>
               We follow pruning effects through
-              <span class="math-line">h &rarr; z = W<sub>U</sub>h &rarr; p = softmax(z / T).</span>
+              <span class="math-line">h &rarr; z = Wh &rarr; p = softmax(z / T).</span>
             </h2>
           </div>
           <p class="lead">
@@ -696,7 +696,7 @@
             <p>Measure cosine deviation and decompose the pruning delta into parallel and orthogonal components relative to dense hidden states.</p>
           </article>
           <article class="path-step">
-            <span><i>z = W<sub>U</sub>h</i>: logits</span>
+            <span><i>z = Wh</i>: logits</span>
             <h3>Logit space</h3>
             <p>Track whether hidden-state perturbations remain benign or shift the pre-softmax ranking signal that drives generation.</p>
           </article>
