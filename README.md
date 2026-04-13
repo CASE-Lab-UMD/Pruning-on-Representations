@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="https://arxiv.org/abs/2603.24652">📄 Paper</a> •
+  <a href="https://case-lab-umd.github.io/Pruning-on-Representations/">🌐 Project Page</a> •
   <a href="#environment-and-repository-structure">📦 Structure</a> •
   <a href="#environment-and-repository-structure">⚙️ Environment</a> •
   <a href="#layerwise-transition-analysis">🔍 Scripts</a> •
