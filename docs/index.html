@@ -478,10 +478,14 @@
     }
 
     .math-line {
-      display: block;
-      margin-top: 12px;
+      display: inline-flex;
+      margin-top: 16px;
+      padding: 8px 14px;
+      border: 1px solid rgba(15, 95, 86, 0.18);
+      border-radius: 999px;
+      background: rgba(232, 243, 237, 0.72);
       color: var(--green-dark);
-      font-size: 0.78em;
+      font-size: clamp(22px, 2.6vw, 36px);
     }
 
     .resource-grid {
@@ -620,7 +624,7 @@
       </div>
       <aside class="hero-card" aria-label="Project overview figure">
         <img src="figs/overview.svg" alt="Overview of representation hierarchy analysis for pruning">
-        <p>Article overview: pruning is analyzed through hidden states, logits, and probability distributions to explain the evaluation-generation mismatch.</p>
+        <p>Article overview: pruning is analyzed through hidden states, logits, and probability distributions to explain task-dependent pruning effects.</p>
       </aside>
     </div>
   </header>
@@ -659,10 +663,10 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">Empirical evidence</p>
-            <h2>The mismatch appears across evaluation regimes.</h2>
+            <h2>Pruning effects differ across task regimes.</h2>
           </div>
           <p class="lead">
-            The same pruning setup can look acceptable under non-generative metrics while revealing much more significant performance degradations across generation tasks.
+            The same pruning setup can look acceptable under non-generative metrics while revealing significant performance degradations across generation tasks.
           </p>
         </div>
         <div class="figure-grid">
@@ -691,13 +695,11 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">Representation hierarchy</p>
-            <h2>
-              We follow pruning effects through
-              <span class="math-line">h &rarr; z = Wh &rarr; p = softmax(z / T).</span>
-            </h2>
+            <h2>We trace pruning through representation spaces.</h2>
+            <span class="math-line">h &rarr; z = Wh &rarr; p = softmax(z / T)</span>
           </div>
           <p class="lead">
-            The analysis asks whether perturbations remain local in hidden states, stay stable in logits, or change decoding probabilities.
+            We test whether perturbations stay local in hidden states, remain stable in logits, or alter decoding probabilities.
           </p>
         </div>
         <div class="path">
