@@ -412,6 +412,29 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .script {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .script figure {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background: #fff;
+    }
+
+    .script figure img {
+      width: 100%;
+      aspect-ratio: 4 / 2.45;
+      object-fit: contain;
+      padding: 16px;
+    }
+
+    .script .script-body {
+      padding: 22px 24px 24px;
+    }
+
     code {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       font-size: 0.92em;
@@ -429,17 +452,6 @@
       margin-top: 12px;
       color: var(--green-dark);
       font-size: 0.78em;
-    }
-
-    .script code {
-      display: block;
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 14px;
-      background: #15211e;
-      color: #f8f4e8;
-      white-space: normal;
-      overflow-wrap: anywhere;
     }
 
     .resource-grid {
@@ -732,19 +744,31 @@
         </div>
         <div class="script-grid">
           <article class="script">
-            <h3>Layerwise transition</h3>
-            <p>Compare attention and MLP transitions at the same layer and context across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
-            <code>representation-analysis/transition_layerwise_compare.py</code>
+            <figure>
+              <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise transition analysis across representation spaces">
+            </figure>
+            <div class="script-body">
+              <h3>Layerwise transition</h3>
+              <p>Compare attention and MLP transitions at the same layer and context across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
+            </div>
           </article>
           <article class="script">
-            <h3>MCQ subspaces</h3>
-            <p>Contrast global vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
-            <code>representation-analysis/compare_mcq_subspace_metrics.py</code>
+            <figure>
+              <img src="figs/subspace_3.svg" alt="MCQ answer-option subspace analysis">
+            </figure>
+            <div class="script-body">
+              <h3>MCQ subspaces</h3>
+              <p>Contrast global vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
+            </div>
           </article>
           <article class="script">
-            <h3>Generation metrics</h3>
-            <p>Measure how representation and probability shifts evolve across autoregressive decoding steps.</p>
-            <code>representation-analysis/compare_generation_metrics.py</code>
+            <figure>
+              <img src="figs/final_emb_logit.svg" alt="Pruning-induced errors during autoregressive decoding">
+            </figure>
+            <div class="script-body">
+              <h3>Generation metrics</h3>
+              <p>Measure how pruning-induced representation and probability shifts evolve across autoregressive decoding steps.</p>
+            </div>
           </article>
         </div>
         <div class="resource-grid" style="margin-top: 34px;">
