@@ -424,11 +424,19 @@
       background: #fff;
     }
 
+    .script-figures {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--line);
+    }
+
     .script figure img {
       width: 100%;
-      aspect-ratio: 4 / 2.45;
+      aspect-ratio: 4 / 1.72;
       object-fit: contain;
-      padding: 16px;
+      padding: 14px;
+      background: #fff;
     }
 
     .script .script-body {
@@ -744,27 +752,42 @@
         </div>
         <div class="script-grid">
           <article class="script">
-            <figure>
-              <img src="figs/pruning_hierarchies_attn.svg" alt="Layerwise transition analysis across representation spaces">
-            </figure>
+            <div class="script-figures">
+              <figure>
+                <img src="figs/pruning_hierarchies_attn.svg" alt="Attention layerwise transition analysis across representation spaces">
+              </figure>
+              <figure>
+                <img src="figs/pruning_hierarchies_mlp.svg" alt="MLP layerwise transition analysis across representation spaces">
+              </figure>
+            </div>
             <div class="script-body">
               <h3>Layerwise transition</h3>
               <p>Compare attention and MLP transitions at the same layer and context across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
             </div>
           </article>
           <article class="script">
-            <figure>
-              <img src="figs/subspace_3.svg" alt="MCQ answer-option subspace analysis">
-            </figure>
+            <div class="script-figures">
+              <figure>
+                <img src="figs/top_tokens_3.svg" alt="Full vocabulary top-token behavior under pruning">
+              </figure>
+              <figure>
+                <img src="figs/subspace_3.svg" alt="MCQ answer-option subspace analysis">
+              </figure>
+            </div>
             <div class="script-body">
               <h3>MCQ subspaces</h3>
-              <p>Contrast global vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
+              <p>Contrast full-vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
             </div>
           </article>
           <article class="script">
-            <figure>
-              <img src="figs/final_emb_logit.svg" alt="Pruning-induced errors during autoregressive decoding">
-            </figure>
+            <div class="script-figures">
+              <figure>
+                <img src="figs/cos_attn_l12-temp1.0.svg" alt="Cosine similarity during autoregressive decoding">
+              </figure>
+              <figure>
+                <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence during autoregressive decoding">
+              </figure>
+            </div>
             <div class="script-body">
               <h3>Generation metrics</h3>
               <p>Measure how pruning-induced representation and probability shifts evolve across autoregressive decoding steps.</p>
