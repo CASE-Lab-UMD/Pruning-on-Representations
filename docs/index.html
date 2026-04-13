@@ -454,6 +454,11 @@
       padding: 20px 24px 24px;
     }
 
+    .script p {
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
     code {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       font-size: 0.92em;
@@ -651,7 +656,7 @@
             <h2>The mismatch appears across evaluation regimes.</h2>
           </div>
           <p class="lead">
-            The same pruning setup can look acceptable under non-generative metrics but degrade when errors are allowed to feed into subsequent decoding steps.
+            The same pruning setup can look acceptable under non-generative metrics while revealing much larger differences across representation spaces; autoregressive decoding amplifies those differences over time.
           </p>
         </div>
         <div class="figure-grid">
@@ -686,7 +691,7 @@
             </h2>
           </div>
           <p class="lead">
-            The analysis asks whether a perturbation remains local in hidden states, becomes amplified in logits, or changes the probability distribution used for decoding.
+            The analysis asks whether a perturbation remains local in hidden states, stays stable in logits, or changes the probability distribution used for decoding.
           </p>
         </div>
         <div class="path">
@@ -733,8 +738,8 @@
         <div class="theorem-grid">
           <article class="theorem">
             <h3>Theorem 1: Local Deviation Induced by Pruning</h3>
-            <p>For cosine similarity in embedding space, the pruning-induced deviation can be approximately characterized via a second-order Taylor expansion.</p>
-            <img class="formula-img" src="figs/1-cos-h.png" alt="Theorem 1 formula for hidden-space cosine deviation">
+            <p>For cosine similarity in any representation space, the pruning-induced deviation can be approximately characterized via a second-order Taylor expansion.</p>
+            <img class="formula-img" src="figs/1-cos-h.png" alt="Theorem 1 formula for representation-space cosine deviation">
           </article>
           <article class="theorem">
             <h3>Theorem 2: Sensitivity of Probability Space to Logit Perturbations</h3>
@@ -773,7 +778,7 @@
             </div>
             <div class="script-body">
               <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/transition_layerwise_compare.py">Layerwise transition</a></h3>
-              <p>Compare attention and MLP transitions at the same layer and context across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
+              <p>Compare attention and MLP transitions across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
             </div>
           </article>
           <article class="script">
@@ -787,21 +792,21 @@
             </div>
             <div class="script-body">
               <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/compare_mcq_subspace_metrics.py">MCQ subspaces</a></h3>
-              <p>Contrast full-vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
+              <p>Contrast full-vocabulary behavior with answer-option subspaces.</p>
             </div>
           </article>
           <article class="script">
             <div class="script-figures">
               <figure>
-                <img src="figs/cos_attn_l12-temp1.0.svg" alt="Cosine similarity during autoregressive decoding">
+                <img src="figs/final_emb_logit.svg" alt="Final hidden and logit behavior during generation">
               </figure>
               <figure>
-                <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence during autoregressive decoding">
+                <img src="figs/final_vocab.svg" alt="Final vocabulary probability behavior during generation">
               </figure>
             </div>
             <div class="script-body">
               <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/compare_generation_metrics.py">Generation metrics</a></h3>
-              <p>Measure how pruning-induced representation and probability shifts evolve across autoregressive decoding steps.</p>
+              <p>Compare hidden/logit stability with vocabulary-space probability shifts.</p>
             </div>
           </article>
         </div>

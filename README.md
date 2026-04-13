@@ -32,7 +32,7 @@
   <em>Figure 1: Overview. This repo studies pruning through a representation hierarchy (`h → z → p`) and compares dense vs dropped/pruned behaviors.</em>
 </p>
 
-Pruning often preserves non-generative metrics but hurts autoregressive generation.
+Pruning often preserves non-generative metrics while revealing much larger differences across representation spaces during generation.
 This repo studies that discrepancy through a representation hierarchy:
 - **Embedding space** (`h`): hidden states
 - **Logit space** (`z`): pre-softmax outputs
@@ -70,17 +70,17 @@ pip install -r requirements.txt
       <div align="center"><em>Figure 3: Pruning often preserves non-generative metrics (single-step / fixed-target evaluations).</em></div>
     </td>
     <td align="center" width="50%">
-      <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning due to compounding decoding errors" width="100%">
-      <div align="center"><em>Figure 4: Pruning can hurt generative quality due to compounding errors during autoregressive decoding.</em></div>
+      <img src="figs/pruning_generative.svg" alt="Generative quality can degrade after pruning as representation-space differences affect decoding" width="100%">
+      <div align="center"><em>Figure 4: Pruning can hurt generative quality because representation-space differences become exposed during autoregressive decoding.</em></div>
     </td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="figs/gen-collapse.png" alt="Generation-time divergence can accumulate across decoding steps (collapse example)" width="72%">
+  <img src="figs/gen-collapse.png" alt="Generation-time divergence under pruning (collapse example)" width="72%">
 </p>
 <p align="center">
-  <em>Figure 5: After pruning, generation can degrade qualitatively as decoding-time divergence propagates across steps.</em>
+  <em>Figure 5: After pruning, generation can degrade qualitatively when probability-space shifts alter the autoregressive trajectory.</em>
 </p>
 
 ## Distinct Observations Across Representation Spaces
@@ -136,10 +136,10 @@ Purpose:
 
 **Theorem 1 (Local Deviation Induced by Pruning)**
 
-For cosine similarity in the embedding space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
+For cosine similarity in any representation space, the deviation induced by pruning can be approximately characterized via a second-order Taylor expansion (see Appendix C.1 in the paper).
 
 <p align="center">
-  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning (hidden/embedding space)" width="35%">
+  <img src="figs/1-cos-h.png" alt="Theorem 1: Local deviation induced by pruning in a representation space" width="35%">
 </p>
 
 **Theorem 2 (Sensitivity of Probability Space to Logit Perturbations)**
