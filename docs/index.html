@@ -7,16 +7,17 @@
   <meta name="description" content="Project page for Demystifying When Pruning Works via Representation Hierarchies.">
   <style>
     :root {
-      --ink: #202326;
-      --muted: #5a6068;
-      --paper: #f8fbfa;
-      --surface: #ffffff;
+      --ink: #18211f;
+      --muted: #5a6562;
+      --paper: #f4f1e8;
+      --surface: #fffdf7;
+      --surface-strong: #f8fbf7;
       --green: #0f5f56;
-      --green-soft: #e3f2ed;
-      --red: #d14c45;
-      --yellow: #f0c64a;
-      --line: #d9dedb;
-      --shadow: 0 18px 60px rgba(32, 35, 38, 0.16);
+      --green-dark: #073f39;
+      --red: #c8473d;
+      --amber: #e7b84a;
+      --line: #d8d1bf;
+      --shadow: 0 22px 70px rgba(24, 33, 31, 0.15);
     }
 
     * {
@@ -30,11 +31,12 @@
     body {
       margin: 0;
       color: var(--ink);
-      background: var(--paper);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(231, 184, 74, 0.2), transparent 28rem),
+        linear-gradient(180deg, #f7f4eb 0%, #eef5f1 100%);
+      font-family: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
       font-size: 17px;
-      line-height: 1.65;
-      letter-spacing: 0;
+      line-height: 1.68;
     }
 
     a {
@@ -44,115 +46,123 @@
     }
 
     img {
+      display: block;
       max-width: 100%;
       height: auto;
-      display: block;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(244, 241, 232, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(216, 209, 191, 0.7);
+    }
+
+    .nav-inner {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      color: var(--green-dark);
+      font-weight: 900;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .nav-links a {
+      color: var(--ink);
+      text-decoration: none;
     }
 
     .hero {
       position: relative;
-      min-height: clamp(520px, 72vh, 760px);
-      display: flex;
-      align-items: center;
       overflow: hidden;
-      color: #ffffff;
+      padding: 86px 24px 70px;
+      background:
+        linear-gradient(112deg, rgba(7, 63, 57, 0.96), rgba(15, 95, 86, 0.82)),
+        url("figs/gen-collapse.png") center / cover;
+      color: #fffdf7;
       isolation: isolate;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: url("figs/gen-collapse.png");
-      background-size: cover;
-      background-position: center;
-      z-index: -2;
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      inset: 0;
-      background: rgba(15, 95, 86, 0.86);
+      inset: auto -12% -18% 38%;
+      height: 260px;
+      transform: rotate(-6deg);
+      background: rgba(231, 184, 74, 0.24);
+      filter: blur(16px);
       z-index: -1;
     }
 
-    .nav {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 2;
-      padding: 18px 24px;
-    }
-
-    .nav-inner {
-      max-width: 1180px;
+    .hero-grid {
+      width: min(1180px, 100%);
       margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
+      gap: 54px;
       align-items: center;
-      gap: 18px;
-    }
-
-    .brand {
-      font-weight: 800;
-      color: #ffffff;
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .nav-links a {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .hero-content {
-      width: min(1180px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 92px 0 70px;
     }
 
     .venue {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 22px;
-      padding: 7px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.38);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.14);
-      font-weight: 800;
-      font-size: 14px;
+      margin-bottom: 18px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 253, 247, 0.38);
+      border-radius: 999px;
+      background: rgba(255, 253, 247, 0.12);
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.04;
+      letter-spacing: -0.035em;
     }
 
     h1 {
-      max-width: 940px;
-      margin: 0;
-      font-size: 72px;
-      line-height: 1.02;
-      letter-spacing: 0;
+      max-width: 900px;
+      font-size: clamp(42px, 7vw, 82px);
     }
 
     .subtitle {
-      max-width: 760px;
+      max-width: 770px;
       margin: 26px 0 0;
-      color: rgba(255, 255, 255, 0.92);
-      font-size: 20px;
+      color: rgba(255, 253, 247, 0.9);
+      font-size: 21px;
     }
 
     .authors {
-      max-width: 900px;
       margin: 22px 0 0;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 253, 247, 0.85);
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
       font-size: 16px;
     }
 
@@ -167,28 +177,44 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
-      padding: 10px 16px;
-      border-radius: 8px;
+      min-height: 46px;
+      padding: 10px 17px;
+      border-radius: 999px;
       border: 1px solid transparent;
-      text-decoration: none;
-      font-weight: 800;
       color: var(--ink);
-      background: #ffffff;
+      background: #fffdf7;
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
+      font-weight: 900;
+      text-decoration: none;
     }
 
     .button.secondary {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.42);
+      color: #fffdf7;
+      background: rgba(255, 253, 247, 0.12);
+      border-color: rgba(255, 253, 247, 0.42);
     }
 
-    main {
-      background: var(--paper);
+    .hero-card {
+      border: 1px solid rgba(255, 253, 247, 0.3);
+      border-radius: 28px;
+      padding: 22px;
+      background: rgba(255, 253, 247, 0.12);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+    }
+
+    .hero-card img {
+      border-radius: 18px;
+      background: #fffdf7;
+    }
+
+    .hero-card p {
+      margin: 16px 4px 0;
+      color: rgba(255, 253, 247, 0.86);
+      font-size: 15px;
     }
 
     section {
-      padding: 74px 24px;
+      padding: 82px 24px;
     }
 
     .wrap {
@@ -196,53 +222,111 @@
       margin: 0 auto;
     }
 
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) minmax(280px, 0.52fr);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
     .eyebrow {
       margin: 0 0 10px;
       color: var(--red);
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
       font-size: 13px;
       font-weight: 900;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
     h2 {
-      max-width: 850px;
-      margin: 0 0 20px;
-      font-size: 50px;
-      line-height: 1.08;
-      letter-spacing: 0;
+      max-width: 830px;
+      font-size: clamp(34px, 4.7vw, 58px);
+    }
+
+    h3 {
+      font-size: 25px;
+      color: var(--green-dark);
     }
 
     .lead {
-      max-width: 820px;
       margin: 0;
       color: var(--muted);
       font-size: 20px;
     }
 
-    .insights {
+    .kicker {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 19px;
+    }
+
+    .cards,
+    .resource-grid,
+    .script-grid,
+    .theorem-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .resource,
+    .script,
+    .theorem {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 253, 247, 0.82);
+      box-shadow: 0 12px 32px rgba(24, 33, 31, 0.07);
+    }
+
+    .card,
+    .script,
+    .theorem {
+      padding: 24px;
+    }
+
+    .card p,
+    .script p,
+    .theorem p {
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+
+    .path {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
+      gap: 16px;
       margin-top: 34px;
     }
 
-    .insight {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      padding: 22px;
-      box-shadow: 0 10px 26px rgba(32, 35, 38, 0.06);
+    .path-step {
+      position: relative;
+      padding: 26px;
+      border: 1px solid rgba(15, 95, 86, 0.22);
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fffdf7, #f1f8f4);
     }
 
-    .insight strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 18px;
-      color: var(--green);
+    .path-step span {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--green-soft, #e6f4ee);
+      color: var(--green-dark);
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     .figure-band {
-      background: #f4f8f5;
+      background: #eff5ef;
       border-block: 1px solid var(--line);
     }
 
@@ -250,61 +334,106 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 22px;
-      margin-top: 34px;
     }
 
     figure {
       margin: 0;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
+      border-radius: 24px;
+      background: #fff;
       overflow: hidden;
       box-shadow: var(--shadow);
     }
 
+    figure.wide {
+      grid-column: 1 / -1;
+    }
+
     figure img {
       width: 100%;
-      background: #ffffff;
+      background: #fff;
     }
 
     figcaption {
-      padding: 14px 16px 16px;
+      padding: 16px 18px 18px;
       color: var(--muted);
       font-size: 15px;
     }
 
-    .resources {
+    .takeaway {
       display: grid;
+      grid-template-columns: 0.74fr 1fr;
+      gap: 30px;
+      align-items: center;
+      margin-top: 26px;
+      padding: 28px;
+      border-radius: 28px;
+      background: var(--green-dark);
+      color: #fffdf7;
+      box-shadow: var(--shadow);
+    }
+
+    .takeaway p {
+      margin: 0;
+      color: rgba(255, 253, 247, 0.86);
+    }
+
+    .takeaway img {
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .theorem-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 34px;
+    }
+
+    .script-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+
+    .script code {
+      display: block;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      overflow-x: auto;
+      background: #15211e;
+      color: #f8f4e8;
+      white-space: nowrap;
+    }
+
+    .resource-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .resource {
-      min-height: 180px;
-      padding: 24px;
-      border-radius: 8px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      box-shadow: 0 10px 26px rgba(32, 35, 38, 0.06);
-      text-decoration: none;
+      min-height: 188px;
+      padding: 26px;
       color: var(--ink);
+      text-decoration: none;
     }
 
     .resource span {
       display: block;
       color: var(--red);
-      font-weight: 900;
+      font-family: Optima, Candara, "Avenir Next", sans-serif;
       font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.11em;
       text-transform: uppercase;
     }
 
     .resource strong {
       display: block;
       margin-top: 10px;
-      font-size: 24px;
-      line-height: 1.15;
-      color: var(--green);
+      color: var(--green-dark);
+      font-size: 26px;
+      line-height: 1.12;
     }
 
     .resource p {
@@ -313,28 +442,29 @@
     }
 
     .citation {
-      background: #26332f;
-      color: #ffffff;
+      background: #17241f;
+      color: #fffdf7;
     }
 
     .citation .lead {
-      color: rgba(255, 255, 255, 0.78);
+      color: rgba(255, 253, 247, 0.76);
     }
 
     pre {
       margin: 34px 0 0;
       padding: 22px;
       overflow-x: auto;
-      border-radius: 8px;
-      background: #101815;
-      color: #f7fbf8;
+      border: 1px solid rgba(255, 253, 247, 0.18);
+      border-radius: 18px;
+      background: #0f1714;
+      color: #fffdf7;
       font-size: 14px;
       line-height: 1.55;
     }
 
     footer {
-      padding: 32px 24px;
-      background: #ffffff;
+      padding: 34px 24px;
+      background: #fffdf7;
       border-top: 1px solid var(--line);
       color: var(--muted);
     }
@@ -346,144 +476,251 @@
       flex-wrap: wrap;
     }
 
-    @media (max-width: 820px) {
-      .nav-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .nav-links {
-        justify-content: flex-start;
-      }
-
-      .hero-content {
-        width: min(100% - 32px, 1180px);
-        padding-top: 150px;
-      }
-
-      section {
-        padding: 58px 18px;
-      }
-
-      .insights,
-      .figure-grid,
-      .resources {
+    @media (max-width: 900px) {
+      .nav-inner,
+      .hero-grid,
+      .section-head,
+      .takeaway {
         grid-template-columns: 1fr;
       }
 
-      .subtitle,
-      .lead {
-        font-size: 18px;
+      .nav-inner {
+        align-items: flex-start;
+        padding: 12px 0;
       }
 
-      h1 {
-        font-size: 36px;
+      .cards,
+      .path,
+      .figure-grid,
+      .resource-grid,
+      .script-grid,
+      .theorem-grid {
+        grid-template-columns: 1fr;
       }
 
-      h2 {
-        font-size: 34px;
+      section {
+        padding: 64px 18px;
+      }
+
+      .hero {
+        padding: 58px 18px 64px;
       }
     }
   </style>
 </head>
 <body>
+  <nav class="nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="brand" href="#">Representation Hierarchies</a>
+      <div class="nav-links">
+        <a href="#motivation">Motivation</a>
+        <a href="#hierarchy">Hierarchy</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#theory">Theory</a>
+        <a href="#resources">Resources</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </div>
+  </nav>
+
   <header class="hero">
-    <nav class="nav" aria-label="Primary">
-      <div class="nav-inner">
-        <a class="brand" href="#">Representation Hierarchies</a>
-        <div class="nav-links">
-          <a href="#findings">Findings</a>
-          <a href="#figures">Figures</a>
-          <a href="#resources">Resources</a>
-          <a href="#citation">Citation</a>
+    <div class="hero-grid">
+      <div>
+        <div class="venue">arXiv 2026</div>
+        <h1>Demystifying When Pruning Works via Representation Hierarchies</h1>
+        <p class="subtitle">
+          A representation-level view of why pruning can preserve non-generative metrics while still damaging autoregressive generation.
+        </p>
+        <p class="authors">
+          Shuai He, Guoheng Sun, Haichao Zhang, Yun Fu, Ang Li<br>
+          University of Maryland, College Park and Northeastern University
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="https://arxiv.org/abs/2603.24652">Read the paper</a>
+          <a class="button secondary" href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations">View code</a>
+          <a class="button secondary" href="#citation">BibTeX</a>
         </div>
       </div>
-    </nav>
-    <div class="hero-content">
-      <div class="venue">arXiv 2026</div>
-      <h1>Demystifying When Pruning Works via Representation Hierarchies</h1>
-      <p class="subtitle">A representation-level view of why pruning can preserve non-generative behavior while still harming autoregressive generation.</p>
-      <p class="authors">
-        Shuai He, Guoheng Sun, Haichao Zhang, Yun Fu, Ang Li<br>
-        University of Maryland, College Park and Northeastern University
-      </p>
-      <div class="hero-actions">
-        <a class="button" href="https://arxiv.org/abs/2603.24652">Paper</a>
-        <a class="button secondary" href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations">Code</a>
-        <a class="button secondary" href="#citation">BibTeX</a>
-      </div>
+      <aside class="hero-card" aria-label="Project overview figure">
+        <img src="figs/pruning_hierarchies_attn.svg" alt="Representation hierarchy signals under attention pruning">
+        <p>We compare dense and pruned behavior across hidden states, logits, and probability distributions.</p>
+      </aside>
     </div>
   </header>
 
   <main>
-    <section id="findings">
+    <section id="motivation">
       <div class="wrap">
-        <p class="eyebrow">Core question</p>
-        <h2>When does pruning preserve capability, and when does it break generation?</h2>
-        <p class="lead">We study pruning through a hierarchy of representations: hidden states, logits, and probability distributions. The same pruned model can appear stable in one space while showing larger deviations in another.</p>
-        <div class="insights">
-          <div class="insight">
-            <strong>Representation hierarchy</strong>
-            Pruning effects are compared across hidden, logit, and probability spaces instead of relying on a single metric.
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Core question</p>
+            <h2>Why can pruning look safe in one evaluation but fail during generation?</h2>
           </div>
-          <div class="insight">
-            <strong>Evaluation mismatch</strong>
-            Fixed-target evaluations can remain stable even when autoregressive decoding becomes fragile.
+          <p class="lead">
+            Pruning often preserves fixed-target or non-generative scores, yet autoregressive outputs can drift. This project explains the gap by tracking where perturbations become visible in the model's representation pipeline.
+          </p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Non-generative stability</h3>
+            <p>Single-step and fixed-target evaluations may stay close because they examine constrained behavior rather than open-ended decoding.</p>
+          </article>
+          <article class="card">
+            <h3>Generative fragility</h3>
+            <p>Small distributional changes can compound across decoding steps, eventually changing token choices and final answers.</p>
+          </article>
+          <article class="card">
+            <h3>Representation lens</h3>
+            <p>Instead of judging pruning with one metric, we compare perturbations in hidden, logit, and probability spaces.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="hierarchy" class="figure-band">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Representation hierarchy</p>
+            <h2>We follow pruning effects through h, z, and p.</h2>
           </div>
-          <div class="insight">
-            <strong>Generation dynamics</strong>
-            Small distributional shifts can accumulate across decoding steps and change final generations.
+          <p class="lead">
+            The analysis asks whether a perturbation remains local in hidden states, becomes amplified in logits, or changes the probability distribution used for decoding.
+          </p>
+        </div>
+        <div class="path">
+          <article class="path-step">
+            <span>h: hidden states</span>
+            <h3>Embedding space</h3>
+            <p>Measure cosine deviation and decompose the pruning delta into parallel and orthogonal components relative to dense hidden states.</p>
+          </article>
+          <article class="path-step">
+            <span>z: logits</span>
+            <h3>Logit space</h3>
+            <p>Track whether hidden-state perturbations remain benign or shift the pre-softmax ranking signal that drives generation.</p>
+          </article>
+          <article class="path-step">
+            <span>p: probabilities</span>
+            <h3>Vocabulary space</h3>
+            <p>Compare probability-space cosine similarity and KL divergence after temperature-scaled softmax.</p>
+          </article>
+        </div>
+        <div class="figure-grid" style="margin-top: 34px;">
+          <figure>
+            <img src="figs/pruning_hierarchies_attn.svg" alt="Attention representation hierarchy under pruning">
+            <figcaption>Attention sublayers show different sensitivity across hidden, logit, and probability spaces.</figcaption>
+          </figure>
+          <figure>
+            <img src="figs/final_vocab.svg" alt="Final-step probability-space similarity during generation">
+            <figcaption>Probability-space views expose generation-time shifts near the vocabulary distribution.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Empirical evidence</p>
+            <h2>The mismatch appears across evaluation regimes.</h2>
+          </div>
+          <p class="lead">
+            The same pruning setup can look acceptable under non-generative metrics but degrade when errors are allowed to feed into subsequent decoding steps.
+          </p>
+        </div>
+        <div class="figure-grid">
+          <figure>
+            <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics under pruning">
+            <figcaption>Non-generative metrics often remain stable after pruning, especially in constrained evaluation settings.</figcaption>
+          </figure>
+          <figure>
+            <img src="figs/pruning_generative.svg" alt="Generative metrics under pruning">
+            <figcaption>Generative quality can degrade because each generated token changes future contexts.</figcaption>
+          </figure>
+        </div>
+        <div class="takeaway">
+          <img src="figs/gen-collapse.png" alt="Example of generation-time collapse after pruning">
+          <div>
+            <p class="eyebrow">Generation-time divergence</p>
+            <h2 style="font-size: clamp(30px, 4vw, 46px);">Local perturbations become a decoding trajectory problem.</h2>
+            <p class="kicker">The homepage now mirrors the README's key story: pruning is not only about a layerwise similarity score, but also about whether representation shifts change the autoregressive path.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="figures" class="figure-band">
+    <section id="theory" class="figure-band">
       <div class="wrap">
-        <p class="eyebrow">Evidence</p>
-        <h2>Pruning looks different across spaces and decoding regimes.</h2>
-        <p class="lead">The analysis connects non-generative robustness, representation-space sensitivity, and generation-time divergence under inter-layer and intra-layer pruning.</p>
-        <div class="figure-grid">
-          <figure>
-            <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics under pruning">
-            <figcaption>Non-generative metrics can remain relatively stable after pruning.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/pruning_generative.svg" alt="Generative metrics under pruning">
-            <figcaption>Autoregressive generation can degrade as decoding errors accumulate.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/pruning_hierarchies_attn.svg" alt="Representation hierarchy for attention pruning">
-            <figcaption>Attention pruning shows distinct behavior across hidden, logit, and probability spaces.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/final_vocab.svg" alt="Probability-space divergence during generation">
-            <figcaption>Probability-space shifts expose generation-time sensitivity near the vocabulary distribution.</figcaption>
-          </figure>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Theory intuition</p>
+            <h2>Three approximations connect the observed spaces.</h2>
+          </div>
+          <p class="lead">
+            The paper derives local approximations that explain why hidden/logit-space perturbations and probability-space shifts need not behave identically.
+          </p>
+        </div>
+        <div class="theorem-grid">
+          <article class="theorem">
+            <h3>Local deviation</h3>
+            <p>Cosine deviation in hidden space can be approximated through a second-order expansion of the pruning-induced perturbation.</p>
+          </article>
+          <article class="theorem">
+            <h3>Probability sensitivity</h3>
+            <p>Probability-space cosine deviation is rewritten in terms of logits, making the softmax transformation explicit.</p>
+          </article>
+          <article class="theorem">
+            <h3>Distributional shift</h3>
+            <p>KL divergence under pruning admits a closed-form approximation using probability-weighted logit perturbations.</p>
+          </article>
         </div>
       </div>
     </section>
 
     <section id="resources">
       <div class="wrap">
-        <p class="eyebrow">Resources</p>
-        <h2>Paper, code, and runnable analysis.</h2>
-        <p class="lead">The repository contains inter-layer dropping, intra-layer pruning, and paper-aligned scripts for representation-level comparison.</p>
-        <div class="resources">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Runnable analysis</p>
+            <h2>The repository maps each claim to scripts.</h2>
+          </div>
+          <p class="lead">
+            The codebase includes inter-layer dropping, intra-layer sparsification, and representation-analysis scripts for dropped and pruned models.
+          </p>
+        </div>
+        <div class="script-grid">
+          <article class="script">
+            <h3>Layerwise transition</h3>
+            <p>Compare attention and MLP transitions at the same layer and context across h, z, and p.</p>
+            <code>representation-analysis/transition_layerwise_compare.py</code>
+          </article>
+          <article class="script">
+            <h3>MCQ subspaces</h3>
+            <p>Contrast global vocabulary behavior with answer-option subspace behavior for fixed-choice tasks.</p>
+            <code>representation-analysis/compare_mcq_subspace_metrics.py</code>
+          </article>
+          <article class="script">
+            <h3>Generation metrics</h3>
+            <p>Measure how representation and probability shifts evolve across autoregressive decoding steps.</p>
+            <code>representation-analysis/compare_generation_metrics.py</code>
+          </article>
+        </div>
+        <div class="resource-grid" style="margin-top: 34px;">
           <a class="resource" href="https://arxiv.org/abs/2603.24652">
             <span>Paper</span>
             <strong>arXiv</strong>
-            <p>Read the full paper and derivations.</p>
+            <p>Read the full paper, derivations, and experiment details.</p>
           </a>
           <a class="resource" href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations">
             <span>Code</span>
             <strong>GitHub</strong>
-            <p>Run pruning and representation-analysis scripts.</p>
+            <p>Run inter-layer, intra-layer, and representation-level analysis.</p>
           </a>
           <a class="resource" href="https://github.com/CASE-Lab-UMD/LLM-Drop">
             <span>Related</span>
             <strong>LLM-Drop</strong>
-            <p>Inter-layer layer and block dropping foundation.</p>
+            <p>Layer and block dropping foundation for inter-layer pruning.</p>
           </a>
         </div>
       </div>
