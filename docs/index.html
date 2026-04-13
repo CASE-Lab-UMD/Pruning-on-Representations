@@ -310,6 +310,12 @@
       color: var(--muted);
     }
 
+    .path-step p,
+    .theorem p {
+      font-size: 16px;
+      line-height: 1.58;
+    }
+
     .path {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -691,14 +697,14 @@
             </h2>
           </div>
           <p class="lead">
-            The analysis asks whether a perturbation remains local in hidden states, stays stable in logits, or changes the probability distribution used for decoding.
+            The analysis asks whether perturbations remain local in hidden states, stay stable in logits, or change decoding probabilities.
           </p>
         </div>
         <div class="path">
           <article class="path-step">
             <span><i>h</i>: hidden states</span>
             <h3>Embedding space</h3>
-            <p>Measure cosine deviation and decompose the pruning delta into parallel and orthogonal components relative to dense hidden states.</p>
+            <p>Measure cosine deviation and decompose pruning deltas relative to dense hidden states.</p>
           </article>
           <article class="path-step">
             <span><i>z = Wh</i>: logits</span>
@@ -732,13 +738,13 @@
             <h2>Three approximations connect the observed spaces.</h2>
           </div>
           <p class="lead">
-            The paper derives local approximations that explain why hidden/logit-space perturbations and probability-space shifts need not behave identically.
+            Local approximations explain why hidden/logit perturbations and probability shifts can diverge.
           </p>
         </div>
         <div class="theorem-grid">
           <article class="theorem">
             <h3>Theorem 1: Local Deviation Induced by Pruning</h3>
-            <p>For cosine similarity in any representation space, the pruning-induced deviation can be approximately characterized via a second-order Taylor expansion.</p>
+            <p>For cosine similarity in any representation space, pruning-induced deviation follows a second-order approximation.</p>
             <img class="formula-img" src="figs/1-cos-h.png" alt="Theorem 1 formula for representation-space cosine deviation">
           </article>
           <article class="theorem">
@@ -770,15 +776,15 @@
           <article class="script">
             <div class="script-figures">
               <figure>
-                <img src="figs/pruning_hierarchies_attn.svg" alt="Attention layerwise transition analysis across representation spaces">
+                <img src="figs/cos_attn_l12-temp1.0.svg" alt="Angular deviation theorem estimate against observed value">
               </figure>
               <figure>
-                <img src="figs/pruning_hierarchies_mlp.svg" alt="MLP layerwise transition analysis across representation spaces">
+                <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence theorem estimate against observed value">
               </figure>
             </div>
             <div class="script-body">
-              <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/transition_layerwise_compare.py">Layerwise transition</a></h3>
-              <p>Compare attention and MLP transitions across <i>h</i>, <i>z</i>, and <i>p</i>.</p>
+              <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/transition_layerwise_compare.py">Theorem observations</a></h3>
+              <p>Match angular deviation and KL estimates to observed layerwise signals.</p>
             </div>
           </article>
           <article class="script">
