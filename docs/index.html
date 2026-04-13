@@ -119,8 +119,8 @@
       width: min(1180px, 100%);
       margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
-      gap: 54px;
+      grid-template-columns: minmax(0, 0.9fr) minmax(440px, 1.1fr);
+      gap: 46px;
       align-items: center;
     }
 
@@ -148,8 +148,8 @@
     }
 
     h1 {
-      max-width: 900px;
-      font-size: clamp(42px, 7vw, 82px);
+      max-width: 780px;
+      font-size: clamp(40px, 5.8vw, 68px);
     }
 
     .subtitle {
@@ -197,7 +197,7 @@
     .hero-card {
       border: 1px solid rgba(255, 253, 247, 0.3);
       border-radius: 28px;
-      padding: 22px;
+      padding: 18px;
       background: rgba(255, 253, 247, 0.12);
       box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
     }
@@ -205,6 +205,7 @@
     .hero-card img {
       border-radius: 18px;
       background: #fffdf7;
+      width: 100%;
     }
 
     .hero-card p {
@@ -334,6 +335,7 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 22px;
+      margin-top: 34px;
     }
 
     figure {
@@ -514,8 +516,8 @@
       <a class="brand" href="#">Representation Hierarchies</a>
       <div class="nav-links">
         <a href="#motivation">Motivation</a>
-        <a href="#hierarchy">Hierarchy</a>
         <a href="#evidence">Evidence</a>
+        <a href="#hierarchy">Hierarchy</a>
         <a href="#theory">Theory</a>
         <a href="#resources">Resources</a>
         <a href="#citation">Citation</a>
@@ -542,8 +544,8 @@
         </div>
       </div>
       <aside class="hero-card" aria-label="Project overview figure">
-        <img src="figs/pruning_hierarchies_attn.svg" alt="Representation hierarchy signals under attention pruning">
-        <p>We compare dense and pruned behavior across hidden states, logits, and probability distributions.</p>
+        <img src="figs/overview.svg" alt="Overview of representation hierarchy analysis for pruning">
+        <p>Article overview: pruning is analyzed through hidden states, logits, and probability distributions to explain the evaluation-generation mismatch.</p>
       </aside>
     </div>
   </header>
@@ -577,48 +579,7 @@
       </div>
     </section>
 
-    <section id="hierarchy" class="figure-band">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Representation hierarchy</p>
-            <h2>We follow pruning effects through h, z, and p.</h2>
-          </div>
-          <p class="lead">
-            The analysis asks whether a perturbation remains local in hidden states, becomes amplified in logits, or changes the probability distribution used for decoding.
-          </p>
-        </div>
-        <div class="path">
-          <article class="path-step">
-            <span>h: hidden states</span>
-            <h3>Embedding space</h3>
-            <p>Measure cosine deviation and decompose the pruning delta into parallel and orthogonal components relative to dense hidden states.</p>
-          </article>
-          <article class="path-step">
-            <span>z: logits</span>
-            <h3>Logit space</h3>
-            <p>Track whether hidden-state perturbations remain benign or shift the pre-softmax ranking signal that drives generation.</p>
-          </article>
-          <article class="path-step">
-            <span>p: probabilities</span>
-            <h3>Vocabulary space</h3>
-            <p>Compare probability-space cosine similarity and KL divergence after temperature-scaled softmax.</p>
-          </article>
-        </div>
-        <div class="figure-grid" style="margin-top: 34px;">
-          <figure>
-            <img src="figs/pruning_hierarchies_attn.svg" alt="Attention representation hierarchy under pruning">
-            <figcaption>Attention sublayers show different sensitivity across hidden, logit, and probability spaces.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/final_vocab.svg" alt="Final-step probability-space similarity during generation">
-            <figcaption>Probability-space views expose generation-time shifts near the vocabulary distribution.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section id="evidence">
+    <section id="evidence" class="figure-band">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -646,6 +607,47 @@
             <h2 style="font-size: clamp(30px, 4vw, 46px);">Local perturbations become a decoding trajectory problem.</h2>
             <p class="kicker">The homepage now mirrors the README's key story: pruning is not only about a layerwise similarity score, but also about whether representation shifts change the autoregressive path.</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hierarchy">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Representation hierarchy</p>
+            <h2>We follow pruning effects through h, z, and p.</h2>
+          </div>
+          <p class="lead">
+            The analysis asks whether a perturbation remains local in hidden states, becomes amplified in logits, or changes the probability distribution used for decoding.
+          </p>
+        </div>
+        <div class="path">
+          <article class="path-step">
+            <span>h: hidden states</span>
+            <h3>Embedding space</h3>
+            <p>Measure cosine deviation and decompose the pruning delta into parallel and orthogonal components relative to dense hidden states.</p>
+          </article>
+          <article class="path-step">
+            <span>z: logits</span>
+            <h3>Logit space</h3>
+            <p>Track whether hidden-state perturbations remain benign or shift the pre-softmax ranking signal that drives generation.</p>
+          </article>
+          <article class="path-step">
+            <span>p: probabilities</span>
+            <h3>Vocabulary space</h3>
+            <p>Compare probability-space cosine similarity and KL divergence after temperature-scaled softmax.</p>
+          </article>
+        </div>
+        <div class="figure-grid">
+          <figure>
+            <img src="figs/pruning_hierarchies_attn.svg" alt="Attention representation hierarchy under pruning">
+            <figcaption>Attention sublayers show different sensitivity across hidden, logit, and probability spaces.</figcaption>
+          </figure>
+          <figure>
+            <img src="figs/pruning_hierarchies_mlp.svg" alt="MLP representation hierarchy under pruning">
+            <figcaption>MLP sublayers provide a complementary hierarchy view across embedding, logit, and probability spaces.</figcaption>
+          </figure>
         </div>
       </div>
     </section>
