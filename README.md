@@ -1,4 +1,4 @@
-<h1 align="center">Demystifying When Pruning Works via Representation Hierarchies</h1>
+<h1 align="center">[ICML 2026] Demystifying When Pruning Works via Representation Hierarchies</h1>
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-blue" />
