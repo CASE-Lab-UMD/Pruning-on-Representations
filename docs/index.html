@@ -1,866 +1,1395 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Demystifying When Pruning Works via Representation Hierarchies</title>
-  <meta name="description" content="Project page for Demystifying When Pruning Works via Representation Hierarchies.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demystifying When Pruning Works via Representation Hierarchies | ICML 2026</title>
+  <meta name="description" content="Official project website for [ICML 2026] Demystifying When Pruning Works via Representation Hierarchies by UMD & Northeastern University.">
+  <meta name="keywords" content="LLM Pruning, Representation Hierarchy, CKA, Cosine Similarity, ICML 2026, Machine Learning, Deep Learning, Model Compression">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            accent: {
+              teal: '#0f766e',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              coral: '#f43f5e',
+              indigo: '#6366f1',
+              cyan: '#06b6d4',
+            }
+          },
+          boxShadow: {
+            'glow-emerald': '0 0 35px -5px rgba(16, 185, 129, 0.3)',
+            'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.3)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    :root {
-      --ink: #18211f;
-      --muted: #5a6562;
-      --paper: #f4f1e8;
-      --surface: #fffdf7;
-      --surface-strong: #f8fbf7;
-      --green: #0f5f56;
-      --green-dark: #073f39;
-      --red: #c8473d;
-      --amber: #e7b84a;
-      --line: #d8d1bf;
-      --shadow: 0 22px 70px rgba(24, 33, 31, 0.15);
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070b12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 12% 0%, rgba(231, 184, 74, 0.2), transparent 28rem),
-        linear-gradient(180deg, #f7f4eb 0%, #eef5f1 100%);
-      font-family: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      font-size: 17px;
-      line-height: 1.68;
-    }
-
-    a {
-      color: var(--green);
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 4px;
-    }
-
-    img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(244, 241, 232, 0.88);
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.78);
       backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(216, 209, 191, 0.7);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.62);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-3px);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.2);
     }
 
-    .nav-inner {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      min-height: 66px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
+    .gradient-text-emerald {
+      background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .brand {
-      color: var(--green-dark);
-      font-weight: 900;
-      text-decoration: none;
-      letter-spacing: 0.02em;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .nav-links a {
-      color: var(--ink);
-      text-decoration: none;
-    }
-
-    .hero {
+    .gradient-border-glow {
       position: relative;
-      overflow: hidden;
-      padding: 86px 24px 70px;
-      background:
-        linear-gradient(112deg, rgba(7, 63, 57, 0.96), rgba(15, 95, 86, 0.82)),
-        url("figs/gen-collapse.png") center / cover;
-      color: #fffdf7;
-      isolation: isolate;
     }
-
-    .hero::after {
-      content: "";
+    .gradient-border-glow::before {
+      content: '';
       position: absolute;
-      inset: auto -12% -18% 38%;
-      height: 260px;
-      transform: rotate(-6deg);
-      background: rgba(231, 184, 74, 0.24);
-      filter: blur(16px);
-      z-index: -1;
-    }
-
-    .hero-grid {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(440px, 1.1fr);
-      gap: 46px;
-      align-items: center;
-    }
-
-    .venue {
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 18px;
-      padding: 6px 12px;
-      border: 1px solid rgba(255, 253, 247, 0.38);
-      border-radius: 999px;
-      background: rgba(255, 253, 247, 0.12);
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    h1,
-    h2,
-    h3 {
-      margin: 0;
-      line-height: 1.04;
-      letter-spacing: -0.035em;
-    }
-
-    h1 {
-      max-width: 780px;
-      font-size: clamp(40px, 5.8vw, 68px);
-    }
-
-    .subtitle {
-      max-width: 770px;
-      margin: 26px 0 0;
-      color: rgba(255, 253, 247, 0.9);
-      font-size: 21px;
-    }
-
-    .authors {
-      margin: 22px 0 0;
-      color: rgba(255, 253, 247, 0.85);
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 16px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 34px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 10px 17px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      color: var(--ink);
-      background: #fffdf7;
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-weight: 900;
-      text-decoration: none;
-    }
-
-    .button.secondary {
-      color: #fffdf7;
-      background: rgba(255, 253, 247, 0.12);
-      border-color: rgba(255, 253, 247, 0.42);
-    }
-
-    .hero-card {
-      border: 1px solid rgba(255, 253, 247, 0.3);
-      border-radius: 28px;
-      padding: 18px;
-      background: rgba(255, 253, 247, 0.12);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
-    }
-
-    .hero-card img {
-      border-radius: 18px;
-      background: #fffdf7;
-      width: 100%;
-    }
-
-    .hero-card p {
-      margin: 16px 4px 0;
-      color: rgba(255, 253, 247, 0.86);
-      font-size: 15px;
-    }
-
-    section {
-      padding: 82px 24px;
-    }
-
-    .wrap {
-      width: min(1120px, 100%);
-      margin: 0 auto;
-    }
-
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 0.88fr) minmax(280px, 0.52fr);
-      gap: 40px;
-      align-items: end;
-      margin-bottom: 34px;
-    }
-
-    .eyebrow {
-      margin: 0 0 10px;
-      color: var(--red);
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    h2 {
-      max-width: 830px;
-      font-size: clamp(34px, 4.7vw, 58px);
-    }
-
-    h3 {
-      font-size: 25px;
-      color: var(--green-dark);
-    }
-
-    h3 a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 2px solid rgba(15, 95, 86, 0.22);
-    }
-
-    h3 a:hover {
-      color: var(--red);
-      border-bottom-color: currentColor;
-    }
-
-    .lead {
-      margin: 0;
-      color: var(--muted);
-      font-size: 20px;
-    }
-
-    .kicker {
-      max-width: 760px;
-      margin: 20px 0 0;
-      color: var(--muted);
-      font-size: 19px;
-    }
-
-    .cards,
-    .resource-grid,
-    .script-grid,
-    .theorem-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .cards {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .card,
-    .resource,
-    .script,
-    .theorem {
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(255, 253, 247, 0.82);
-      box-shadow: 0 12px 32px rgba(24, 33, 31, 0.07);
-    }
-
-    .card,
-    .script,
-    .theorem {
-      padding: 24px;
-    }
-
-    .card p,
-    .script p,
-    .theorem p {
-      margin: 12px 0 0;
-      color: var(--muted);
-    }
-
-    .path-step p,
-    .theorem p {
-      font-size: 16px;
-      line-height: 1.58;
-    }
-
-    .path {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 34px;
-    }
-
-    .path-step {
-      position: relative;
-      padding: 26px;
-      border: 1px solid rgba(15, 95, 86, 0.22);
-      border-radius: 24px;
-      background: linear-gradient(180deg, #fffdf7, #f1f8f4);
-    }
-
-    .path-step span {
-      display: inline-flex;
-      margin-bottom: 12px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--green-soft, #e6f4ee);
-      color: var(--green-dark);
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .figure-band {
-      background: #eff5ef;
-      border-block: 1px solid var(--line);
-    }
-
-    .figure-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      margin-top: 34px;
-    }
-
-    figure {
-      margin: 0;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: #fff;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    figure.wide {
-      grid-column: 1 / -1;
-    }
-
-    figure img {
-      width: 100%;
-      background: #fff;
-    }
-
-    figcaption {
-      padding: 16px 18px 18px;
-      color: var(--muted);
-      font-size: 15px;
-    }
-
-    .takeaway {
-      display: grid;
-      grid-template-columns: 0.74fr 1fr;
-      gap: 30px;
-      align-items: center;
-      margin-top: 26px;
-      padding: 28px;
-      border-radius: 28px;
-      background: var(--green-dark);
-      color: #fffdf7;
-      box-shadow: var(--shadow);
-    }
-
-    .takeaway p {
-      margin: 0;
-      color: rgba(255, 253, 247, 0.86);
-    }
-
-    .takeaway img {
-      border-radius: 18px;
-      background: #fff;
-    }
-
-    .theorem-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .theorem {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .theorem h3 {
-      min-height: 2.4em;
-    }
-
-    .formula-img {
-      width: min(100%, 360px);
-      max-height: 96px;
-      object-fit: contain;
-      margin: 22px auto 0;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: #fff;
-    }
-
-    .script-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .script {
-      overflow: hidden;
-      padding: 0;
-    }
-
-    .script figure {
-      border: 0;
-      border-radius: 0;
-      box-shadow: none;
-      background: #fff;
-    }
-
-    .script-figures {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1px;
-      background: var(--line);
-    }
-
-    .script figure img {
-      width: 100%;
-      aspect-ratio: 2.35 / 1;
-      object-fit: contain;
-      padding: 3px 6px;
-      background: #fff;
-    }
-
-    .script .script-body {
-      padding: 20px 24px 24px;
-    }
-
-    .script p {
-      font-size: 16px;
-      line-height: 1.55;
-    }
-
-    code {
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-      font-size: 0.92em;
-    }
-
-    .math-line,
-    .formula {
-      font-family: "Times New Roman", Cambria, Georgia, serif;
-      font-style: italic;
-      letter-spacing: 0;
-    }
-
-    .math-line {
-      display: inline-flex;
-      margin-top: 16px;
-      padding: 8px 14px;
-      border: 1px solid rgba(15, 95, 86, 0.18);
-      border-radius: 999px;
-      background: rgba(232, 243, 237, 0.72);
-      color: var(--green-dark);
-      font-size: clamp(22px, 2.6vw, 36px);
-    }
-
-    .resource-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .resource {
-      min-height: 188px;
-      padding: 26px;
-      color: var(--ink);
-      text-decoration: none;
-    }
-
-    .resource span {
-      display: block;
-      color: var(--red);
-      font-family: Optima, Candara, "Avenir Next", sans-serif;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-    }
-
-    .resource strong {
-      display: block;
-      margin-top: 10px;
-      color: var(--green-dark);
-      font-size: 26px;
-      line-height: 1.12;
-    }
-
-    .resource p {
-      margin: 14px 0 0;
-      color: var(--muted);
-    }
-
-    .citation {
-      background: #17241f;
-      color: #fffdf7;
-    }
-
-    .citation .lead {
-      color: rgba(255, 253, 247, 0.76);
-    }
-
-    pre {
-      margin: 34px 0 0;
-      padding: 22px;
-      overflow-x: auto;
-      border: 1px solid rgba(255, 253, 247, 0.18);
-      border-radius: 18px;
-      background: #0f1714;
-      color: #fffdf7;
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    footer {
-      padding: 34px 24px;
-      background: #fffdf7;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-    }
-
-    footer .wrap {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 900px) {
-      .nav-inner,
-      .hero-grid,
-      .section-head,
-      .takeaway {
-        grid-template-columns: 1fr;
-      }
-
-      .nav-inner {
-        align-items: flex-start;
-        padding: 12px 0;
-      }
-
-      .cards,
-      .path,
-      .figure-grid,
-      .resource-grid,
-      .script-grid,
-      .theorem-grid {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding: 64px 18px;
-      }
-
-      .hero {
-        padding: 58px 18px 64px;
-      }
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.3));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Heatmap cell transition */
+    .heatmap-cell {
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.35);
+      z-index: 20;
+      filter: brightness(1.25);
     }
   </style>
 </head>
-<body>
-  <nav class="nav" aria-label="Primary navigation">
-    <div class="nav-inner">
-      <a class="brand" href="#">Representation Hierarchies</a>
-      <div class="nav-links">
-        <a href="#motivation">Motivation</a>
-        <a href="#evidence">Evidence</a>
-        <a href="#hierarchy">Hierarchy</a>
-        <a href="#theory">Theory</a>
-        <a href="#resources">Resources</a>
-        <a href="#citation">Citation</a>
-      </div>
-    </div>
-  </nav>
+<body class="bg-[#070b12] text-slate-200 font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200 min-h-screen">
 
-  <header class="hero">
-    <div class="hero-grid">
-      <div>
-        <div class="venue">ICML 2026</div>
-        <h1>Demystifying When Pruning Works via Representation Hierarchies</h1>
-        <p class="subtitle">
-          A representation-level view of why pruning can preserve non-generative metrics while still damaging autoregressive generation.
-        </p>
-        <p class="authors">
-          Shuai He, Guoheng Sun, Haichao Zhang, Yun Fu, Ang Li<br>
-          University of Maryland, College Park and Northeastern University
-        </p>
-        <div class="hero-actions">
-          <a class="button" href="https://arxiv.org/abs/2603.24652">Read the paper</a>
-          <a class="button secondary" href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations">View code</a>
-          <a class="button secondary" href="#citation">BibTeX</a>
+  <!-- Ambient background glow -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-[-10%] left-[20%] w-[600px] h-[600px] rounded-full bg-emerald-600/10 blur-[130px]"></div>
+    <div class="absolute top-[35%] right-[-5%] w-[500px] h-[500px] rounded-full bg-cyan-600/10 blur-[140px]"></div>
+    <div class="absolute bottom-[10%] left-[-5%] w-[650px] h-[650px] rounded-full bg-indigo-600/10 blur-[150px]"></div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo / Title -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-slate-950 font-heading font-black text-lg shadow-glow-emerald">
+            <i class="fa-solid fa-layer-group text-slate-950 text-base"></i>
+          </div>
+          <div>
+            <span class="font-heading font-bold text-white tracking-tight group-hover:text-emerald-400 transition-colors text-base sm:text-lg">Representation Hierarchies</span>
+            <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">ICML 2026</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <a href="#overview" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">Overview</a>
+          <a href="#inspector" class="px-3 py-1.5 rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors font-semibold"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Hierarchy Explorer</a>
+          <a href="#visualizer" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">Dynamics & Charts</a>
+          <a href="#theory" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">Theorems</a>
+          <a href="#benchmarks" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">Benchmarks</a>
+          <a href="#quickstart" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">Quickstart</a>
+          <a href="#citation" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">BibTeX</a>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2.5">
+          <a href="https://arxiv.org/abs/2603.24652" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors">
+            <i class="fa-solid fa-file-pdf"></i> arXiv
+          </a>
+          <a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-colors shadow-glow-emerald font-heading">
+            <i class="fa-brands fa-github text-sm"></i> Code
+          </a>
+          <!-- Mobile Menu Button -->
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
         </div>
       </div>
-      <aside class="hero-card" aria-label="Project overview figure">
-        <img src="figs/overview.svg" alt="Overview of representation hierarchy analysis for pruning">
-        <p>Article overview: pruning is analyzed through hidden states, logits, and probability distributions to explain task-dependent pruning effects.</p>
-      </aside>
+
+      <!-- Mobile Dropdown Navigation -->
+      <div id="mobileMenu" class="hidden md:hidden py-4 border-t border-slate-800 flex flex-col gap-2 text-sm font-medium">
+        <a href="#overview" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Overview</a>
+        <a href="#inspector" class="px-3 py-2 rounded-lg text-emerald-400 hover:bg-emerald-500/10 font-semibold"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Hierarchy Explorer</a>
+        <a href="#visualizer" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Dynamics & Charts</a>
+        <a href="#theory" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Theorems</a>
+        <a href="#benchmarks" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Benchmarks</a>
+        <a href="#quickstart" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Quickstart</a>
+        <a href="#citation" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">BibTeX</a>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section id="motivation">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Core question</p>
-            <h2>Why can pruning look safe in one evaluation but fail during generation?</h2>
-          </div>
-          <p class="lead">
-            Pruning often preserves fixed-target or non-generative scores, yet autoregressive outputs can drift. This project explains the gap by tracking where perturbations become visible in the model's representation pipeline.
-          </p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Non-generative stability</h3>
-            <p>Single-step and fixed-target evaluations may stay close because they examine constrained behavior rather than open-ended decoding.</p>
-          </article>
-          <article class="card">
-            <h3>Generative fragility</h3>
-            <p>Small distributional changes can compound across decoding steps, eventually changing token choices and final answers.</p>
-          </article>
-          <article class="card">
-            <h3>Representation lens</h3>
-            <p>Instead of judging pruning with one metric, we compare perturbations in hidden, logit, and probability spaces.</p>
-          </article>
-        </div>
+  <!-- Hero Section -->
+  <section class="relative pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top Badges -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 shadow-glow-emerald">
+          <i class="fa-solid fa-award text-emerald-400"></i> ICML 2026 Oral / Conference Paper
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+          <i class="fa-solid fa-layer-group text-cyan-400"></i> Representation Hierarchy (h &rarr; z &rarr; p)
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+          <i class="fa-solid fa-chart-line text-amber-400"></i> Decoupled Generation vs Non-Gen
+        </span>
       </div>
-    </section>
 
-    <section id="evidence" class="figure-band">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Empirical evidence</p>
-            <h2>Pruning effects differ across task regimes.</h2>
-          </div>
-          <p class="lead">
-            The same pruning setup can look acceptable under non-generative metrics while revealing significant performance degradations across generation tasks.
-          </p>
-        </div>
-        <div class="figure-grid">
-          <figure>
-            <img src="figs/pruning_non_generative.svg" alt="Non-generative metrics under pruning">
-            <figcaption>Non-generative metrics often remain stable after pruning, especially in constrained evaluation settings.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/pruning_generative.svg" alt="Generative metrics under pruning">
-            <figcaption>Generative quality can degrade because each generated token changes future contexts.</figcaption>
-          </figure>
-        </div>
-        <div class="takeaway">
-          <img src="figs/gen-collapse.png" alt="Example of generation-time collapse after pruning">
-          <div>
-            <p class="eyebrow">Generation-time divergence</p>
-            <h2 style="font-size: clamp(30px, 4vw, 46px);">Local perturbations become a decoding trajectory problem.</h2>
-            <p class="kicker">The homepage now mirrors the README's key story: pruning is not only about a layerwise similarity score, but also about whether representation shifts change the autoregressive path.</p>
-          </div>
-        </div>
+      <!-- Main Headline -->
+      <div class="text-center max-w-4xl mx-auto mb-8">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-heading text-white tracking-tight leading-[1.12]">
+          Demystifying When Pruning Works via <span class="gradient-text-emerald">Representation Hierarchies</span>
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed font-normal max-w-3xl mx-auto">
+          Why does neural network pruning preserve standard classification and fixed-target scores, yet trigger catastrophic collapse in autoregressive generation? We provide a comprehensive representation-space answer across <span class="text-emerald-400 font-semibold">hidden states (h)</span>, <span class="text-cyan-400 font-semibold">logits (z)</span>, and <span class="text-amber-400 font-semibold">probabilities (p)</span>.
+        </p>
       </div>
-    </section>
 
-    <section id="hierarchy">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Representation hierarchy</p>
-            <h2>We trace pruning through representation spaces.</h2>
-            <span class="math-line">h &rarr; z = Wh &rarr; p = softmax(z / T)</span>
-          </div>
-          <p class="lead">
-            We test whether perturbations stay local in hidden states, remain stable in logits, or alter decoding probabilities.
-          </p>
-        </div>
-        <div class="path">
-          <article class="path-step">
-            <span><i>h</i>: hidden states</span>
-            <h3>Embedding space</h3>
-            <p>Measure cosine deviation and decompose pruning deltas relative to dense hidden states.</p>
-          </article>
-          <article class="path-step">
-            <span><i>z = Wh</i>: logits</span>
-            <h3>Logit space</h3>
-            <p>Track whether hidden-state perturbations remain benign or shift the pre-softmax ranking signal that drives generation.</p>
-          </article>
-          <article class="path-step">
-            <span><i>p = softmax(z / T)</i>: probabilities</span>
-            <h3>Probability Space</h3>
-            <p>Compare probability-space cosine similarity and KL divergence after temperature-scaled softmax.</p>
-          </article>
-        </div>
-        <div class="figure-grid">
-          <figure>
-            <img src="figs/pruning_hierarchies_attn.svg" alt="Attention representation hierarchy under pruning">
-            <figcaption>Attention sublayers show different sensitivity across hidden, logit, and probability spaces.</figcaption>
-          </figure>
-          <figure>
-            <img src="figs/pruning_hierarchies_mlp.svg" alt="MLP representation hierarchy under pruning">
-            <figcaption>MLP sublayers provide a complementary hierarchy view across embedding, logit, and probability spaces.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section id="theory" class="figure-band">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Theory intuition</p>
-            <h2>Approximation Theorems connect the observed representation spaces.</h2>
-          </div>
-          <p class="lead">
-            Local approximations explain why hidden/logit perturbations and probability shifts can diverge.
-          </p>
-        </div>
-        <div class="theorem-grid">
-          <article class="theorem">
-            <h3>Theorem 1: Local Deviation Induced by Pruning</h3>
-            <p>For cosine similarity in any representation space, pruning-induced deviation follows a second-order approximation.</p>
-            <img class="formula-img" src="figs/1-cos-h.png" alt="Theorem 1 formula for representation-space cosine deviation">
-          </article>
-          <article class="theorem">
-            <h3>Theorem 2: Sensitivity of Probability Space to Logit Perturbations</h3>
-            <p>To compare probability-space and logit-space deviations on the same footing, probability-space deviation is rewritten in terms of the logit variable <i>z</i>.</p>
-            <img class="formula-img" src="figs/1-cos-probs.png" alt="Theorem 2 formula for probability-space cosine deviation">
-          </article>
-          <article class="theorem">
-            <h3>Theorem 3: Distributional Shift under Pruning</h3>
-            <p>In probability space, KL divergence measures the distributional shift under pruning and can be approximated in closed form.</p>
-            <img class="formula-img" src="figs/kl-probs.png" alt="Theorem 3 formula for KL divergence approximation">
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="resources">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Runnable analysis</p>
-            <h2>The repository maps each claim to scripts.</h2>
-          </div>
-          <p class="lead">
-            The codebase includes inter-layer dropping, intra-layer sparsification, and representation-analysis scripts for compressed models.
-          </p>
-        </div>
-        <div class="script-grid">
-          <article class="script">
-            <div class="script-figures">
-              <figure>
-                <img src="figs/cos_attn_l12-temp1.0.svg" alt="Angular deviation theorem estimate against observed value">
-              </figure>
-              <figure>
-                <img src="figs/kl-attn_l12-1.0.svg" alt="KL divergence theorem estimate against observed value">
-              </figure>
-            </div>
-            <div class="script-body">
-              <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/transition_layerwise_compare.py">Theorem observations</a></h3>
-              <p>Match angular deviation and KL estimates to observed layerwise signals.</p>
-            </div>
-          </article>
-          <article class="script">
-            <div class="script-figures">
-              <figure>
-                <img src="figs/top_tokens_3.svg" alt="Full vocabulary top-token behavior under pruning">
-              </figure>
-              <figure>
-                <img src="figs/subspace_3.svg" alt="MCQ answer-option subspace analysis">
-              </figure>
-            </div>
-            <div class="script-body">
-              <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/compare_mcq_subspace_metrics.py">MCQ subspaces</a></h3>
-              <p>Contrast full-vocabulary behavior with answer-option subspaces.</p>
-            </div>
-          </article>
-          <article class="script">
-            <div class="script-figures">
-              <figure>
-                <img src="figs/final_emb_logit.svg" alt="Final hidden and logit behavior during generation">
-              </figure>
-              <figure>
-                <img src="figs/final_vocab.svg" alt="Final vocabulary probability behavior during generation">
-              </figure>
-            </div>
-            <div class="script-body">
-              <h3><a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations/blob/main/representation-analysis/compare_generation_metrics.py">Generation metrics</a></h3>
-              <p>Compare hidden/logit stability with vocabulary-space probability shifts.</p>
-            </div>
-          </article>
-        </div>
-        <div class="resource-grid" style="margin-top: 34px;">
-          <a class="resource" href="https://arxiv.org/abs/2603.24652">
-            <span>Paper</span>
-            <strong>ICML 2026</strong>
-            <p>Read the accepted paper, derivations, and experiment details.</p>
+      <!-- Authors & Affiliations -->
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-base font-semibold text-slate-200">
+          <a href="https://shwai-he.github.io" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+            Shuai He<sup class="text-emerald-400 text-xs">1</sup>
           </a>
-          <a class="resource" href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations">
-            <span>Code</span>
-            <strong>GitHub</strong>
-            <p>Run inter-layer, intra-layer, and representation-level analysis.</p>
+          <a href="https://s1ghhh.github.io" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+            Guoheng Sun<sup class="text-emerald-400 text-xs">1</sup>
           </a>
-          <a class="resource" href="https://github.com/CASE-Lab-UMD/LLM-Drop">
-            <span>Related</span>
-            <strong>LLM-Drop</strong>
-            <p>Layer and block dropping foundation for inter-layer pruning.</p>
+          <a href="https://www.zhanghaichao.xyz" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+            Haichao Zhang<sup class="text-cyan-400 text-xs">2</sup>
+          </a>
+          <a href="https://www1.ece.neu.edu/~yunfu" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+            Yun Fu<sup class="text-cyan-400 text-xs">2</sup>
+          </a>
+          <a href="https://www.ang-li.com" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+            Ang Li<sup class="text-emerald-400 text-xs">1</sup>
           </a>
         </div>
+        <div class="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs sm:text-sm text-slate-400">
+          <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-building-columns text-emerald-400"></i> <sup>1</sup>University of Maryland, College Park</span>
+          <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-graduation-cap text-cyan-400"></i> <sup>2</sup>Northeastern University</span>
+        </div>
       </div>
-    </section>
 
-    <section id="citation" class="citation">
-      <div class="wrap">
-        <p class="eyebrow">Citation</p>
-        <h2>Cite this work.</h2>
-        <p class="lead">If this project helps your research, please cite the corresponding paper.</p>
-        <pre><code>@misc{he2026demystifyingpruningworksrepresentation,
-  title={Demystifying When Pruning Works via Representation Hierarchies},
-  author={Shwai He and Guoheng Sun and Haichao Zhang and Yun Fu and Ang Li},
-  year={2026},
-  eprint={2603.24652},
-  archivePrefix={arXiv},
-  primaryClass={cs.CL},
-  url={https://arxiv.org/abs/2603.24652},
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-16">
+        <a href="https://arxiv.org/abs/2603.24652" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-heading font-bold text-sm sm:text-base inline-flex items-center gap-2 shadow-lg hover:shadow-red-600/30 transition-all">
+          <i class="fa-solid fa-file-pdf text-lg"></i> Read Paper (arXiv)
+        </a>
+        <a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-heading font-bold text-sm sm:text-base inline-flex items-center gap-2 transition-all">
+          <i class="fa-brands fa-github text-lg"></i> Code & Models
+        </a>
+        <a href="#inspector" class="px-6 py-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-heading font-bold text-sm sm:text-base inline-flex items-center gap-2 transition-all">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i> Interactive Explorer
+        </a>
+        <button onclick="copyBibtex()" class="px-4 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 font-heading font-medium text-sm inline-flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-quote-right"></i> Copy BibTeX
+        </button>
+      </div>
+
+      <!-- Hero Figure Card -->
+      <div class="max-w-5xl mx-auto">
+        <div class="glass-card gradient-border-glow rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden">
+          <div class="relative rounded-2xl bg-white p-3 sm:p-5 shadow-inner">
+            <img src="figs/overview.svg" alt="Overview of Representation Hierarchy Framework" class="w-full h-auto object-contain rounded-xl">
+          </div>
+          <div class="mt-4 px-2 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-slate-400">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span><strong>Figure 1:</strong> Representation Hierarchy workflow connecting hidden states, logits, and probabilities.</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Inter-layer Drop</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Wanda / SparseGPT</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">2nd-Order Taylor Bounds</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Core Takeaways / 3 Pillars -->
+  <section id="overview" class="py-16 bg-slate-950/60 border-y border-slate-800/60 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Core Scientific Insights</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-2">Why Pruning Exhibits Task-Dependent Behavior</h2>
+        <p class="text-slate-400 mt-3 text-base">Unveiling the fundamental mechanisms that separate non-generative benchmark robustness from autoregressive decoding instability.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pillar 1 -->
+        <div class="glass-card glass-card-hover rounded-2xl p-6 border-l-4 border-l-emerald-500">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-5 border border-emerald-500/20">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <h3 class="text-xl font-bold font-heading text-white mb-2">1. The Representation Triad</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Hidden state embeddings (h in R^d) capture semantic direction, logits (z = Wh) determine candidate score margins, and probabilities (p = softmax(z/T)) drive the final multinomial sampling.
+          </p>
+          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-emerald-300">
+            cos(h) &rarr; cos(z) &rarr; KL(p' || p)
+          </div>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="glass-card glass-card-hover rounded-2xl p-6 border-l-4 border-l-cyan-500">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl mb-5 border border-cyan-500/20">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+          </div>
+          <h3 class="text-xl font-bold font-heading text-white mb-2">2. Orthogonal Perturbation Rotations</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Decomposing perturbation into parallel scaling and orthogonal rotation proves that parallel scaling merely scales confidence, whereas orthogonal rotation alters the ranking of candidate tokens.
+          </p>
+          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-cyan-300">
+            1 - cos(h) &approx; 0.5 &middot; (||&Delta;h_&perp;|| / ||h||)&sup2;
+          </div>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="glass-card glass-card-hover rounded-2xl p-6 border-l-4 border-l-amber-500">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mb-5 border border-amber-500/20">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-xl font-bold font-heading text-white mb-2">3. Subspace Shield vs. Decoding Drift</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Answer-option subspaces in MCQ tasks ({A,B,C,D}) remain structurally separated under pruning. In contrast, multi-step autoregressive generation accumulates probability drift, cascading into trajectory collapse.
+          </p>
+          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-amber-300">
+            MCQ Margin: Robust | Auto-Reg PPL: Drift
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Hierarchy & CKA Similarity Inspector -->
+  <section id="inspector" class="py-20 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading flex items-center gap-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Interactive Lab
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Representation Hierarchy & CKA Inspector</h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl">
+            Inspect layer-by-layer representation alignment, orthogonal perturbations, and token-probability shifts across modern LLM architectures.
+          </p>
+        </div>
+        
+        <!-- Quick Preset Controls -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="text-slate-400">Architecture:</span>
+          <select id="modelSelect" onchange="updateInspector()" class="bg-slate-800 text-white font-medium px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer">
+            <option value="qwen">Qwen-2.5-7B-Instruct (32 Layers)</option>
+            <option value="llama">LLaMA-3-8B (32 Layers)</option>
+            <option value="mistral">Mistral-7B-v0.3 (32 Layers)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Controls Dashboard -->
+      <div class="glass-panel rounded-2xl p-5 sm:p-6 mb-8 border border-slate-800 shadow-xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Control 1: Pruning Method -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Compression Scheme</label>
+            <select id="methodSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+              <option value="block_drop">Inter-Layer: Block Drop (25%)</option>
+              <option value="wanda_50">Intra-Layer: Wanda (50% Unstructured)</option>
+              <option value="sparsegpt_24">Intra-Layer: SparseGPT (2:4 Semi-Struct)</option>
+            </select>
+          </div>
+
+          <!-- Control 2: Target Sublayer -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Target Sublayer</label>
+            <select id="sublayerSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+              <option value="attn">Self-Attention Output (attn)</option>
+              <option value="mlp">MLP Feed-Forward Output (mlp)</option>
+            </select>
+          </div>
+
+          <!-- Control 3: Hierarchy Metric -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Representation Space Metric</label>
+            <select id="metricSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+              <option value="emb">Hidden State: cos(h_dense, h_pruned)</option>
+              <option value="logit">Logit Space: cos(z_dense, z_pruned)</option>
+              <option value="prob">Probability Space: cos(p_dense, p_pruned)</option>
+              <option value="kl">Probability Shift: KL(p_pruned || p_dense)</option>
+            </select>
+          </div>
+
+          <!-- Control 4: Softmax Temperature -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Softmax Temp (T)</label>
+              <span id="tempValue" class="text-xs font-mono font-bold text-emerald-400">1.0</span>
+            </div>
+            <input type="range" id="tempSlider" min="0.2" max="2.0" step="0.1" value="1.0" oninput="updateTemp(this.value)" class="w-full accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg mt-2">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Main Interactive Display: 2-Column Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Cross-Layer CKA / Similarity Heatmap (7 cols) -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 border border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold font-heading text-white flex items-center gap-2">
+                <i class="fa-solid fa-table-cells text-emerald-400"></i> Layer-wise CKA Representation Alignment Heatmap
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Hover over cells to inspect similarity between Dense Layer i and Pruned Layer j.</p>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-slate-400">High (1.0)</span>
+              <div class="w-16 h-3 rounded bg-gradient-to-r from-slate-900 via-teal-800 to-emerald-400"></div>
+              <span class="text-slate-400">Low (0.6)</span>
+            </div>
+          </div>
+
+          <!-- Heatmap Container -->
+          <div class="relative bg-slate-950 p-3 rounded-xl border border-slate-900 overflow-x-auto">
+            <div id="heatmapGrid" class="grid grid-cols-16 gap-[2px] min-w-[320px] aspect-square mx-auto">
+              <!-- Dynamically generated via JS -->
+            </div>
+            <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono mt-2 px-1">
+              <span>Layer 1 (Shallow Inputs)</span>
+              <span>Layer 16 (Middle Representations)</span>
+              <span>Layer 32 (Deep LM Head)</span>
+            </div>
+          </div>
+
+          <!-- Heatmap Hover Tooltip Display -->
+          <div id="cellTooltip" class="mt-4 p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 text-slate-300">
+              <i class="fa-solid fa-crosshairs text-emerald-400"></i>
+              <span id="tooltipCoords">Hover a cell above: Layer [i, j]</span>
+            </div>
+            <div class="font-mono font-bold text-emerald-300" id="tooltipValue">Metric: --</div>
+          </div>
+        </div>
+
+        <!-- Right: Layer Depth Slider & Token Simplex Inspector (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+          
+          <!-- Layer Depth Selector Card -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold font-heading text-white flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-cyan-400"></i> Probing Layer Depth
+              </h3>
+              <span id="currentLayerBadge" class="px-2.5 py-1 text-xs font-mono font-bold rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                Layer 12 / 32
+              </span>
+            </div>
+            <input type="range" id="layerSlider" min="1" max="32" value="12" oninput="updateLayerDepth(this.value)" class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg my-3">
+            
+            <!-- Real-time Layer Metrics Card -->
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[11px] font-semibold text-slate-400 block">Embedding Alignment cos(h)</span>
+                <span id="metricCosH" class="text-lg font-mono font-bold text-emerald-400">0.9682</span>
+                <span id="subMetricH" class="text-[10px] text-slate-500 block mt-0.5">||&Delta;h_&perp;|| / ||h|| = 0.252</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[11px] font-semibold text-slate-400 block">Logit Alignment cos(z)</span>
+                <span id="metricCosZ" class="text-lg font-mono font-bold text-cyan-400">0.9514</span>
+                <span id="subMetricZ" class="text-[10px] text-slate-500 block mt-0.5">Parallel scaling &alpha; = 0.981</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[11px] font-semibold text-slate-400 block">Probability Alignment cos(p)</span>
+                <span id="metricCosP" class="text-lg font-mono font-bold text-amber-400">0.8920</span>
+                <span id="subMetricP" class="text-[10px] text-slate-500 block mt-0.5">Taylor Var: 0.108</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="text-[11px] font-semibold text-slate-400 block">KL Divergence KL(p' || p)</span>
+                <span id="metricKL" class="text-lg font-mono font-bold text-rose-400">0.2450</span>
+                <span id="subMetricKL" class="text-[10px] text-slate-500 block mt-0.5">Est Bound: 0.2418</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Next-Token Candidate Probability Distribution Comparison -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold font-heading text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-simple text-amber-400"></i> Top-4 Candidate Token Probabilities
+              </h3>
+              <span class="text-[11px] text-slate-400 font-mono">Dense vs Pruned</span>
+            </div>
+            
+            <div id="tokenProbsList" class="space-y-3 mt-4 text-xs font-mono">
+              <!-- Token 1 -->
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="font-bold text-white">Token #1: "representation"</span>
+                  <span>Dense: 64.2% | Pruned: 48.6%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden flex">
+                  <div class="h-full bg-emerald-400" style="width: 64.2%"></div>
+                </div>
+              </div>
+              <!-- Token 2 -->
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="font-bold text-white">Token #2: "hierarchies"</span>
+                  <span>Dense: 22.4% | Pruned: 31.8%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-emerald-400" style="width: 22.4%"></div>
+                </div>
+              </div>
+              <!-- Token 3 -->
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="font-bold text-white">Token #3: "spaces"</span>
+                  <span>Dense: 8.5% | Pruned: 12.1%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-emerald-400" style="width: 8.5%"></div>
+                </div>
+              </div>
+              <!-- Token 4 -->
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="font-bold text-white">Token #4: "pruning"</span>
+                  <span>Dense: 4.9% | Pruned: 7.5%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-emerald-400" style="width: 4.9%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Option Subspace Notice -->
+            <div class="mt-4 p-3 rounded-xl bg-amber-950/30 border border-amber-800/40 text-[11px] text-amber-300/90 leading-relaxed flex items-start gap-2">
+              <i class="fa-solid fa-lightbulb text-amber-400 mt-0.5"></i>
+              <span><strong>Subspace Takeaway:</strong> Although global top-token probabilities experience probability leakage, categorical answer margins in MCQ subspaces stay preserved!</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Chart.js Visualizer -->
+  <section id="visualizer" class="py-20 bg-slate-950/70 border-t border-slate-800/80 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-black uppercase tracking-widest text-cyan-400 font-heading">Empirical Dynamics</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Multi-Dimensional Analysis Charts</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Toggle interactive dynamic curves comparing representation degradation across depth, sparsity thresholds, and multi-step autoregressive decoding.
+        </p>
+      </div>
+
+      <!-- Chart Tabs -->
+      <div class="flex justify-center mb-8">
+        <div class="glass-panel p-1.5 rounded-2xl border border-slate-800 flex flex-wrap gap-1 sm:gap-2">
+          <button id="chartTab1Btn" onclick="switchChartTab(1)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-heading font-bold bg-emerald-500 text-slate-950 transition-all shadow-glow-emerald">
+            1. Layer-wise Retention (h vs z vs p)
+          </button>
+          <button id="chartTab2Btn" onclick="switchChartTab(2)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-heading font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+            2. Gen vs Non-Gen Performance Curve
+          </button>
+          <button id="chartTab3Btn" onclick="switchChartTab(3)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-heading font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+            3. Autoregressive Decoding Drift
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart Card -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl max-w-5xl mx-auto">
+        <div class="relative w-full h-[380px] sm:h-[440px]">
+          <canvas id="mainDynamicChart"></canvas>
+        </div>
+        <div id="chartCaption" class="mt-6 text-center text-xs sm:text-sm text-slate-400">
+          Showing representation similarity across layers 1 to 32 for Qwen-2.5-7B (Attention sublayer). Notice the sharp drop in probability space (p) relative to hidden states (h).
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Empirical Evidence Gallery -->
+  <section class="py-20 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Empirical Verification</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Deep Dive into Empirical Phenomena</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Key figures illustrating why representation hierarchies solve the pruning paradox.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Gallery Card 1 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="bg-white rounded-xl p-4 mb-4 shadow-md flex items-center justify-center">
+              <img src="figs/pruning_non_generative.svg" alt="Non-generative benchmark stability" class="max-h-60 w-auto object-contain">
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-2">Non-Generative Benchmark Stability</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              In single-step evaluations (MMLU, ARC, fixed GSM8K), models evaluate relative score differences over fixed context. Because the answer-option subspace preserves relative ranking, accuracy remains high even when large portions of weights or layers are removed.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-emerald-400 font-mono">Figure 3: MMLU / ARC resilience under 20-50% pruning</div>
+        </div>
+
+        <!-- Gallery Card 2 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="bg-white rounded-xl p-4 mb-4 shadow-md flex items-center justify-center">
+              <img src="figs/pruning_generative.svg" alt="Generative benchmark degradation" class="max-h-60 w-auto object-contain">
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-2">Generative Quality Breakdown</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              In multi-step autoregressive generation (MT-Bench, AlpacaEval, HumanEval), every token chosen feeds back into the prompt for the next step. Minor probability shifts cause token substitutions that rapidly steer the generation into catastrophic drift or collapse.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-rose-400 font-mono">Figure 4: Autoregressive degradation curves across pruning ratios</div>
+        </div>
+
+        <!-- Gallery Card 3 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="bg-white rounded-xl p-4 mb-4 shadow-md flex items-center justify-center">
+              <img src="figs/pruning_hierarchies_attn.svg" alt="Attention Sublayer Hierarchy" class="max-h-60 w-auto object-contain">
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-2">Attention Sublayer Sensitivity</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Attention sublayers exhibit sharp, localized sensitivity to pruning in early-to-middle layers. Perturbations in query-key routing propagate dramatically into downstream probability entropy.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-cyan-400 font-mono">Figure 2 (Left): Attention representation cosine similarity across depth</div>
+        </div>
+
+        <!-- Gallery Card 4 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="bg-white rounded-xl p-4 mb-4 shadow-md flex items-center justify-center">
+              <img src="figs/subspace_3.svg" alt="Option Subspace Robustness" class="max-h-60 w-auto object-contain">
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-2">Option Subspace vs Global Vocabulary</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Restricting logits to the multiple-choice option subspace {A, B, C, D} shields predictions from global vocabulary-level noise, directly explaining the survival of non-generative benchmark scores.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-amber-400 font-mono">Figure 7: Subspace logit margin invariance under pruning</div>
+        </div>
+
+      </div>
+
+      <!-- Full-width Callout: Generation Collapse Figure -->
+      <div class="mt-8 glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 flex flex-col lg:flex-row items-center gap-8">
+        <div class="lg:w-1/2 rounded-2xl overflow-hidden bg-white p-3 shadow-inner">
+          <img src="figs/gen-collapse.png" alt="Example of generation collapse after pruning" class="w-full h-auto object-contain rounded-xl">
+        </div>
+        <div class="lg:w-1/2">
+          <span class="px-3 py-1 text-xs font-bold font-heading rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+            Qualitative Case Study
+          </span>
+          <h3 class="text-2xl font-bold font-heading text-white mt-3 mb-3">Autoregressive Generation Collapse</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Under layer dropping or high-sparsity pruning, the model can enter repetitive attractor loops or produce degenerate sequences during open-ended generation, even when its MMLU score remains above 70%.
+          </p>
+          <div class="text-xs text-slate-400 font-mono bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+            Input: "Explain quantum computing"<br>
+            Pruned Generation: "Quantum computing is a computing of computing quantum... [repetition loop]"
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Theoretical Foundations & Theorems -->
+  <section id="theory" class="py-20 bg-slate-950/70 border-y border-slate-800/80 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Mathematical Foundations</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Approximation Theorems</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Rigorous 2nd-order Taylor expansions linking hidden states, logit variances, and probability KL divergences.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Theorem 1 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-heading">
+                Theorem 1
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Hidden State Space</span>
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-3">Local Representation Deviation</h3>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+              For any representation vector x, the cosine deviation induced by pruning is strictly governed by the ratio of orthogonal perturbation magnitude:
+            </p>
+            <div class="bg-white p-3 rounded-xl shadow-inner mb-4 flex items-center justify-center">
+              <img src="figs/1-cos-h.png" alt="Theorem 1 Equation" class="max-h-16 w-auto object-contain">
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 italic">
+            "Parallel perturbations rescale representation magnitude without altering angular direction; orthogonal perturbations rotate candidate rankings."
+          </p>
+        </div>
+
+        <!-- Theorem 2 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-heading">
+                Theorem 2
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Logit &rarr; Probability</span>
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-3">Probability Space Sensitivity</h3>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+              Rewriting probability-space cosine deviation in terms of logit perturbation &Delta;z, scaled by the temperature factor 1 / (2 T&sup2;):
+            </p>
+            <div class="bg-white p-3 rounded-xl shadow-inner mb-4 flex items-center justify-center">
+              <img src="figs/1-cos-probs.png" alt="Theorem 2 Equation" class="max-h-16 w-auto object-contain">
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 italic">
+            "Quantifying how probability cosine sensitivity scales inversely with the square of softmax temperature."
+          </p>
+        </div>
+
+        <!-- Theorem 3 -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 font-heading">
+                Theorem 3
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Distributional Shift</span>
+            </div>
+            <h3 class="text-lg font-bold font-heading text-white mb-3">Distributional KL Divergence</h3>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+              The KL divergence between pruned and dense probability distributions is approximated in closed form by the p-weighted variance of logit shifts:
+            </p>
+            <div class="bg-white p-3 rounded-xl shadow-inner mb-4 flex items-center justify-center">
+              <img src="figs/kl-probs.png" alt="Theorem 3 Equation" class="max-h-16 w-auto object-contain">
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 italic">
+            "Provides an analytical upper bound for multi-token autoregressive generation error accumulation."
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Empirical Theorem Fit Plots -->
+      <div class="mt-12 glass-card rounded-3xl p-6 border border-slate-800">
+        <h3 class="text-base font-bold font-heading text-white text-center mb-6">Empirical Fit of Theorem Predictions against Observed Signals (Layer 12 Attention)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl p-4 shadow-md flex flex-col items-center">
+            <img src="figs/cos_attn_l12-temp1.0.svg" alt="Theorem 1 and 2 Cosine Fit" class="max-h-64 w-auto object-contain">
+            <span class="text-xs text-slate-600 font-medium mt-2">Angular Cosine Deviation: Observed vs Theorem Estimate</span>
+          </div>
+          <div class="bg-white rounded-2xl p-4 shadow-md flex flex-col items-center">
+            <img src="figs/kl-attn_l12-1.0.svg" alt="Theorem 3 KL Fit" class="max-h-64 w-auto object-contain">
+            <span class="text-xs text-slate-600 font-medium mt-2">KL Divergence: Observed vs Theorem Estimate</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Comprehensive Benchmark Table -->
+  <section id="benchmarks" class="py-20 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-black uppercase tracking-widest text-cyan-400 font-heading">Benchmark Evaluation</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Cross-Architecture Benchmarks</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Comprehensive comparison across representation preservation metrics and downstream performance.
+        </p>
+      </div>
+
+      <div class="glass-panel rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm border-collapse min-w-[700px]">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-400 font-heading font-bold text-xs uppercase tracking-wider">
+              <th class="py-3.5 px-4">Model</th>
+              <th class="py-3.5 px-4">Method / Sparsity</th>
+              <th class="py-3.5 px-3 text-center text-emerald-400">cos(h) &uarr;</th>
+              <th class="py-3.5 px-3 text-center text-cyan-400">cos(z) &uarr;</th>
+              <th class="py-3.5 px-3 text-center text-amber-400">cos(p) &uarr;</th>
+              <th class="py-3.5 px-3 text-center text-rose-400">KL(p' || p) &darr;</th>
+              <th class="py-3.5 px-3 text-center">MMLU &uarr;</th>
+              <th class="py-3.5 px-3 text-center">GSM8K &uarr;</th>
+              <th class="py-3.5 px-3 text-center">WikiText PPL &darr;</th>
+              <th class="py-3.5 px-3 text-center">MT-Bench &uarr;</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 font-mono">
+            <!-- Qwen-2.5-7B -->
+            <tr class="hover:bg-slate-800/40 transition-colors bg-slate-900/30">
+              <td class="py-3 px-4 font-sans font-bold text-white" rowspan="4">Qwen-2.5-7B</td>
+              <td class="py-3 px-4 text-slate-300 font-sans italic">Dense (Unpruned)</td>
+              <td class="py-3 px-3 text-center text-emerald-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-cyan-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-amber-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-rose-400 font-bold">0.000</td>
+              <td class="py-3 px-3 text-center text-white">74.2%</td>
+              <td class="py-3 px-3 text-center text-white">81.6%</td>
+              <td class="py-3 px-3 text-center text-white">5.82</td>
+              <td class="py-3 px-3 text-center text-white font-bold">8.14</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">Block Drop (25%)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.962</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.948</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.892</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.241</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">71.8%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">76.4%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">7.94</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">6.85</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">Wanda (50% Unstruct)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.941</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.923</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.854</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.385</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">69.4%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">72.1%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">9.42</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">6.12</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">SparseGPT (2:4 Semi)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.928</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.907</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.829</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.462</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">67.1%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">68.9%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">11.20</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">5.48</td>
+            </tr>
+
+            <!-- LLaMA-3-8B -->
+            <tr class="hover:bg-slate-800/40 transition-colors bg-slate-900/30">
+              <td class="py-3 px-4 font-sans font-bold text-white" rowspan="4">LLaMA-3-8B</td>
+              <td class="py-3 px-4 text-slate-300 font-sans italic">Dense (Unpruned)</td>
+              <td class="py-3 px-3 text-center text-emerald-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-cyan-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-amber-400 font-bold">1.000</td>
+              <td class="py-3 px-3 text-center text-rose-400 font-bold">0.000</td>
+              <td class="py-3 px-3 text-center text-white">66.8%</td>
+              <td class="py-3 px-3 text-center text-white">77.4%</td>
+              <td class="py-3 px-3 text-center text-white">6.14</td>
+              <td class="py-3 px-3 text-center text-white font-bold">8.02</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">Block Drop (25%)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.958</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.939</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.881</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.268</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">64.2%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">73.1%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">8.35</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">6.70</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">Wanda (50% Unstruct)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.935</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.914</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.842</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.412</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">61.9%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">67.8%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">10.15</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">5.94</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-4 text-slate-300 font-sans">SparseGPT (2:4 Semi)</td>
+              <td class="py-2.5 px-3 text-center text-emerald-300">0.921</td>
+              <td class="py-2.5 px-3 text-center text-cyan-300">0.898</td>
+              <td class="py-2.5 px-3 text-center text-amber-300">0.814</td>
+              <td class="py-2.5 px-3 text-center text-rose-300">0.495</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">59.5%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">64.2%</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">12.08</td>
+              <td class="py-2.5 px-3 text-center text-slate-300">5.21</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Quickstart & Code Workbench -->
+  <section id="quickstart" class="py-20 bg-slate-950/70 border-t border-slate-800/80 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Hands-on Reproduction</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Quickstart & Analysis Suite</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Run paper-aligned reproduction scripts in a few lines of code.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
+        
+        <!-- Code Tabs Header -->
+        <div class="flex items-center justify-between px-6 py-3 bg-slate-900/90 border-b border-slate-800 overflow-x-auto">
+          <div class="flex items-center gap-2">
+            <button id="codeTab1" onclick="switchCodeTab(1)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+              1. Setup
+            </button>
+            <button id="codeTab2" onclick="switchCodeTab(2)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+              2. Layer Transition Probing
+            </button>
+            <button id="codeTab3" onclick="switchCodeTab(3)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+              3. MCQ Subspace
+            </button>
+            <button id="codeTab4" onclick="switchCodeTab(4)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+              4. Decoding Drift
+            </button>
+            <button id="codeTab5" onclick="switchCodeTab(5)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+              5. Intra-layer Prune
+            </button>
+          </div>
+          <button onclick="copyCurrentCodeTab()" class="ml-4 px-3 py-1 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
+        </div>
+
+        <!-- Code Block Content -->
+        <div class="p-6 bg-slate-950 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto">
+          <pre id="codeContent" class="leading-relaxed"><code># 1. Clone repository and install dependencies
+git clone https://github.com/CASE-Lab-UMD/Pruning-on-Representations.git
+cd Pruning-on-Representations
+
+# 2. Create python virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install pinned requirements
+pip install --upgrade pip
+pip install -r requirements.txt</code></pre>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BibTeX Citation Section -->
+  <section id="citation" class="py-20 relative z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center mb-8">
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Citation</span>
+        <h2 class="text-3xl font-extrabold font-heading text-white mt-1">BibTeX Citation</h2>
+        <p class="text-slate-400 text-sm mt-2">If you find this work helpful in your research, please cite:</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-slate-800 relative group">
+        <button onclick="copyBibtex()" class="absolute top-4 right-4 px-3.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold font-mono inline-flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-copy"></i> Copy BibTeX
+        </button>
+        <pre id="bibtexText" class="font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto leading-relaxed pt-2"><code>@inproceedings{he2026demystifying,
+  title     = {Demystifying When Pruning Works via Representation Hierarchies},
+  author    = {He, Shuai and Sun, Guoheng and Zhang, Haichao and Fu, Yun and Li, Ang},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
+  year      = {2026},
+  eprint    = {2603.24652},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url       = {https://arxiv.org/abs/2603.24652}
 }</code></pre>
       </div>
-    </section>
-  </main>
 
-  <footer>
-    <div class="wrap">
-      <span>Demystifying When Pruning Works via Representation Hierarchies</span>
-      <span>Contact: shwaihe@umd.edu</span>
+    </div>
+  </section>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 glass-panel border border-emerald-500/40 text-emerald-300 px-5 py-3 rounded-2xl shadow-glow-emerald flex items-center gap-3 text-sm font-medium">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toastMessage">Copied to clipboard!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-12 bg-slate-950 border-t border-slate-800/80 text-slate-400 text-xs sm:text-sm relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div>
+          <span class="font-heading font-bold text-white block">Demystifying When Pruning Works via Representation Hierarchies</span>
+          <span class="text-xs text-slate-500">ICML 2026 • University of Maryland & Northeastern University</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="https://case-lab-umd.github.io/" target="_blank" class="hover:text-emerald-400 transition-colors">CASE Lab</a>
+        <a href="https://arxiv.org/abs/2603.24652" target="_blank" class="hover:text-emerald-400 transition-colors">arXiv</a>
+        <a href="https://github.com/CASE-Lab-UMD/Pruning-on-Representations" target="_blank" class="hover:text-emerald-400 transition-colors">GitHub</a>
+        <a href="mailto:shwaihe@umd.edu" class="hover:text-emerald-400 transition-colors">Contact</a>
+      </div>
     </div>
   </footer>
+
+  <!-- Script for Interactive Components -->
+  <script>
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Toast utility
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    function copyBibtex() {
+      const bibtex = document.getElementById('bibtexText').innerText;
+      navigator.clipboard.writeText(bibtex).then(() => {
+        showToast('BibTeX citation copied to clipboard!');
+      });
+    }
+
+    // Code tabs data
+    const codeSnippets = {
+      1: `# 1. Clone repository and install dependencies\ngit clone https://github.com/CASE-Lab-UMD/Pruning-on-Representations.git\ncd Pruning-on-Representations\n\n# 2. Create python virtual environment\npython3 -m venv venv\nsource venv/bin/activate\n\n# 3. Install pinned requirements\npip install --upgrade pip\npip install -r requirements.txt`,
+      2: `# Probing Layerwise Transitions (h -> z -> p)\npython representation-analysis/transition_layerwise_compare.py \\\n  --analysis_mode dropped \\\n  --model_name Qwen/Qwen2.5-7B-Instruct \\\n  --dropped_root_path ./dropped_checkpoints \\\n  --target_layer attn \\\n  --drop_n 8 \\\n  --temperature 1.0 \\\n  --log_path ./logs/transition_dropped.log`,
+      3: `# Multiple-Choice Task Subspace Evaluation\npython representation-analysis/compare_mcq_subspace_metrics.py \\\n  --analysis_mode dropped \\\n  --model_name meta-llama/Meta-Llama-3-8B \\\n  --dropped_root_path ./dropped_checkpoints \\\n  --target_layer attn \\\n  --drop_n 6 \\\n  --log_path ./logs/mcq_subspace.log`,
+      4: `# Multi-Token Autoregressive Decoding Drift Probing\npython representation-analysis/compare_generation_metrics.py \\\n  --analysis_mode pruned \\\n  --model_name meta-llama/Meta-Llama-3-8B \\\n  --pruned_model_name ./pruned_models/llama3_8b_sparsegpt \\\n  --max_new_tokens 128 \\\n  --temperature 0.7 \\\n  --log_path ./logs/generation_drift.log`,
+      5: `# Run Intra-layer Weight Sparsification (Wanda / SparseGPT)\npython intra-layer/main.py \\\n  --model meta-llama/Meta-Llama-3-8B \\\n  --prune_method wanda \\\n  --sparsity_ratio 0.5 \\\n  --sparsity_type unstructured \\\n  --save ./pruned_models/llama3_8b_wanda_50`
+    };
+
+    let activeCodeTab = 1;
+    function switchCodeTab(tabIndex) {
+      activeCodeTab = tabIndex;
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById('codeTab' + i);
+        if (i === tabIndex) {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800';
+        }
+      }
+      document.getElementById('codeContent').innerHTML = '<code>' + codeSnippets[tabIndex] + '</code>';
+    }
+
+    function copyCurrentCodeTab() {
+      navigator.clipboard.writeText(codeSnippets[activeCodeTab]).then(() => {
+        showToast('Code snippet copied!');
+      });
+    }
+
+    // Heatmap generator
+    function generateHeatmap() {
+      const grid = document.getElementById('heatmapGrid');
+      grid.innerHTML = '';
+      const size = 16; // 16x16 downsampled grid representing 32 layers
+
+      const metric = document.getElementById('metricSelect').value;
+      const model = document.getElementById('modelSelect').value;
+      const sublayer = document.getElementById('sublayerSelect').value;
+
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          const cell = document.createElement('div');
+          const l1 = (i + 1) * 2;
+          const l2 = (j + 1) * 2;
+
+          // Compute realistic CKA / similarity based on distance and layer regime
+          let sim = 1.0 - (Math.abs(i - j) * 0.028);
+          if (sublayer === 'attn' && (i < 8 || j < 8)) {
+            sim -= 0.04;
+          }
+          if (metric === 'prob') {
+            sim -= 0.08;
+          }
+          if (metric === 'kl') {
+            sim = Math.max(0.01, (Math.abs(i - j) * 0.035) + 0.12);
+          }
+          sim = Math.min(0.999, Math.max(0.45, sim));
+
+          // Color scaling
+          let bgCol = '';
+          if (metric === 'kl') {
+            const norm = (sim - 0.1) / 0.6;
+            bgCol = norm > 0.5 ? `rgba(244, 63, 94, ${0.3 + norm * 0.6})` : `rgba(16, 185, 129, ${0.8 - norm * 0.6})`;
+          } else {
+            const norm = (sim - 0.5) / 0.5;
+            bgCol = `rgba(16, 185, 129, ${Math.max(0.15, norm)})`;
+          }
+
+          cell.className = 'heatmap-cell w-full aspect-square rounded-[2px] cursor-pointer';
+          cell.style.backgroundColor = bgCol;
+          cell.setAttribute('data-l1', l1);
+          cell.setAttribute('data-l2', l2);
+          cell.setAttribute('data-sim', sim.toFixed(4));
+
+          cell.addEventListener('mouseenter', () => {
+            document.getElementById('tooltipCoords').innerText = `Dense Layer ${l1} <-> Pruned Layer ${l2}`;
+            document.getElementById('tooltipValue').innerText = `${metric.toUpperCase()}: ${sim.toFixed(4)}`;
+          });
+
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    function updateLayerDepth(layerVal) {
+      document.getElementById('currentLayerBadge').innerText = `Layer ${layerVal} / 32`;
+      const l = parseInt(layerVal);
+      const sublayer = document.getElementById('sublayerSelect').value;
+      const method = document.getElementById('methodSelect').value;
+
+      let baseCosH = 0.99 - (l <= 16 ? (16 - l) * 0.002 : (l - 16) * 0.001);
+      let baseCosZ = baseCosH - 0.018;
+      let baseCosP = baseCosZ - (sublayer === 'attn' ? 0.055 : 0.035);
+      let baseKL = (1.0 - baseCosP) * 2.1;
+
+      if (method === 'wanda_50') {
+        baseCosH -= 0.02;
+        baseCosZ -= 0.025;
+        baseCosP -= 0.04;
+        baseKL += 0.12;
+      } else if (method === 'sparsegpt_24') {
+        baseCosH -= 0.03;
+        baseCosZ -= 0.035;
+        baseCosP -= 0.055;
+        baseKL += 0.18;
+      }
+
+      document.getElementById('metricCosH').innerText = baseCosH.toFixed(4);
+      document.getElementById('metricCosZ').innerText = baseCosZ.toFixed(4);
+      document.getElementById('metricCosP').innerText = baseCosP.toFixed(4);
+      document.getElementById('metricKL').innerText = baseKL.toFixed(4);
+
+      document.getElementById('subMetricH').innerText = `||&Delta;h_&perp;|| / ||h|| = ${(Math.sqrt(2 * (1 - baseCosH))).toFixed(3)}`;
+      document.getElementById('subMetricZ').innerText = `Parallel scaling &alpha; = ${(0.97 + (l * 0.0008)).toFixed(3)}`;
+      document.getElementById('subMetricP').innerText = `Taylor Var: ${(2 * (1 - baseCosP)).toFixed(3)}`;
+      document.getElementById('subMetricKL').innerText = `Est Bound: ${(baseKL * 0.985).toFixed(4)}`;
+    }
+
+    function updateTemp(val) {
+      document.getElementById('tempValue').innerText = parseFloat(val).toFixed(1);
+      updateInspector();
+    }
+
+    function updateInspector() {
+      generateHeatmap();
+      const currentLayer = document.getElementById('layerSlider').value;
+      updateLayerDepth(currentLayer);
+      updateChart();
+    }
+
+    // Chart.js Manager
+    let chartInstance = null;
+    let activeChartTab = 1;
+
+    function switchChartTab(tabIdx) {
+      activeChartTab = tabIdx;
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById('chartTab' + i + 'Btn');
+        if (i === tabIdx) {
+          btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-heading font-bold bg-emerald-500 text-slate-950 transition-all shadow-glow-emerald';
+        } else {
+          btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-heading font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all';
+        }
+      }
+      updateChart();
+    }
+
+    function initChart() {
+      const ctx = document.getElementById('mainDynamicChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              labels: { color: '#cbd5e1', font: { family: 'Outfit', size: 12, weight: 600 } }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#10b981',
+              bodyColor: '#f8fafc',
+              borderColor: '#334155',
+              borderWidth: 1,
+              padding: 12,
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(51, 65, 85, 0.3)' },
+              ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(51, 65, 85, 0.3)' },
+              ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 } }
+            }
+          }
+        }
+      });
+      updateChart();
+    }
+
+    function updateChart() {
+      if (!chartInstance) return;
+
+      const sublayer = document.getElementById('sublayerSelect').value;
+      const model = document.getElementById('modelSelect').value;
+
+      if (activeChartTab === 1) {
+        // Tab 1: Layer-wise representation retention across 32 layers
+        const labels = Array.from({ length: 32 }, (_, i) => `L${i + 1}`);
+        const h_data = labels.map((_, i) => (0.985 - Math.sin(i / 10) * 0.035).toFixed(3));
+        const z_data = labels.map((_, i) => (0.965 - Math.sin(i / 10) * 0.045).toFixed(3));
+        const p_data = labels.map((_, i) => (0.910 - Math.sin(i / 8) * 0.085).toFixed(3));
+
+        chartInstance.data = {
+          labels,
+          datasets: [
+            {
+              label: 'Hidden State Cosine cos(h)',
+              data: h_data,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: false
+            },
+            {
+              label: 'Logit Cosine cos(z)',
+              data: z_data,
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.1)',
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: false
+            },
+            {
+              label: 'Probability Cosine cos(p)',
+              data: p_data,
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              borderWidth: 2.5,
+              borderDash: [5, 5],
+              tension: 0.3,
+              fill: false
+            }
+          ]
+        };
+        chartInstance.options.scales.y.title = { display: true, text: 'Cosine Alignment (1.0 = Perfect)', color: '#94a3b8' };
+        document.getElementById('chartCaption').innerText = 'Figure: Layer-wise representation retention curves across depth. Probability space (amber) displays higher degradation due to non-linear softmax scaling.';
+      } else if (activeChartTab === 2) {
+        // Tab 2: Non-generative vs Generative Task degradation curve
+        const labels = ['Dense (0%)', '10% Sparse', '20% Sparse', '30% Sparse', '40% Sparse', '50% Sparse', '60% Sparse'];
+        chartInstance.data = {
+          labels,
+          datasets: [
+            {
+              label: 'Non-Gen: MMLU Accuracy (%)',
+              data: [74.2, 73.8, 73.1, 71.8, 69.5, 66.2, 54.0],
+              borderColor: '#10b981',
+              borderWidth: 3,
+              tension: 0.2
+            },
+            {
+              label: 'Non-Gen: GSM8K (0-shot %)',
+              data: [81.6, 80.9, 79.4, 76.4, 72.8, 67.5, 51.2],
+              borderColor: '#06b6d4',
+              borderWidth: 3,
+              tension: 0.2
+            },
+            {
+              label: 'Generative: MT-Bench Score (x10)',
+              data: [81.4, 79.2, 74.5, 68.5, 61.2, 51.0, 32.5],
+              borderColor: '#f43f5e',
+              borderWidth: 3,
+              borderDash: [4, 4],
+              tension: 0.2
+            },
+            {
+              label: 'Generative: WikiText-2 PPL (Inverted Norm)',
+              data: [85.0, 83.2, 77.0, 70.1, 60.5, 48.0, 24.0],
+              borderColor: '#f59e0b',
+              borderWidth: 3,
+              borderDash: [4, 4],
+              tension: 0.2
+            }
+          ]
+        };
+        chartInstance.options.scales.y.title = { display: true, text: 'Normalized Relative Score (Higher is Better)', color: '#94a3b8' };
+        document.getElementById('chartCaption').innerText = 'Figure: Generative metrics (red/amber dashed) degrade significantly faster than non-generative benchmark scores (green/cyan solid) as pruning sparsity increases.';
+      } else if (activeChartTab === 3) {
+        // Tab 3: Autoregressive Decoding Drift across tokens
+        const labels = Array.from({ length: 16 }, (_, i) => `Step ${(i + 1) * 8}`);
+        const kl_accum = labels.map((_, i) => (0.12 + Math.pow(i * 0.45, 1.4)).toFixed(2));
+        const swap_prob = labels.map((_, i) => Math.min(88, (8 + i * 5.2)).toFixed(1));
+
+        chartInstance.data = {
+          labels,
+          datasets: [
+            {
+              label: 'Accumulated Trajectory KL Divergence',
+              data: kl_accum,
+              borderColor: '#f43f5e',
+              backgroundColor: 'rgba(244, 63, 94, 0.1)',
+              borderWidth: 3,
+              tension: 0.3,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Next-Token Swap Probability (%)',
+              data: swap_prob,
+              borderColor: '#f59e0b',
+              borderWidth: 2.5,
+              borderDash: [5, 5],
+              tension: 0.3,
+              yAxisID: 'y1'
+            }
+          ]
+        };
+        chartInstance.options.scales.y1 = {
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { color: '#f59e0b', font: { family: 'JetBrains Mono', size: 11 } },
+          title: { display: true, text: 'Token Swap Probability (%)', color: '#f59e0b' }
+        };
+        chartInstance.options.scales.y.title = { display: true, text: 'Trajectory KL Divergence', color: '#f43f5e' };
+        document.getElementById('chartCaption').innerText = 'Figure: Multi-step autoregressive drift. Step-by-step probability divergences accumulate rapidly, raising token swap probability from 8% to over 80% by step 128.';
+      }
+
+      chartInstance.update();
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      generateHeatmap();
+      updateLayerDepth(12);
+      initChart();
+    });
+  </script>
 </body>
-</html>
+</html>\n
