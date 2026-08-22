@@ -18,7 +18,7 @@
   <!-- KaTeX for Vector-Sharp Mathematical Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -45,20 +45,10 @@
               800: '#065f46',
               900: '#064e3b',
               950: '#022c22',
-            },
-            accent: {
-              teal: '#0f766e',
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              coral: '#f43f5e',
-              indigo: '#6366f1',
-              cyan: '#06b6d4',
             }
           },
           boxShadow: {
-            'glow-emerald': '0 0 35px -5px rgba(16, 185, 129, 0.35)',
-            'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.35)',
-            'glow-amber': '0 0 35px -5px rgba(245, 158, 11, 0.35)',
+            'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.3)',
           }
         }
       }
@@ -86,24 +76,24 @@
     }
 
     .glass-panel {
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .glass-card {
-      background: rgba(30, 41, 59, 0.65);
+      background: rgba(30, 41, 59, 0.6);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .glass-card-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.25s ease;
     }
     .glass-card-hover:hover {
-      transform: translateY(-3px);
-      border-color: rgba(16, 185, 129, 0.45);
-      box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.25);
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.15);
     }
 
     .gradient-text-emerald {
@@ -112,48 +102,21 @@
       -webkit-text-fill-color: transparent;
     }
 
-    .gradient-border-glow {
-      position: relative;
-    }
-    .gradient-border-glow::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.6), rgba(6, 182, 212, 0.3), rgba(99, 102, 241, 0.4));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    /* Heatmap cell transition */
-    .heatmap-cell {
-      transition: transform 0.15s ease, filter 0.15s ease;
-    }
-    .heatmap-cell:hover {
-      transform: scale(1.35);
-      z-index: 20;
-      filter: brightness(1.3);
-    }
-
-    /* KaTeX equation display box */
     .math-formula-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 0.875rem;
       padding: 1rem 1.25rem;
       color: #0f172a;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
     }
 
     .katex {
-      font-size: 1.08em;
+      font-size: 1.05em;
     }
 
     .lightbox-modal {
-      transition: opacity 0.25s ease, visibility 0.25s ease;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
     }
   </style>
 </head>
@@ -161,9 +124,9 @@
 
   <!-- Ambient background glow -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-[-10%] left-[20%] w-[650px] h-[650px] rounded-full bg-emerald-600/12 blur-[140px]"></div>
-    <div class="absolute top-[35%] right-[-5%] w-[550px] h-[550px] rounded-full bg-cyan-600/10 blur-[150px]"></div>
-    <div class="absolute bottom-[10%] left-[-5%] w-[700px] h-[700px] rounded-full bg-indigo-600/10 blur-[160px]"></div>
+    <div class="absolute top-[-10%] left-[20%] w-[650px] h-[650px] rounded-full bg-emerald-600/10 blur-[140px]"></div>
+    <div class="absolute top-[35%] right-[-5%] w-[550px] h-[550px] rounded-full bg-cyan-600/8 blur-[150px]"></div>
+    <div class="absolute bottom-[10%] left-[-5%] w-[700px] h-[700px] rounded-full bg-indigo-600/8 blur-[160px]"></div>
   </div>
 
   <!-- Sticky Navbar -->
@@ -292,7 +255,7 @@
 
       <!-- Hero Figure Card -->
       <div class="max-w-5xl mx-auto">
-        <div class="glass-card gradient-border-glow rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden">
+        <div class="glass-card rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden border border-slate-800">
           <div class="relative rounded-2xl bg-white p-3 sm:p-6 shadow-inner cursor-pointer group" onclick="openLightbox('figs/overview.svg', 'Figure 1: Representation Hierarchy Framework connecting Hidden Embeddings (h), Logits (z), and Output Probability Simplex (p).')">
             <img src="figs/overview.svg" alt="Overview of Representation Hierarchy Framework" class="w-full h-auto object-contain rounded-xl transition-transform duration-300 group-hover:scale-[1.01]">
             <div class="absolute bottom-4 right-4 bg-slate-900/80 text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-slate-700 flex items-center gap-1">
@@ -307,7 +270,7 @@
             <div class="flex items-center gap-2 text-xs font-mono">
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">Block Drop</span>
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">Wanda / SparseGPT</span>
-              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">2nd-Order Taylor Bounds</span>
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-emerald-300 border border-emerald-800/60">Taylor Bounds</span>
             </div>
           </div>
         </div>
@@ -377,7 +340,7 @@
     </div>
   </section>
 
-  <!-- Interactive Hierarchy & Representation Alignment Inspector -->
+  <!-- Interactive Hierarchy & Layer Alignment Inspector -->
   <section id="inspector" class="py-20 relative z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
@@ -392,7 +355,7 @@
           </p>
         </div>
         
-        <!-- Quick Preset Controls -->
+        <!-- Preset Controls -->
         <div class="flex flex-wrap items-center gap-2 text-xs">
           <span class="text-slate-400 font-medium">Model Family:</span>
           <select id="modelSelect" onchange="updateInspector()" class="bg-slate-800 text-white font-medium px-3.5 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer">
@@ -428,7 +391,7 @@
 
           <!-- Control 3: Hierarchy Metric -->
           <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Representation Space Metric</label>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Representation Space</label>
             <select id="metricSelect" onchange="updateInspector()" class="w-full bg-slate-900 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
               <option value="emb">Hidden State: cos(h_dense, h_pruned)</option>
               <option value="logit">Logit Space: cos(z_dense, z_pruned)</option>
@@ -452,41 +415,37 @@
       <!-- Main Interactive Display: 2-Column Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Left: Cross-Layer Representation Alignment Heatmap (7 cols) -->
+        <!-- Left: Authentic Cross-Layer Representation Hierarchy Vector Viewer (7 cols) -->
         <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 border border-slate-800">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="text-base font-bold font-heading text-white flex items-center gap-2">
-                <i class="fa-solid fa-table-cells text-emerald-400"></i> Layer-wise Cosine Alignment Heatmap
+                <i class="fa-solid fa-diagram-project text-emerald-400"></i> Layer-wise Representation Alignment
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Hover over cells to inspect similarity between Dense Layer $i$ and Pruned Layer $j$.</p>
+              <p class="text-xs text-slate-400 mt-0.5" id="heatmapSubTitle">Cross-layer cosine similarity heatmap across 32 transformer layers.</p>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-slate-400 font-mono">1.0</span>
-              <div class="w-16 h-3 rounded bg-gradient-to-r from-slate-900 via-teal-800 to-emerald-400"></div>
-              <span class="text-slate-400 font-mono">0.5</span>
-            </div>
-          </div>
-
-          <!-- Heatmap Container -->
-          <div class="relative bg-slate-950 p-3 rounded-xl border border-slate-900 overflow-x-auto">
-            <div id="heatmapGrid" class="grid grid-cols-16 gap-[2px] min-w-[320px] aspect-square mx-auto">
-              <!-- Dynamically generated via JS -->
-            </div>
-            <div class="flex justify-between items-center text-xs text-slate-500 font-mono mt-2 px-1">
-              <span>Layer 1 (Input)</span>
-              <span>Layer 16 (Middle)</span>
-              <span>Layer 32 (LM Head)</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="setSublayerViewer('attn')" id="btnSublayerAttn" class="px-2.5 py-1 text-xs rounded-md font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                Attention
+              </button>
+              <button onclick="setSublayerViewer('mlp')" id="btnSublayerMlp" class="px-2.5 py-1 text-xs rounded-md font-mono font-semibold text-slate-400 hover:text-white bg-slate-800 border border-slate-700">
+                MLP
+              </button>
             </div>
           </div>
 
-          <!-- Heatmap Hover Tooltip Display -->
-          <div id="cellTooltip" class="mt-4 p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2 text-slate-300">
-              <i class="fa-solid fa-crosshairs text-emerald-400"></i>
-              <span id="tooltipCoords">Hover a cell above: Layer [i, j]</span>
+          <!-- High-Res Vector SVG Viewer with Click to Zoom -->
+          <div class="relative bg-white rounded-xl p-3 sm:p-4 shadow-md overflow-hidden cursor-pointer group" onclick="openActiveHierarchyFigure()">
+            <img id="activeHierarchyImg" src="figs/pruning_hierarchies_attn.svg" alt="Layerwise Representation Hierarchy" class="w-full h-auto max-h-[380px] object-contain mx-auto transition-transform duration-200 group-hover:scale-[1.02]">
+            <div class="absolute bottom-3 right-3 bg-slate-900/85 text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-slate-700 flex items-center gap-1 shadow">
+              <i class="fa-solid fa-magnifying-glass-plus"></i> Fullscreen Zoom
             </div>
-            <div class="font-mono font-bold text-emerald-300" id="tooltipValue">Metric: --</div>
+          </div>
+
+          <!-- Bottom Legend & Analysis -->
+          <div class="mt-4 p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+            <span id="activeHierarchyDesc">Sublayer: Self-Attention Output (attn) | Range: 1.0 (Diagonal) to ~0.50</span>
+            <span class="text-emerald-400 font-bold">Vector Fidelity</span>
           </div>
         </div>
 
@@ -1171,6 +1130,23 @@ pip install -r requirements.txt</code></pre>
 
   <!-- Script for Interactive Components -->
   <script>
+    // Initialize KaTeX Auto-renderer with correct inline delimiters
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError: false
+        });
+      }
+      updateLayerDepth(12);
+      initChart();
+    });
+
     // Mobile menu toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -1227,6 +1203,40 @@ pip install -r requirements.txt</code></pre>
       }
     });
 
+    // Sublayer Viewer Toggle for Inspector
+    let currentSublayerMode = 'attn';
+    function setSublayerViewer(mode) {
+      currentSublayerMode = mode;
+      const img = document.getElementById('activeHierarchyImg');
+      const desc = document.getElementById('activeHierarchyDesc');
+      const btnAttn = document.getElementById('btnSublayerAttn');
+      const btnMlp = document.getElementById('btnSublayerMlp');
+      const sublayerSelect = document.getElementById('sublayerSelect');
+
+      if (mode === 'attn') {
+        img.src = 'figs/pruning_hierarchies_attn.svg';
+        desc.innerText = 'Sublayer: Self-Attention Output (attn) | Range: 1.0 (Diagonal) to ~0.50';
+        btnAttn.className = 'px-2.5 py-1 text-xs rounded-md font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        btnMlp.className = 'px-2.5 py-1 text-xs rounded-md font-mono font-semibold text-slate-400 hover:text-white bg-slate-800 border border-slate-700';
+        sublayerSelect.value = 'attn';
+      } else {
+        img.src = 'figs/pruning_hierarchies_mlp.svg';
+        desc.innerText = 'Sublayer: MLP Feed-Forward Output (mlp) | Smoother degradation profile';
+        btnMlp.className = 'px-2.5 py-1 text-xs rounded-md font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        btnAttn.className = 'px-2.5 py-1 text-xs rounded-md font-mono font-semibold text-slate-400 hover:text-white bg-slate-800 border border-slate-700';
+        sublayerSelect.value = 'mlp';
+      }
+      updateLayerDepth(document.getElementById('layerSlider').value);
+    }
+
+    function openActiveHierarchyFigure() {
+      const isAttn = currentSublayerMode === 'attn';
+      openLightbox(
+        isAttn ? 'figs/pruning_hierarchies_attn.svg' : 'figs/pruning_hierarchies_mlp.svg',
+        isAttn ? 'Figure 2 (Left): Attention Sublayer Cross-Layer Representation Hierarchy' : 'Figure 2 (Right): MLP Sublayer Cross-Layer Representation Hierarchy'
+      );
+    }
+
     // Code tabs data
     const codeSnippets = {
       1: `# 1. Clone repository and install dependencies\ngit clone https://github.com/CASE-Lab-UMD/Pruning-on-Representations.git\ncd Pruning-on-Representations\n\n# 2. Create python virtual environment\npython3 -m venv venv\nsource venv/bin/activate\n\n# 3. Install pinned requirements\npip install --upgrade pip\npip install -r requirements.txt`,
@@ -1273,61 +1283,6 @@ pip install -r requirements.txt</code></pre>
       }
     }
 
-    // Heatmap generator
-    function generateHeatmap() {
-      const grid = document.getElementById('heatmapGrid');
-      grid.innerHTML = '';
-      const size = 16; // 16x16 downsampled grid representing 32 layers
-
-      const metric = document.getElementById('metricSelect').value;
-      const model = document.getElementById('modelSelect').value;
-      const sublayer = document.getElementById('sublayerSelect').value;
-
-      for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size; j++) {
-          const cell = document.createElement('div');
-          const l1 = (i + 1) * 2;
-          const l2 = (j + 1) * 2;
-
-          // Compute realistic representation cosine similarity based on distance and layer regime
-          let sim = 1.0 - (Math.abs(i - j) * 0.028);
-          if (sublayer === 'attn' && (i < 8 || j < 8)) {
-            sim -= 0.04;
-          }
-          if (metric === 'prob') {
-            sim -= 0.08;
-          }
-          if (metric === 'kl') {
-            sim = Math.max(0.01, (Math.abs(i - j) * 0.035) + 0.12);
-          }
-          sim = Math.min(0.999, Math.max(0.45, sim));
-
-          // Color scaling
-          let bgCol = '';
-          if (metric === 'kl') {
-            const norm = (sim - 0.1) / 0.6;
-            bgCol = norm > 0.5 ? `rgba(244, 63, 94, ${0.3 + norm * 0.6})` : `rgba(16, 185, 129, ${0.8 - norm * 0.6})`;
-          } else {
-            const norm = (sim - 0.5) / 0.5;
-            bgCol = `rgba(16, 185, 129, ${Math.max(0.15, norm)})`;
-          }
-
-          cell.className = 'heatmap-cell w-full aspect-square rounded-[2px] cursor-pointer';
-          cell.style.backgroundColor = bgCol;
-          cell.setAttribute('data-l1', l1);
-          cell.setAttribute('data-l2', l2);
-          cell.setAttribute('data-sim', sim.toFixed(4));
-
-          cell.addEventListener('mouseenter', () => {
-            document.getElementById('tooltipCoords').innerText = `Dense Layer ${l1} <-> Pruned Layer ${l2}`;
-            document.getElementById('tooltipValue').innerText = `${metric.toUpperCase()}: ${sim.toFixed(4)}`;
-          });
-
-          grid.appendChild(cell);
-        }
-      }
-    }
-
     function updateLayerDepth(layerVal) {
       document.getElementById('currentLayerBadge').innerText = `Layer ${layerVal} / 32`;
       const l = parseInt(layerVal);
@@ -1360,10 +1315,10 @@ pip install -r requirements.txt</code></pre>
       document.getElementById('metricCosP').innerText = baseCosP.toFixed(4);
       document.getElementById('metricKL').innerText = baseKL.toFixed(4);
 
-      document.getElementById('subMetricH').innerText = `||Δh_⊥|| / ||h|| = ${(Math.sqrt(2 * (1 - baseCosH))).toFixed(3)}`;
-      document.getElementById('subMetricZ').innerText = `Parallel scaling α = ${(0.97 + (l * 0.0008)).toFixed(3)}`;
-      document.getElementById('subMetricP').innerText = `Taylor Var: ${(2 * (1 - baseCosP)).toFixed(3)}`;
-      document.getElementById('subMetricKL').innerText = `Thm Bound: ${(baseKL * 0.985).toFixed(4)}`;
+      document.getElementById('subMetricH').innerHTML = `||&Delta;h<sub>&perp;</sub>|| / ||h|| = ${(Math.sqrt(2 * (1 - baseCosH))).toFixed(3)}`;
+      document.getElementById('subMetricZ').innerHTML = `Parallel scaling &alpha; = ${(0.97 + (l * 0.0008)).toFixed(3)}`;
+      document.getElementById('subMetricP').innerHTML = `Taylor Var: ${(2 * (1 - baseCosP)).toFixed(3)}`;
+      document.getElementById('subMetricKL').innerHTML = `Thm Bound: ${(baseKL * 0.985).toFixed(4)}`;
 
       // Live update candidate token probabilities
       const p1_dense = 64.2;
@@ -1391,9 +1346,12 @@ pip install -r requirements.txt</code></pre>
     }
 
     function updateInspector() {
-      generateHeatmap();
-      const currentLayer = document.getElementById('layerSlider').value;
-      updateLayerDepth(currentLayer);
+      const sublayer = document.getElementById('sublayerSelect').value;
+      if (sublayer !== currentSublayerMode) {
+        setSublayerViewer(sublayer);
+      } else {
+        updateLayerDepth(document.getElementById('layerSlider').value);
+      }
       updateChart();
     }
 
@@ -1580,13 +1538,6 @@ pip install -r requirements.txt</code></pre>
 
       chartInstance.update();
     }
-
-    // Initialize on load
-    window.addEventListener('DOMContentLoaded', () => {
-      generateHeatmap();
-      updateLayerDepth(12);
-      initChart();
-    });
   </script>
 </body>
 </html>
