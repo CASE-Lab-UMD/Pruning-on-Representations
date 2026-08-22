@@ -177,7 +177,7 @@
             <i class="fa-brands fa-github text-sm"></i> Code
           </a>
           <!-- Mobile Menu Button -->
-          <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
         </div>
@@ -242,7 +242,7 @@
             Ang Li<sup class="text-emerald-400 text-xs">1</sup>
           </a>
         </div>
-        <div class="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs sm:text-sm text-slate-400">
+        <div class="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs sm:text-sm text-slate-600">
           <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-building-columns text-emerald-400"></i> <sup>1</sup>University of Maryland, College Park</span>
           <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-graduation-cap text-cyan-400"></i> <sup>2</sup>Northeastern University</span>
         </div>
@@ -270,7 +270,7 @@
           <div class="relative rounded-2xl bg-white p-3 sm:p-5 shadow-inner">
             <img src="figs/overview.svg" alt="Overview of Representation Hierarchy Framework" class="w-full h-auto object-contain rounded-xl">
           </div>
-          <div class="mt-4 px-2 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-slate-400">
+          <div class="mt-4 px-2 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-slate-600">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span><strong>Figure 1:</strong> Representation Hierarchy workflow connecting hidden states, logits, and probabilities.</span>
@@ -293,7 +293,7 @@
       <div class="text-center max-w-3xl mx-auto mb-14">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Core Scientific Insights</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-2">Why Pruning Exhibits Task-Dependent Behavior</h2>
-        <p class="text-slate-400 mt-3 text-base">Unveiling the fundamental mechanisms that separate non-generative benchmark robustness from autoregressive decoding instability.</p>
+        <p class="text-slate-600 mt-3 text-base">Unveiling the fundamental mechanisms that separate non-generative benchmark robustness from autoregressive decoding instability.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -352,14 +352,14 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i> Interactive Lab
           </span>
           <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Representation Hierarchy ($h \to z \to p$) Inspector</h2>
-          <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl">
+          <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
             Inspect layer-by-layer representation alignment, orthogonal perturbations ($\Delta h_\perp$), and token-probability shifts ($p$) across modern LLM architectures.
           </p>
         </div>
         
         <!-- Quick Preset Controls -->
         <div class="flex flex-wrap items-center gap-2 text-xs">
-          <span class="text-slate-400">Architecture:</span>
+          <span class="text-slate-600">Architecture:</span>
           <select id="modelSelect" onchange="updateInspector()" class="bg-slate-800 text-white font-medium px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer">
             <option value="qwen">Qwen-2.5-7B-Instruct (32 Layers)</option>
             <option value="llama">LLaMA-3-8B (32 Layers)</option>
@@ -424,12 +424,12 @@
               <h3 class="text-base font-bold font-heading text-white flex items-center gap-2">
                 <i class="fa-solid fa-table-cells text-emerald-400"></i> Layer-wise Representation Cosine Alignment Heatmap
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Hover over cells to inspect similarity between Dense Layer i and Pruned Layer j.</p>
+              <p class="text-xs text-slate-600 mt-0.5">Hover over cells to inspect similarity between Dense Layer i and Pruned Layer j.</p>
             </div>
             <div class="flex items-center gap-2 text-xs">
-              <span class="text-slate-400">High (1.0)</span>
+              <span class="text-slate-600">High (1.0)</span>
               <div class="w-16 h-3 rounded bg-gradient-to-r from-slate-900 via-teal-800 to-emerald-400"></div>
-              <span class="text-slate-400">Low (0.6)</span>
+              <span class="text-slate-600">Low (0.6)</span>
             </div>
           </div>
 
@@ -438,7 +438,7 @@
             <div id="heatmapGrid" class="grid grid-cols-16 gap-[2px] min-w-[320px] aspect-square mx-auto">
               <!-- Dynamically generated via JS -->
             </div>
-            <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono mt-2 px-1">
+            <div class="flex justify-between items-center text-xs text-slate-500 font-mono mt-2 px-1">
               <span>Layer 1 (Shallow Inputs)</span>
               <span>Layer 16 (Middle Representations)</span>
               <span>Layer 32 (Deep LM Head)</span>
@@ -473,24 +473,24 @@
             <!-- Real-time Layer Metrics Card -->
             <div class="grid grid-cols-2 gap-3 mt-4">
               <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <span class="text-[11px] font-semibold text-slate-400 block">Embedding Alignment cos(h)</span>
+                <span class="text-xs font-semibold text-slate-600 block">Embedding Alignment cos(h)</span>
                 <span id="metricCosH" class="text-lg font-mono font-bold text-emerald-400">0.9682</span>
-                <span id="subMetricH" class="text-[10px] text-slate-500 block mt-0.5">||&Delta;h_&perp;|| / ||h|| = 0.252</span>
+                <span id="subMetricH" class="text-xs text-slate-500 block mt-0.5">||&Delta;h_&perp;|| / ||h|| = 0.252</span>
               </div>
               <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <span class="text-[11px] font-semibold text-slate-400 block">Logit Alignment cos(z)</span>
+                <span class="text-xs font-semibold text-slate-600 block">Logit Alignment cos(z)</span>
                 <span id="metricCosZ" class="text-lg font-mono font-bold text-cyan-400">0.9514</span>
-                <span id="subMetricZ" class="text-[10px] text-slate-500 block mt-0.5">Parallel scaling &alpha; = 0.981</span>
+                <span id="subMetricZ" class="text-xs text-slate-500 block mt-0.5">Parallel scaling &alpha; = 0.981</span>
               </div>
               <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <span class="text-[11px] font-semibold text-slate-400 block">Probability Alignment cos(p)</span>
+                <span class="text-xs font-semibold text-slate-600 block">Probability Alignment cos(p)</span>
                 <span id="metricCosP" class="text-lg font-mono font-bold text-amber-400">0.8920</span>
-                <span id="subMetricP" class="text-[10px] text-slate-500 block mt-0.5">Taylor Var: 0.108</span>
+                <span id="subMetricP" class="text-xs text-slate-500 block mt-0.5">Taylor Var: 0.108</span>
               </div>
               <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <span class="text-[11px] font-semibold text-slate-400 block">KL Divergence KL(p' || p)</span>
+                <span class="text-xs font-semibold text-slate-600 block">KL Divergence KL(p' || p)</span>
                 <span id="metricKL" class="text-lg font-mono font-bold text-rose-400">0.2450</span>
-                <span id="subMetricKL" class="text-[10px] text-slate-500 block mt-0.5">Est Bound: 0.2418</span>
+                <span id="subMetricKL" class="text-xs text-slate-500 block mt-0.5">Est Bound: 0.2418</span>
               </div>
             </div>
           </div>
@@ -501,7 +501,7 @@
               <h3 class="text-sm font-bold font-heading text-white flex items-center gap-2">
                 <i class="fa-solid fa-chart-simple text-amber-400"></i> Top-4 Candidate Token Probabilities
               </h3>
-              <span class="text-[11px] text-slate-400 font-mono">Dense vs Pruned</span>
+              <span class="text-xs text-slate-300 font-mono">Dense vs Pruned</span>
             </div>
             
             <div id="tokenProbsList" class="space-y-3 mt-4 text-xs font-mono">
@@ -548,7 +548,7 @@
             </div>
 
             <!-- Option Subspace Notice -->
-            <div class="mt-4 p-3 rounded-xl bg-amber-950/30 border border-amber-800/40 text-[11px] text-amber-300/90 leading-relaxed flex items-start gap-2">
+            <div class="mt-4 p-3 rounded-xl bg-amber-950/30 border border-amber-800/40 text-xs text-amber-300/90 leading-relaxed flex items-start gap-2">
               <i class="fa-solid fa-lightbulb text-amber-400 mt-0.5"></i>
               <span><strong>Subspace Takeaway:</strong> Although global top-token probabilities experience probability leakage, categorical answer margins in MCQ subspaces stay preserved!</span>
             </div>
@@ -569,7 +569,7 @@
       <div class="text-center max-w-3xl mx-auto mb-12">
         <span class="text-xs font-black uppercase tracking-widest text-cyan-400 font-heading">Empirical Dynamics</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Multi-Dimensional Analysis Charts</h2>
-        <p class="text-slate-400 text-sm sm:text-base mt-2">
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
           Toggle interactive dynamic curves comparing representation degradation across depth, sparsity thresholds, and multi-step autoregressive decoding.
         </p>
       </div>
@@ -594,7 +594,7 @@
         <div class="relative w-full h-[380px] sm:h-[440px]">
           <canvas id="mainDynamicChart"></canvas>
         </div>
-        <div id="chartCaption" class="mt-6 text-center text-xs sm:text-sm text-slate-400">
+        <div id="chartCaption" class="mt-6 text-center text-xs sm:text-sm text-slate-600">
           Showing representation similarity across layers 1 to 32 for Qwen-2.5-7B (Attention sublayer). Notice the sharp drop in probability space (p) relative to hidden states (h).
         </div>
       </div>
@@ -609,7 +609,7 @@
       <div class="text-center max-w-3xl mx-auto mb-14">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Empirical Verification</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Deep Dive into Empirical Phenomena</h2>
-        <p class="text-slate-400 text-sm sm:text-base mt-2">
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
           Key figures illustrating why representation hierarchies solve the pruning paradox.
         </p>
       </div>
@@ -687,7 +687,7 @@
           <p class="text-slate-300 text-sm leading-relaxed mb-4">
             Under layer dropping or high-sparsity pruning, the model can enter repetitive attractor loops or produce degenerate sequences during open-ended generation, even when its MMLU score remains above 70%.
           </p>
-          <div class="text-xs text-slate-400 font-mono bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <div class="text-xs text-slate-300 font-mono bg-slate-900/90 p-3 rounded-xl border border-slate-800">
             Input: "Explain quantum computing"<br>
             Pruned Generation: "Quantum computing is a computing of computing quantum... [repetition loop]"
           </div>
@@ -704,7 +704,7 @@
       <div class="text-center max-w-3xl mx-auto mb-14">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Mathematical Foundations</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Approximation Theorems</h2>
-        <p class="text-slate-400 text-sm sm:text-base mt-2">
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
           Rigorous 2nd-order Taylor expansions linking hidden states, logit variances, and probability KL divergences.
         </p>
       </div>
@@ -718,7 +718,7 @@
               <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-heading">
                 Theorem 1
               </span>
-              <span class="text-xs text-slate-400 font-mono">Hidden State Space</span>
+              <span class="text-xs text-slate-300 font-mono">Hidden State Space</span>
             </div>
             <h3 class="text-lg font-bold font-heading text-white mb-3">Local Representation Deviation</h3>
             <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
@@ -728,7 +728,7 @@
               <img src="figs/1-cos-h.png" alt="Theorem 1 Equation" class="max-h-16 w-auto object-contain">
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 italic">
+          <p class="text-xs text-slate-600 italic font-medium">
             "Parallel perturbations rescale representation magnitude without altering angular direction; orthogonal perturbations rotate candidate rankings."
           </p>
         </div>
@@ -740,7 +740,7 @@
               <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-heading">
                 Theorem 2
               </span>
-              <span class="text-xs text-slate-400 font-mono">Logit &rarr; Probability</span>
+              <span class="text-xs text-slate-300 font-mono">Logit &rarr; Probability</span>
             </div>
             <h3 class="text-lg font-bold font-heading text-white mb-3">Probability Space Sensitivity</h3>
             <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
@@ -750,7 +750,7 @@
               <img src="figs/1-cos-probs.png" alt="Theorem 2 Equation" class="max-h-16 w-auto object-contain">
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 italic">
+          <p class="text-xs text-slate-600 italic font-medium">
             "Quantifying how probability cosine sensitivity scales inversely with the square of softmax temperature."
           </p>
         </div>
@@ -762,7 +762,7 @@
               <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 font-heading">
                 Theorem 3
               </span>
-              <span class="text-xs text-slate-400 font-mono">Distributional Shift</span>
+              <span class="text-xs text-slate-300 font-mono">Distributional Shift</span>
             </div>
             <h3 class="text-lg font-bold font-heading text-white mb-3">Distributional KL Divergence</h3>
             <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
@@ -772,7 +772,7 @@
               <img src="figs/kl-probs.png" alt="Theorem 3 Equation" class="max-h-16 w-auto object-contain">
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 italic">
+          <p class="text-xs text-slate-600 italic font-medium">
             "Provides an analytical upper bound for multi-token autoregressive generation error accumulation."
           </p>
         </div>
@@ -804,7 +804,7 @@
       <div class="text-center max-w-3xl mx-auto mb-12">
         <span class="text-xs font-black uppercase tracking-widest text-cyan-400 font-heading">Benchmark Evaluation</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Cross-Architecture Benchmarks</h2>
-        <p class="text-slate-400 text-sm sm:text-base mt-2">
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
           Comprehensive comparison across representation preservation metrics and downstream performance.
         </p>
       </div>
@@ -812,7 +812,7 @@
       <div class="glass-panel rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl overflow-x-auto">
         <table class="w-full text-left text-xs sm:text-sm border-collapse min-w-[700px]">
           <thead>
-            <tr class="border-b border-slate-700 text-slate-400 font-heading font-bold text-xs uppercase tracking-wider">
+            <tr class="border-b border-slate-700 text-slate-600 font-heading font-bold text-xs uppercase tracking-wider">
               <th class="py-3.5 px-4">Model</th>
               <th class="py-3.5 px-4">Method / Sparsity</th>
               <th class="py-3.5 px-3 text-center text-emerald-400">cos(h) &uarr;</th>
@@ -933,7 +933,7 @@
       <div class="text-center max-w-3xl mx-auto mb-12">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Hands-on Reproduction</span>
         <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white mt-1">Quickstart & Analysis Suite</h2>
-        <p class="text-slate-400 text-sm sm:text-base mt-2">
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
           Run paper-aligned reproduction scripts in a few lines of code.
         </p>
       </div>
@@ -946,16 +946,16 @@
             <button id="codeTab1" onclick="switchCodeTab(1)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
               1. Setup
             </button>
-            <button id="codeTab2" onclick="switchCodeTab(2)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+            <button id="codeTab2" onclick="switchCodeTab(2)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-300 hover:text-white hover:bg-slate-800">
               2. Layer Transition Probing
             </button>
-            <button id="codeTab3" onclick="switchCodeTab(3)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+            <button id="codeTab3" onclick="switchCodeTab(3)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-300 hover:text-white hover:bg-slate-800">
               3. MCQ Subspace
             </button>
-            <button id="codeTab4" onclick="switchCodeTab(4)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+            <button id="codeTab4" onclick="switchCodeTab(4)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-300 hover:text-white hover:bg-slate-800">
               4. Decoding Drift
             </button>
-            <button id="codeTab5" onclick="switchCodeTab(5)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800">
+            <button id="codeTab5" onclick="switchCodeTab(5)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-300 hover:text-white hover:bg-slate-800">
               5. Intra-layer Prune
             </button>
           </div>
@@ -991,7 +991,7 @@ pip install -r requirements.txt</code></pre>
       <div class="text-center mb-8">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-400 font-heading">Citation</span>
         <h2 class="text-3xl font-extrabold font-heading text-white mt-1">BibTeX Citation</h2>
-        <p class="text-slate-400 text-sm mt-2">If you find this work helpful in your research, please cite:</p>
+        <p class="text-slate-600 text-sm mt-2">If you find this work helpful in your research, please cite:</p>
       </div>
 
       <div class="glass-card rounded-2xl p-6 border border-slate-800 relative group">
@@ -1020,7 +1020,7 @@ pip install -r requirements.txt</code></pre>
   </div>
 
   <!-- Footer -->
-  <footer class="py-12 bg-slate-950 border-t border-slate-800/80 text-slate-400 text-xs sm:text-sm relative z-10">
+  <footer class="py-12 bg-slate-950 border-t border-slate-800/80 text-slate-600 text-xs sm:text-sm relative z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
@@ -1087,7 +1087,7 @@ pip install -r requirements.txt</code></pre>
         if (i === tabIndex) {
           btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
         } else {
-          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-400 hover:text-white hover:bg-slate-800';
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold font-mono text-slate-300 hover:text-white hover:bg-slate-800';
         }
       }
       document.getElementById('codeContent').innerHTML = '<code>' + codeSnippets[tabIndex] + '</code>';
