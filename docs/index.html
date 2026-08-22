@@ -306,7 +306,7 @@
           <p class="text-slate-300 text-sm leading-relaxed mb-4">
             Hidden state embeddings (h in R^d) capture semantic direction, logits (z = Wh) determine candidate score margins, and probabilities (p = softmax(z/T)) drive the final multinomial sampling.
           </p>
-          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-emerald-300">
+          <div class="text-xs font-mono bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-emerald-300">
             cos(h) &rarr; cos(z) &rarr; KL(p' || p)
           </div>
         </div>
@@ -320,7 +320,7 @@
           <p class="text-slate-300 text-sm leading-relaxed mb-4">
             Decomposing perturbation into parallel scaling and orthogonal rotation proves that parallel scaling merely scales confidence, whereas orthogonal rotation alters the ranking of candidate tokens.
           </p>
-          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-cyan-300">
+          <div class="text-xs font-mono bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-cyan-300">
             1 - cos(h) &approx; 0.5 &middot; (||&Delta;h_&perp;|| / ||h||)&sup2;
           </div>
         </div>
@@ -334,7 +334,7 @@
           <p class="text-slate-300 text-sm leading-relaxed mb-4">
             Answer-option subspaces in MCQ tasks ({A,B,C,D}) remain structurally separated under pruning. In contrast, multi-step autoregressive generation accumulates probability drift, cascading into trajectory collapse.
           </p>
-          <div class="text-xs font-mono bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-amber-300">
+          <div class="text-xs font-mono bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-amber-300">
             MCQ Margin: Robust | Auto-Reg PPL: Drift
           </div>
         </div>
@@ -375,7 +375,7 @@
           <!-- Control 1: Pruning Method -->
           <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Compression Scheme</label>
-            <select id="methodSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+            <select id="methodSelect" onchange="updateInspector()" class="w-full bg-white text-slate-800 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-emerald-500 focus:outline-none cursor-pointer">
               <option value="block_drop">Inter-Layer: Block Drop (25%)</option>
               <option value="wanda_50">Intra-Layer: Wanda (50% Unstructured)</option>
               <option value="sparsegpt_24">Intra-Layer: SparseGPT (2:4 Semi-Struct)</option>
@@ -385,7 +385,7 @@
           <!-- Control 2: Target Sublayer -->
           <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Target Sublayer</label>
-            <select id="sublayerSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+            <select id="sublayerSelect" onchange="updateInspector()" class="w-full bg-white text-slate-800 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-emerald-500 focus:outline-none cursor-pointer">
               <option value="attn">Self-Attention Output (attn)</option>
               <option value="mlp">MLP Feed-Forward Output (mlp)</option>
             </select>
@@ -394,7 +394,7 @@
           <!-- Control 3: Hierarchy Metric -->
           <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Representation Space Metric</label>
-            <select id="metricSelect" onchange="updateInspector()" class="w-full bg-slate-900/90 text-slate-200 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none cursor-pointer">
+            <select id="metricSelect" onchange="updateInspector()" class="w-full bg-white text-slate-800 text-sm font-medium px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-emerald-500 focus:outline-none cursor-pointer">
               <option value="emb">Hidden State: cos(h_dense, h_pruned)</option>
               <option value="logit">Logit Space: cos(z_dense, z_pruned)</option>
               <option value="prob">Probability Space: cos(p_dense, p_pruned)</option>
@@ -446,7 +446,7 @@
           </div>
 
           <!-- Heatmap Hover Tooltip Display -->
-          <div id="cellTooltip" class="mt-4 p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between text-xs">
+          <div id="cellTooltip" class="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
             <div class="flex items-center gap-2 text-slate-300">
               <i class="fa-solid fa-crosshairs text-emerald-400"></i>
               <span id="tooltipCoords">Hover a cell above: Layer [i, j]</span>
@@ -687,7 +687,7 @@
           <p class="text-slate-300 text-sm leading-relaxed mb-4">
             Under layer dropping or high-sparsity pruning, the model can enter repetitive attractor loops or produce degenerate sequences during open-ended generation, even when its MMLU score remains above 70%.
           </p>
-          <div class="text-xs text-slate-300 font-mono bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <div class="text-xs text-slate-300 font-mono bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800">
             Input: "Explain quantum computing"<br>
             Pruned Generation: "Quantum computing is a computing of computing quantum... [repetition loop]"
           </div>
@@ -941,7 +941,7 @@
       <div class="max-w-4xl mx-auto glass-card rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
         
         <!-- Code Tabs Header -->
-        <div class="flex items-center justify-between px-6 py-3 bg-slate-900/90 border-b border-slate-800 overflow-x-auto">
+        <div class="flex items-center justify-between px-6 py-3 bg-slate-100 border-b border-slate-200 overflow-x-auto">
           <div class="flex items-center gap-2">
             <button id="codeTab1" onclick="switchCodeTab(1)" class="px-3 py-1.5 rounded-lg text-xs font-semibold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
               1. Setup
@@ -965,7 +965,7 @@
         </div>
 
         <!-- Code Block Content -->
-        <div class="p-6 bg-slate-950 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto">
+        <div class="p-6 bg-slate-950 font-mono text-xs sm:text-sm text-slate-800 overflow-x-auto">
           <pre id="codeContent" class="leading-relaxed"><code># 1. Clone repository and install dependencies
 git clone https://github.com/CASE-Lab-UMD/Pruning-on-Representations.git
 cd Pruning-on-Representations
@@ -998,7 +998,7 @@ pip install -r requirements.txt</code></pre>
         <button onclick="copyBibtex()" class="absolute top-4 right-4 px-3.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold font-mono inline-flex items-center gap-1.5 transition-all">
           <i class="fa-solid fa-copy"></i> Copy BibTeX
         </button>
-        <pre id="bibtexText" class="font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto leading-relaxed pt-2"><code>@inproceedings{he2026demystifying,
+        <pre id="bibtexText" class="font-mono text-xs sm:text-sm text-slate-800 overflow-x-auto leading-relaxed pt-2"><code>@inproceedings{he2026demystifying,
   title     = {Demystifying When Pruning Works via Representation Hierarchies},
   author    = {He, Shuai and Sun, Guoheng and Zhang, Haichao and Fu, Yun and Li, Ang},
   booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
