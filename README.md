@@ -359,11 +359,7 @@ If you find this codebase or paper useful in your research, please cite:
   title     = {Demystifying When Pruning Works via Representation Hierarchies},
   author    = {He, Shuai and Sun, Guoheng and Zhang, Haichao and Fu, Yun and Li, Ang},
   booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year      = {2026},
-  eprint    = {2603.24652},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CL},
-  url       = {https://arxiv.org/abs/2603.24652}
+  year      = {2026}
 }
 ```
 
