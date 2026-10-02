@@ -1,10 +1,10 @@
 # 🔬 Pruning-on-Representations: 每日前沿文献关联与表征层级 (H/Z/P) 剪枝诊断落地库 (2026-09 — 2026-10)
 
-**Document ID:** `PRUNREP-LIT-202609` | **Last Updated:** `2026-10-01` | **Target Path:** `docs/frontier_literature_connections_2026_09.md` | **Total Routed Papers:** `34`
+**Document ID:** `PRUNREP-LIT-202609` | **Last Updated:** `2026-10-02` | **Target Path:** `docs/frontier_literature_connections_2026_09.md` | **Total Routed Papers:** `34`
 
 > [!IMPORTANT]
 > **🔗 跨仓库文献引用链闭环 (Cross-Repository Reference Chain Closure)**
-> 本文件由每日 AI 前沿论文精读流水线自动路由生成，专门收录直接引用或拓展我们 **ICML 2026 代表作 (*Demystifying When Pruning Works via Representation Hierarchies*, `CASE-Lab-UMD/Pruning-on-Representations`)** 的三级表征体系（隐状态 $\mathcal{H}$ 、Logits $\mathcal{Z}$ 、预测概率分布 $\mathcal{P}$ ）、决断表征相变边界（`Decision Representation Transitions in Pruning`, `CLSE`, `ASL`, `Col-LN`）、剪枝校准退化机理（`How Pruning Attention Layers Hurts Calibration`）与闭式切口偏移修复（`SHIFT-LLM`, `WRP`, `LoRP`, `OBCache`, `CoverPruner`, `SFPruner`, `ACPruner`, `SCOPD`, `IAprune`, `AIMER`, `EvoESAP`, `Navigation Heads`）最新 arXiv 论文笔记。
+> 本文件由每日 AI 前沿论文精读流水线自动路由生成，专门收录直接引用或拓展我们 **ICML 2026 代表作 (*Demystifying When Pruning Works via Representation Hierarchies*, `CASE-Lab-UMD/Pruning-on-Representations`)** 的三级表征体系（隐状态 $\mathcal{H}$ 、Logits $\mathcal{Z}$ 、预测概率分布 $\mathcal{P}$ ）、决断表征相变边界（`Decision Representation Transitions in Pruning`, `CLSE`, `ASL`, `Col-LN`）、剪枝校准退化机理（`How Pruning Attention Layers Hurts Calibration`）与闭式切口偏移修复（`SHIFT-LLM`, `WRP`, `LoRP`, `OBCache`, `CoverPruner`, `SFPruner`, `ACPruner`, `SCOPD`, `IAprune`, `AIMER`, `EvoESAP`, `Navigation Heads`, `DySL-VLA`, `SlimQwen`, `MAESTRO`, `LookaheadKV`, `RAP`）最新 arXiv 论文笔记。
 > 每一篇收录文献均包含：**核心痛点、底层数学公式、ASCII 架构图、关键实测指标**，以及**与 `Pruning-on-Representations` 仓库具体代码模块和我们已发表代表作（Our Works）的双向锚定**。
 
 ---
@@ -13,18 +13,18 @@
 
 | 收录日期 | 论文标题与 arXiv 链接 | 关键实测收益 / 核心结论 | 锚定本仓库代码模块与文档路径 (`Target Module`) | 原始精读归档 |
 | :---: | :--- | :--- | :--- | :---: |
-| `2026-10-02` | [**✂️ DySL-VLA & DySta**](https://arxiv.org/abs/2602.22896) (`arXiv:2602.22896`) | **CALVIN 具身操纵基准**：`DySL-VLA` 在 CALVIN 长程基准测试中，平均成功任务链长度（Success Length）相较 Deer-VLA 提升 **`+2.1%`**，在保持相同任务成功率的前提下，可训... | `representation-analysis/transition_layerwise_compare.py` (State Entropy & Attention Norm Dual-Threshold Transition across $\mathcal{H}/\mathcal{Z}/\mathcal{P}$ ) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
-| `2026-10-02` | [**🧩 SlimQwen & MAESTRO**](https://arxiv.org/abs/2605.08738) (`arXiv:2605.08738`) | **预训练规模下后剪枝显著优于从头训练**：`SlimQwen` 证实，在完全相同的千亿级 Token 预训练算力预算下，对预训练完成的 `Qwen3-Next-80A3B` 实施渐进专家剪枝所得的 `23A2B` 模型，在 MM... | `inter-layer/` (Non-Uniform Cross-Layer Expert Sparsity Allocation across Representation Hierarchies) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
-| `2026-10-02` | [**🗄️ LookaheadKV & RAP**](https://arxiv.org/abs/2603.10899) (`arXiv:2603.10899`) | **驱逐开销与首字延迟（TTFT）大幅降低**：在各大长文本理解基准（LongBench、L-Eval）上，`LookaheadKV` 相比依赖草稿生成的代表性基线，将 KV 驱逐耗时降低高达 **`14.5×`**，同时在复杂长... | `intra-layer/main.py` (Multi-Head Speculative Lookahead Representation Eviction) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
-| `2026-10-02` | [**🦾 World Action Agent (WAA) & Recursive Harness Distillation**](https://arxiv.org/abs/2609.29964) (`arXiv:2609.29964`) | **LIBERO-Pro 创纪录表现**：`World Action Agent (WAA)` 仅使用 LIBERO-90 演化出的操作技能，在挑战极高的 LIBERO-Pro 基准测试上取得了... | `intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
-| `2026-10-02` | [**🌊 Transition Flow Matching & Recursive Flow Matching**](https://arxiv.org/abs/2603.15689) (`arXiv:2603.15689`) | **科学仿真 20x 速度飞跃**：在复杂的跨尺度时空流体仿真（Navier-Stokes 与气候动力学预测）基准测试中，`RecFM` 在 1–4 步生成下，相比目前领先的扩散基线实现了高达... | `intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
-| `2026-10-02` | [**🧬 COEVO & SIFT**](https://arxiv.org/abs/2609.33398) (`arXiv:2609.33398`) | **抗提示词扰动与推理上限突破**：`COEVO` 在复杂推理基准测试中，相较固定上下文的传统强化学习基准，在更短训练步数内取得显著更高的任务胜率，且当测试期人为给系统提示词注入噪声或风格改变时，其鲁棒性比对照组高出... | `intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**✂️ DySL-VLA & DySta**](https://arxiv.org/abs/2602.22896) (`arXiv:2602.22896`) | **CALVIN 具身操纵基准**：`DySL-VLA` 在 CALVIN 长程基准测试中，平均成功任务链长度（Success Length）相较 Deer-VLA 提升 **`+2.1%`**，在保持相同任务成功率的前提下，可训... | `representation-analysis/transition_layerwise_compare.py` (Informative $\mathcal{H}$ -Space Layers vs Incremental $\mathcal{P}$ -Space Action Layers Dynamic Skipping) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**🧩 SlimQwen & MAESTRO**](https://arxiv.org/abs/2605.08738) (`arXiv:2605.08738`) | **预训练规模下后剪枝显著优于从头训练**：`SlimQwen` 证实，在完全相同的千亿级 Token 预训练算力预算下，对预训练完成的 `Qwen3-Next-80A3B` 实施渐进专家剪枝所得的 `23A2B` 模型，在 MM... | `inter-layer/` (Pretraining-Scale Partial-Preservation Expert Merging & MTP $\mathcal{P}$ -Space Distillation) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**🗄️ LookaheadKV & RAP**](https://arxiv.org/abs/2603.10899) (`arXiv:2603.10899`) | **驱逐开销与首字延迟（TTFT）大幅降低**：在各大长文本理解基准（LongBench、L-Eval）上，`LookaheadKV` 相比依赖草稿生成的代表性基线，将 KV 驱逐耗时降低高达 **`14.5×`**，同时在复杂长... | `intra-layer/main.py` (Draft-Free Parameter-Efficient Future Attention Glimpsing in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**🦾 World Action Agent (WAA) & Recursive Harness Distillation**](https://arxiv.org/abs/2609.29964) (`arXiv:2609.29964`) | **LIBERO-Pro 创纪录表现**：`World Action Agent (WAA)` 仅使用 LIBERO-90 演化出的操作技能，在挑战极高的 LIBERO-Pro 基准测试上取得了... | `intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**🌊 Transition Flow Matching & Recursive Flow Matching**](https://arxiv.org/abs/2603.15689) (`arXiv:2603.15689`) | **科学仿真 20x 速度飞跃**：在复杂的跨尺度时空流体仿真（Navier-Stokes 与气候动力学预测）基准测试中，`RecFM` 在 1–4 步生成下，相比目前领先的扩散基线实现了高达... | `intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
+| `2026-10-02` | [**🧬 COEVO & SIFT**](https://arxiv.org/abs/2609.33398) (`arXiv:2609.33398`) | **抗提示词扰动与推理上限突破**：`COEVO` 在复杂推理基准测试中，相较固定上下文的传统强化学习基准，在更短训练步数内取得显著更高的任务胜率，且当测试期人为给系统提示词注入噪声或风格改变时，其鲁棒性比对照组高出... | `intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space) | [2026-10-02](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-02_ai_paper_notes.md) |
 | `2026-10-01` | [**IAprune & Rényi Entropy (`Col-Ln`)**](https://arxiv.org/abs/2603.22991) (`arXiv:2603.22991`) | **`IAprune` 在仿真与真机闭环控制中的实测加速**：跨越 4 种具身操作策略、3 个仿真基准与真实机器人平台... | `intra-layer/main.py` (First-Order Taylor Information Attribution vs $\mathcal{P}$ -Space Loss Sensitivity in SwiGLU FFN) | [2026-10-01](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-01_ai_paper_notes.md) |
 | `2026-10-01` | [**AIMER & EvoESAP**](https://arxiv.org/abs/2603.18492) (`arXiv:2603.18492`) | **`AIMER` 超越基于 C4 校准集的强基线且速度快几个数量级**：在涵盖 `7B` 至 `47B` 不同架构的 MoE 语言模型及 **16 个多样化基准**上，免校准的 `AIMER` 不仅全面超越现有免校准方法，更在跨... | `intra-layer/main.py` (Calibration-Free Weight-Space Cosine Redundancy vs $\mathcal{H}$ -Space Activation Alignment) | [2026-10-01](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-01_ai_paper_notes.md) |
 | `2026-10-01` | [**FocusVLA & Navigation Heads**](https://arxiv.org/abs/2603.28740) (`arXiv:2603.28740`) | **`FocusVLA` 提升精细操作与收敛速度**：在仿真与真实世界机器人基准上，`FocusVLA` 通过切断非视觉捷径并显式抑制无关背景噪声，在灵巧操作任务上大幅提升任务成功率并显著加快训练收敛速度。 | `intra-layer/main.py` (Task-Specific Spatial Localization Attention Head Preservation in $\mathcal{P}$ -Space) | [2026-10-01](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-10-01_ai_paper_notes.md) |
 | `2026-09-30` | [**ACPruner & SCOPD**](https://arxiv.org/abs/2609.34558) (`arXiv:2609.34558`) | `ACPruner` (`2609.34558`) 保留 64/576 视觉 Token 维持 97.4% 精度；`SCOPD` (`2609.34044`) 10% 视觉 Token 保留率下 13 基准保留率：Vanilla 86.37%、SCOPD 90.49%、SCOPD+ 92.43% | `intra-layer/main.py` (Biased Attention Coverage Maximization in $\mathcal{H}$ -Space) | [2026-09-30](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-30_ai_paper_notes.md) |
 | `2026-09-30` | [**SlimWise & CascadeEP**](https://arxiv.org/abs/2609.34117) (`arXiv:2609.34117`) | **`SlimWise` 解码吞吐与精度双赢**：在 `DeepSeek-V2-Lite`、`Qwen3-30B-A3B` 与 `Mixtral-8x7B` 上，当 Decode 阶段裁剪 **37.5%–50%** 专家权重或激... | `intra-layer/main.py` (Prefill $\mathcal{H}$ -Space vs Decode $\mathcal{P}$ -Space Expert Sensitivity Divergence) | [2026-09-30](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-30_ai_paper_notes.md) |
-| `2026-09-30` | [**Dynamic Flow, Static Graph & DORA**](https://arxiv.org/abs/2609.34727) (`arXiv:2609.34727`) | **端侧静态图 NPU 首字延迟骤降**：在高通骁龙 8 Elite（Hexagon NPU）与端侧 SoC 上运行 `Qwen2.5-3B/7B` 与 `Llama-3.2-3B`... | `intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space) | [2026-09-30](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-30_ai_paper_notes.md) |
+| `2026-09-30` | [**Dynamic Flow, Static Graph & DORA**](https://arxiv.org/abs/2609.34727) (`arXiv:2609.34727`) | **端侧静态图 NPU 首字延迟骤降**：在高通骁龙 8 Elite（Hexagon NPU）与端侧 SoC 上运行 `Qwen2.5-3B/7B` 与 `Llama-3.2-3B`... | `intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space) | [2026-09-30](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-30_ai_paper_notes.md) |
 | `2026-09-29` | [**✂️ CoverPruner & SFPruner**](https://arxiv.org/abs/2609.03158) (`arXiv:2609.03158`) | 在 LLaVA-NeXT、Qwen2.5-VL 与 InternVL-2.5 等高分辨率多模态模型上，当剪除 **80%–88.9% 视觉 Token**（仅保留 64–128 个 Token）时，`CoverPruner` 与... | `intra-layer/main.py` (k-Medoids Coverage & Barycentric Surrogate Compensation in $\mathcal{H}$ -Space) | [2026-09-29](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-29_ai_paper_notes.md) |
 | `2026-09-29` | [**⚡ VestigeKV**](https://arxiv.org/abs/2609.03949) (`arXiv:2609.03949`) | 在基于 MLA 架构的长上下文大模型上（128K–256K 上下文长度），`VestigeKV` 无需任何重新训练或旁路预测器，在仅加载 **15%–20% KV 潜向量**的稀疏注意力预算下，在 RULER、LongBench... | `intra-layer/main.py` (Orthogonal Residual Null-Space Norm in NoPE-MLA $\mathcal{H}$ -Space) | [2026-09-29](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-29_ai_paper_notes.md) |
 | `2026-09-29` | [**🦾 DEE-VLA**](https://arxiv.org/abs/2609.29382) (`arXiv:2609.29382`) | 在 LIBERO（Spatial / Object / Goal / Long）与真机双臂灵巧操作任务上，`DEE-VLA` 在成功率与全深度 10-NFE 基线持平（甚至因减少自由空间过拟合而提升 **+0.8%**）的同时，平... | `representation-analysis/transition_layerwise_compare.py` (Decoupled Early-Exit Phase Transitions across Modules) | [2026-09-29](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-29_ai_paper_notes.md) |
@@ -46,7 +46,7 @@
 | `2026-09-19` | [**WRP**](https://arxiv.org/abs/2609.09883) (`arXiv:2609.09883`) | **秒级零样本层裁剪且跨领域泛化更强**：在 **Llama-3-8B/70B**、**Qwen-2.5-14B** 与 **Mistral-7B** 上，WRP 在完全不运行任何前向传播（耗时不足 8 秒）的情况下剪除... | `inter-layer/` & `representation-analysis/compare_mcq_subspace_metrics.py` (Zero-Forward Spectral Redundancy) | [2026-09-19](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-19_ai_paper_notes.md) |
 | `2026-09-19` | [**REAP**](https://arxiv.org/abs/2510.13999) (`arXiv:2510.13999`) | 在 **Mixtral-8x7B**、**DeepSeek-MoE-16B** 与 **Qwen1.5-MoE-A2.7B** 上，REAP 在 **25%–37.5% 专家剪枝率**下，在 GSM8K 与 HumanEval 生... | `intra-layer/main.py` (Generative $\mathcal{P}$ -Space vs Perplexity $\mathcal{H}$ -Space Divergence) | [2026-09-19](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-19_ai_paper_notes.md) |
 | `2026-09-18` | [**✂️ AnchorPrune**](https://arxiv.org/abs/2609.08842) (`arXiv:2609.08842`) | **评估模型**：Qwen2-VL-7B/72B、LLaVA-NeXT-34B； | `representation-analysis/` & `inter-layer/` (`CASE-Lab-UMD/Pruning-on-Representations`) | [2026-09-18](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-18_ai_paper_notes.md) |
-| `2026-09-18` | [**🧬 Autoformalizer-Agent**](https://arxiv.org/abs/2609.09881) (`arXiv:2609.09881`) | 详见下方完整公式与实验卡片 | `intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space) | [2026-09-18](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-18_ai_paper_notes.md) |
+| `2026-09-18` | [**🧬 Autoformalizer-Agent**](https://arxiv.org/abs/2609.09881) (`arXiv:2609.09881`) | 详见下方完整公式与实验卡片 | `intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space) | [2026-09-18](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-18_ai_paper_notes.md) |
 
 ---
 
@@ -260,7 +260,7 @@ class DySLVLAPruner(nn.Module):
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`representation-analysis/transition_layerwise_compare.py` (State Entropy & Attention Norm Dual-Threshold Transition across $\mathcal{H}/\mathcal{Z}/\mathcal{P}$ )  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`representation-analysis/transition_layerwise_compare.py` (Informative $\mathcal{H}$ -Space Layers vs Incremental $\mathcal{P}$ -Space Action Layers Dynamic Skipping)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -388,7 +388,7 @@ def compute_maestro_stationary_scores(expert_activations_seq, num_experts):
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`inter-layer/` (Non-Uniform Cross-Layer Expert Sparsity Allocation across Representation Hierarchies)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`inter-layer/` (Pretraining-Scale Partial-Preservation Expert Merging & MTP $\mathcal{P}$ -Space Distillation)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -519,7 +519,7 @@ class RoPEAlignedKVPairPruner(nn.Module):
 ## 🔥 板块二：全球流行前沿热点精选 (Trending Frontier)
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Multi-Head Speculative Lookahead Representation Eviction)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Draft-Free Parameter-Efficient Future Attention Glimpsing in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -635,7 +635,7 @@ Playbook 本质上是解耦的因果规则图谱，在工业级机器人产线�
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -747,7 +747,7 @@ class TransitionFlowMatchingLoss(nn.Module):
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -857,7 +857,7 @@ def solve_bradley_terry_strengths(match_results, num_patches, reg=0.01):
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-10-02_ai_paper_notes.md`
 
 
@@ -1259,7 +1259,7 @@ $$
 ## 🔥 板块二：全球前沿热点精选 (Trending Frontier)
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-09-30_ai_paper_notes.md`
 
 
@@ -2524,7 +2524,7 @@ $$
 ---
 
 > [!TIP]
-> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (Rank-Adaptive Orthogonal Projection in $\mathcal{H}$ -Space)  
+> **🎯 `Pruning-on-Representations` 仓库代码级落地点 (`Target Module`)**：`intra-layer/main.py` (RoPE-Aligned 2D Rotation-Pair (2i, 2i+1) Representation Preservation in $\mathcal{H}$ -Space)  
 > **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-09-18_ai_paper_notes.md`
 
 
